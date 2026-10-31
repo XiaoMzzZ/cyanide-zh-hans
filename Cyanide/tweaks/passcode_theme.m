@@ -1612,7 +1612,7 @@ bool settings_passcode_apply_digits(NSDictionary<NSString *, NSData *> *digits)
     }
 
     bool modesRestored = pt_restore_directory_modes(lockedDirs);
-    if (!modesRestored) [details addObject:@"keypad folder mode not restored"];
+    if (!modesRestored) [details addObject:NSLocalizedString(@"keypad folder mode not restored", nil)];
 
     // The keypad cache just changed: nothing cached about it is valid anymore.
     settings_passcode_invalidate_caches();
@@ -1742,7 +1742,7 @@ bool settings_passcode_restore_originals(NSString *basePath)
     }
 
     bool modesRestored = pt_restore_directory_modes(lockedDirs);
-    if (!modesRestored) [details addObject:@"keypad folder mode not restored"];
+    if (!modesRestored) [details addObject:NSLocalizedString(@"keypad folder mode not restored", nil)];
 
     // The keypad cache just changed: nothing cached about it is valid anymore.
     settings_passcode_invalidate_caches();
@@ -2356,8 +2356,7 @@ BOOL settings_passcode_import_folder_named(NSURL *url,
                  restoreOK ? "succeeded" : "FAILED");
         if (error) {
             NSString *msg = restoreOK
-                ? @"The style could not be written; the previous style is unchanged."
-                : @"The style could not be written, and the previous style could not be fully restored. Import a style again or reset the passcode theme.";
+                ? @"The style could not be written; the previous style is unchanged." : @"The style could not be written, and the previous style could not be fully restored. Import a style again or reset the passcode theme.";
             *error = [NSError errorWithDomain:@"PasscodeTheme" code:5 userInfo:@{
                 NSLocalizedDescriptionKey: msg
             }];

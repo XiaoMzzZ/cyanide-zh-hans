@@ -613,16 +613,16 @@ static void daemons_invalidate_snapshot(NSDictionary * __strong *disabled,
     BOOL hasLegacy = NO;
     for (NSString *label in g.labels) hasLegacy |= daemon_catalog_is_legacy_label(label);
     if (hasLegacy) {
-        [facts addObject:@"legacy disabled entries; job presence not checked"];
+        [facts addObject:NSLocalizedString(@"legacy disabled entries; job presence not checked", nil)];
     } else {
         BOOL allMissing = self.running != nil;
         for (NSString *label in g.labels) allMissing &= [self isLabelMissing:label];
         if (allMissing)
-            [facts addObject:@"not a job on this iOS version"];
+            [facts addObject:NSLocalizedString(@"not a job on this iOS version", nil)];
         else if (self.running && ![self.running[g.labels.firstObject][@"unknown"] boolValue])
             [facts addObject:running ? [NSString stringWithFormat:NSLocalizedString(@"%lu running", nil), (unsigned long)running] : @"not running"];
     }
-    if (anyWarning) [facts addObject:@"still running although disabled"];
+    if (anyWarning) [facts addObject:NSLocalizedString(@"still running although disabled", nil)];
     if (unsaved) [facts insertObject:@"unsaved" atIndex:0];
     [facts addObject:g.summary];
     c.secondaryText = [facts componentsJoinedByString:@" · "];

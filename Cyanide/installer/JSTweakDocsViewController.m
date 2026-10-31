@@ -76,19 +76,7 @@
               "Use log() to print to Cyanide's Log tab. Use r_msg2_main() instead of r_msg2() for anything that touches UIKit views."]];
 
     [stack addArrangedSubview:[self docCard:NSLocalizedString(@"Parameter Declaration", nil)
-        body:@"Add @param comments at the top of your script. Cyanide parses them and generates native UI controls in Settings.\n\n"
-              "Syntax:\n"
-              "// @param: type | varName | Label | default | range\n\n"
-              "Types:\n\n"
-              "switch — Boolean toggle\n"
-              "// @param: switch | enabled | Enable Tweak | true\n\n"
-              "text — String text field\n"
-              "// @param: text | label | Custom Text | Hello\n\n"
-              "color — Hex color picker\n"
-              "// @param: color | tint | Tint Color | #00FFCC\n\n"
-              "slider — Numeric slider with range\n"
-              "// @param: slider | radius | Blur | 5.0 | 0.0-10.0\n\n"
-              "Default values auto-populate on first install. The slider shows a \"(Def)\" indicator when at the declared default."]];
+        body:NSLocalizedString(@"Add @param comments at the top of your script. Cyanide parses them and generates native UI controls in Settings.\n\nSyntax:\n// @param: type | varName | Label | default | range\n\nTypes:\n\nswitch — Boolean toggle\n// @param: switch | enabled | Enable Tweak | true\n\ntext — String text field\n// @param: text | label | Custom Text | Hello\n\ncolor — Hex color picker\n// @param: color | tint | Tint Color | #00FFCC\n\nslider — Numeric slider with range\n// @param: slider | radius | Blur | 5.0 | 0.0-10.0\n\nDefault values auto-populate on first install. The slider shows a \"(Def)\" indicator when at the declared default.", nil)]];
 
     [stack addArrangedSubview:[self docCard:NSLocalizedString(@"RemoteCall API", nil)
         body:@"These functions are injected into every JS context:\n\n"
@@ -118,12 +106,7 @@
               "RepoTweaks scripts receive their parameters as pre-injected global variables instead."]];
 
     [stack addArrangedSubview:[self docCard:NSLocalizedString(@"Timers", nil)
-        body:@"Standard timer functions are mapped to GCD background queues so they never block the UI:\n\n"
-              "setInterval(fn, ms) → id\n"
-              "clearInterval(id)\n"
-              "setTimeout(fn, ms) → id\n"
-              "clearTimeout(id)\n\n"
-              "All active timers are automatically cancelled when the tweak is disabled or Cyanide cleans up."]];
+        body:NSLocalizedString(@"Standard timer functions are mapped to GCD background queues so they never block the UI:\n\nsetInterval(fn, ms) → id\nclearInterval(id)\nsetTimeout(fn, ms) → id\nclearTimeout(id)\n\nAll active timers are automatically cancelled when the tweak is disabled or Cyanide cleans up.", nil)]];
 
     [stack addArrangedSubview:[self docCard:NSLocalizedString(@"Color Allocation Example", nil)
         body:@"64-bit IPC can't pass CGFloat arrays directly. Allocate colors through CIColor:\n\n"
@@ -158,90 +141,25 @@
                                       credit:nil]];
 
     [stack addArrangedSubview:[self docCard:NSLocalizedString(@"Repository JSON Format", nil)
-        body:@"Create a JSON file with this structure:\n\n"
-              "{\n"
-              "  \"repoName\": \"My Repo\",\n"
-              "  \"author\": \"yourname\",\n"
-              "  \"tweaks\": [\n"
-              "    {\n"
-              "      \"id\": \"my.tweak.id\",\n"
-              "      \"name\": \"My Tweak\",\n"
-              "      \"description\": \"What it does\",\n"
-              "      \"version\": \"1.0.0\",\n"
-              "      \"symbol\": \"sparkle\",\n"
-              "      \"author\": \"tweakauthor\",\n"
-              "      \"scriptURL\": \"https://…/tweak.js\"\n"
-              "    }\n"
-              "  ]\n"
-              "}\n\n"
-              "Host it at any HTTPS URL. Users paste this URL into Cyanide's Sources tab."]];
+        body:NSLocalizedString(@"Create a JSON file with this structure:\n\n{\n  \"repoName\": \"My Repo\",\n  \"author\": \"yourname\",\n  \"tweaks\": [\n    {\n      \"id\": \"my.tweak.id\",\n      \"name\": \"My Tweak\",\n      \"description\": \"What it does\",\n      \"version\": \"1.0.0\",\n      \"symbol\": \"sparkle\",\n      \"author\": \"tweakauthor\",\n      \"scriptURL\": \"https://…/tweak.js\"\n    }\n  ]\n}\n\nHost it at any HTTPS URL. Users paste this URL into Cyanide's Sources tab.", nil)]];
 
     [stack addArrangedSubview:[self docCard:NSLocalizedString(@"Required Fields", nil)
-        body:@"repoName\n"
-              "  Display name shown in the Sources list.\n\n"
-              "author\n"
-              "  Your name or handle.\n\n"
-              "tweaks[].id\n"
-              "  Unique identifier (e.g. \"myname.tweakname\").\n"
-              "  Must be unique across your repo.\n\n"
-              "tweaks[].name\n"
-              "  Display name in the package list.\n\n"
-              "tweaks[].description\n"
-              "  Short description shown under the name.\n\n"
-              "tweaks[].version\n"
-              "  Semver string. Cyanide compares this to\n"
-              "  detect updates for installed tweaks.\n\n"
-              "tweaks[].scriptURL\n"
-              "  HTTPS URL to the .js file. Cyanide\n"
-              "  downloads and caches it on refresh."]];
+        body:NSLocalizedString(@"repoName\n  Display name shown in the Sources list.\n\nauthor\n  Your name or handle.\n\ntweaks[].id\n  Unique identifier (e.g. \"myname.tweakname\").\n  Must be unique across your repo.\n\ntweaks[].name\n  Display name in the package list.\n\ntweaks[].description\n  Short description shown under the name.\n\ntweaks[].version\n  Semver string. Cyanide compares this to\n  detect updates for installed tweaks.\n\ntweaks[].scriptURL\n  HTTPS URL to the .js file. Cyanide\n  downloads and caches it on refresh.", nil)]];
 
     [stack addArrangedSubview:[self docCard:NSLocalizedString(@"Optional Fields", nil)
-        body:@"tweaks[].symbol\n"
-              "  SF Symbol name for the tweak icon\n"
-              "  (e.g. \"paintpalette.fill\", \"wind\").\n"
-              "  Shown in Packages and Sources lists.\n"
-              "  Defaults to a generic package icon.\n\n"
-              "tweaks[].author\n"
-              "  Per-tweak author. Overrides the repo-level\n"
-              "  author for this tweak. Useful when your\n"
-              "  repo hosts tweaks by different people.\n\n"
-              "Custom icon images are not yet supported\n"
-              "but are planned for a future update."]];
+        body:NSLocalizedString(@"tweaks[].symbol\n  SF Symbol name for the tweak icon\n  (e.g. \"paintpalette.fill\", \"wind\").\n  Shown in Packages and Sources lists.\n  Defaults to a generic package icon.\n\ntweaks[].author\n  Per-tweak author. Overrides the repo-level\n  author for this tweak. Useful when your\n  repo hosts tweaks by different people.\n\nCustom icon images are not yet supported\nbut are planned for a future update.", nil)]];
 
     [stack addArrangedSubview:[self docCard:NSLocalizedString(@"Hosting with GitHub Pages", nil)
-        body:@"1. Create a public GitHub repo\n"
-              "2. Add your .js tweak files\n"
-              "3. Add a JSON file (e.g. tweaks.json)\n"
-              "   pointing scriptURLs to the raw files:\n\n"
-              "   \"scriptURL\":\n"
-              "   \"https://yourname.github.io/repo/tweak.js\"\n\n"
-              "4. Enable GitHub Pages in repo Settings\n"
-              "   (Source: main branch, root folder)\n"
-              "5. Share the JSON URL with users:\n"
-              "   https://yourname.github.io/repo/tweaks.json"]];
+        body:NSLocalizedString(@"1. Create a public GitHub repo\n2. Add your .js tweak files\n3. Add a JSON file (e.g. tweaks.json)\n   pointing scriptURLs to the raw files:\n\n   \"scriptURL\":\n   \"https://yourname.github.io/repo/tweak.js\"\n\n4. Enable GitHub Pages in repo Settings\n   (Source: main branch, root folder)\n5. Share the JSON URL with users:\n   https://yourname.github.io/repo/tweaks.json", nil)]];
 
     [stack addArrangedSubview:[self docCard:NSLocalizedString(@"Updating Tweaks", nil)
-        body:@"To push an update:\n\n"
-              "1. Update the .js file at the same URL\n"
-              "2. Bump the version string in the JSON\n"
-              "3. Commit and push\n\n"
-              "Cyanide checks for updates every few hours. When the repo version is newer than the installed version, the Sources tab shows an update badge. Users tap the tweak to reinstall the latest version."]];
+        body:NSLocalizedString(@"To push an update:\n\n1. Update the .js file at the same URL\n2. Bump the version string in the JSON\n3. Commit and push\n\nCyanide checks for updates every few hours. When the repo version is newer than the installed version, the Sources tab shows an update badge. Users tap the tweak to reinstall the latest version.", nil)]];
 
     [stack addArrangedSubview:[self docCard:NSLocalizedString(@"Multiple Tweaks", nil)
-        body:@"Add more entries to the tweaks array:\n\n"
-              "\"tweaks\": [\n"
-              "  { \"id\": \"me.hidedock\", … },\n"
-              "  { \"id\": \"me.colordock\", … },\n"
-              "  { \"id\": \"me.searchpill\", … }\n"
-              "]\n\n"
-              "Each tweak needs its own unique id and scriptURL. They all share the repo's author and repoName."]];
+        body:NSLocalizedString(@"Add more entries to the tweaks array:\n\n\"tweaks\": [\n  { \"id\": \"me.hidedock\", … },\n  { \"id\": \"me.colordock\", … },\n  { \"id\": \"me.searchpill\", … }\n]\n\nEach tweak needs its own unique id and scriptURL. They all share the repo's author and repoName.", nil)]];
 
     [stack addArrangedSubview:[self docCard:NSLocalizedString(@"Tips", nil)
-        body:@"• Use descriptive ids like \"yourname.tweakname\" to avoid collisions with other repos.\n"
-              "• Keep descriptions short — they show as one or two lines in the package list.\n"
-              "• Bump the version on every change so users get the update badge.\n"
-              "• Test scripts locally with QuickLoader before adding them to your repo.\n"
-              "• HTTPS is required — Cyanide rejects HTTP URLs."]];
+        body:NSLocalizedString(@"• Use descriptive ids like \"yourname.tweakname\" to avoid collisions with other repos.\n• Keep descriptions short — they show as one or two lines in the package list.\n• Bump the version on every change so users get the update badge.\n• Test scripts locally with QuickLoader before adding them to your repo.\n• HTTPS is required — Cyanide rejects HTTP URLs.", nil)]];
 }
 
 #pragma mark - Actions

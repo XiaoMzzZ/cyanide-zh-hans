@@ -1889,8 +1889,8 @@ static BOOL cleaner_intro_accepted(void)
         NSMutableArray<NSString *> *parts = [NSMutableArray array];
         if (item.cacheBytes > 0) [parts addObject:[NSString stringWithFormat:@"%@ cache", cleaner_bytes(item.cacheBytes)]];
         if (item.tempBytes > 0) [parts addObject:[NSString stringWithFormat:@"%@ temp", cleaner_bytes(item.tempBytes)]];
-        if (item.active) [parts addObject:@"in use"];
-        else if (item.incomplete) [parts addObject:@"incomplete scan"];
+        if (item.active) [parts addObject:NSLocalizedString(@"in use", nil)];
+        else if (item.incomplete) [parts addObject:NSLocalizedString(@"incomplete scan", nil)];
         cell.detailLabel.text = [parts componentsJoinedByString:@" · "];
     }
     cell.sizeLabel.text = item.incomplete ? [@"≥ " stringByAppendingString:cleaner_bytes(item.totalBytes)]

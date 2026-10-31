@@ -450,7 +450,7 @@ static NSMutableDictionary<NSString *, NSData *> *fp_adapt_tables(NSDictionary<N
         // rather than kern at the wrong scale.
         if (out[@"GPOS"]) {
             [out removeObjectForKey:@"GPOS"];
-            if (![notes containsObject:@"kerning dropped"]) [notes addObject:@"kerning dropped"];
+            if (![notes containsObject:NSLocalizedString(@"kerning dropped", nil)]) [notes addObject:NSLocalizedString(@"kerning dropped", nil)];
         }
         NSString *scaled = [NSString stringWithFormat:NSLocalizedString(@"scaled from %u to %u units", nil), sourceUPM, targetUPM];
         if (![notes containsObject:scaled]) [notes addObject:scaled];

@@ -14754,7 +14754,7 @@ static const NSInteger kPasscodePreviewRow = 1;
     // disk. Claiming "not applied" there would be wrong.
     NSString *stateText = @"not applied";
     if (styleState == PTPasscodeStyleStateApplied) {
-        stateText = @"in use";
+        stateText = NSLocalizedString(@"in use", nil);
     } else if (styleState == PTPasscodeStyleStateUnknown) {
         stateText = @"unknown (needs kernel access)";
     }
