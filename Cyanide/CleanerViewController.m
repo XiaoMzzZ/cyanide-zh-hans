@@ -772,7 +772,7 @@ static BOOL cleaner_intro_accepted(void)
 - (instancetype)init
 {
     self = [super initWithStyle:UITableViewStyleInsetGrouped];
-    if (self) self.title = @"Cache Cleaner";
+    if (self) self.title = NSLocalizedString(@"Cache Cleaner", nil);
     return self;
 }
 
@@ -836,24 +836,14 @@ static BOOL cleaner_intro_accepted(void)
 {
     if (cleaner_intro_accepted() || self.presentedViewController) return;
     UIAlertController *ac = [UIAlertController
-        alertControllerWithTitle:@"Before You Clean"
-                         message:@"Cache Cleaner removes the contents of each app's Library/Caches and tmp folders, plus optional CrashReporter logs. "
-                                 @"Documents, settings, logins and other app data are not touched. Active apps are checked again before each folder. "
-                                 @"Detection is best-effort; close apps before cleaning.\n\n"
-                                 @"What can happen:\n"
-                                 @"• Apps load slower at first and use data to rebuild their caches.\n"
-                                 @"• Some apps keep offline content (music, podcasts, maps, game data) in their cache. "
-                                 @"It has to be downloaded again — check large caches before cleaning.\n"
-                                 @"• Rarely, an app asks you to sign in again or loses an unsent draft.\n"
-                                 @"• An app waiting in the background may crash once when you return to it.\n\n"
-                                 @"Reported sizes are logical file sizes; actual recovered storage can differ. "
-                                 @"Apps refill their caches as you use them."
+        alertControllerWithTitle:NSLocalizedString(@"Before You Clean", nil)
+                         message:NSLocalizedString(@"Cache Cleaner removes the contents of each app's Library/Caches and tmp folders, plus optional CrashReporter logs. Documents, settings, logins and other app data are not touched. Active apps are checked again before each folder. Detection is best-effort; close apps before cleaning.\n\nWhat can happen:\n• Apps load slower at first and use data to rebuild their caches.\n• Some apps keep offline content (music, podcasts, maps, game data) in their cache. It has to be downloaded again — check large caches before cleaning.\n• Rarely, an app asks you to sign in again or loses an unsent draft.\n• An app waiting in the background may crash once when you return to it.\n\nReported sizes are logical file sizes; actual recovered storage can differ. Apps refill their caches as you use them.", nil)
                   preferredStyle:UIAlertControllerStyleAlert];
     __weak typeof(self) weakSelf = self;
-    [ac addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction *a) {
+    [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil) style:UIAlertActionStyleCancel handler:^(UIAlertAction *a) {
         [weakSelf.navigationController popViewControllerAnimated:YES];
     }]];
-    [ac addAction:[UIAlertAction actionWithTitle:@"Got It" style:UIAlertActionStyleDefault handler:^(UIAlertAction *a) {
+    [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Got It", nil) style:UIAlertActionStyleDefault handler:^(UIAlertAction *a) {
         [NSUserDefaults.standardUserDefaults setInteger:kCleanerIntroVersion forKey:kCleanerIntroAcceptedKey];
         [weakSelf updateControls];
         if (!weakSelf.accessReady && !weakSelf.loading) [weakSelf ensureAccessAllowingFullExploit:NO];
@@ -1069,10 +1059,10 @@ static BOOL cleaner_intro_accepted(void)
     BOOL enabled = !self.loading && !self.cleaning && self.accessReady && count > 0 &&
                    !selectedAppsNeedProcessList;
     UIButtonConfiguration *cfg = self.cleanButton.configuration;
-    if (self.cleaning) cfg.title = @"Cleaning…";
+    if (self.cleaning) cfg.title = NSLocalizedString(@"Cleaning…", nil);
     else if (count > 0)
-        cfg.title = [NSString stringWithFormat:@"Clean Selected · %@", cleaner_bytes([self selectedBytes])];
-    else cfg.title = @"Select Items to Clean";
+        cfg.title = [NSString stringWithFormat:NSLocalizedString(@"Clean Selected · %@", nil), cleaner_bytes([self selectedBytes])];
+    else cfg.title = NSLocalizedString(@"Select Items to Clean", nil);
     self.cleanButton.configuration = cfg;
     self.cleanButton.enabled = enabled;
     self.cleanProgress.hidden = !self.cleaning;
@@ -1105,13 +1095,13 @@ static BOOL cleaner_intro_accepted(void)
     NSUInteger large = 0;
     for (CYCleanerItem *item in self.items)
         if (!item.active && !item.systemApp && item.totalBytes >= kCleanerLargeCacheBytes) large++;
-    UIAction *selectLarge = [UIAction actionWithTitle:@"Select Large Caches (50 MB+)"
+    UIAction *selectLarge = [UIAction actionWithTitle:NSLocalizedString(@"Select Large Caches (50 MB+)", nil)
                                                 image:[UIImage systemImageNamed:@"externaldrive.badge.checkmark"]
                                            identifier:nil handler:^(UIAction *x) { [weakSelf selectLargeCaches:nil]; }];
-    selectLarge.subtitle = large ? [NSString stringWithFormat:@"%lu app%@", (unsigned long)large, large == 1 ? @"" : @"s"]
+    selectLarge.subtitle = large ? [NSString stringWithFormat:NSLocalizedString(@"%lu app%@", nil), (unsigned long)large, large == 1 ? @"" : @"s"]
                                  : @"None this large";
     if (busy || !self.processListAvailable || large == 0) selectLarge.attributes = UIMenuElementAttributesDisabled;
-    UIAction *folders = [UIAction actionWithTitle:@"Review Folders" image:[UIImage systemImageNamed:@"folder"]
+    UIAction *folders = [UIAction actionWithTitle:NSLocalizedString(@"Review Folders", nil) image:[UIImage systemImageNamed:@"folder"]
                                        identifier:nil handler:^(UIAction *x) { [weakSelf showSelectedFolders:nil]; }];
     if (busy || count == 0) folders.attributes = UIMenuElementAttributesDisabled;
     UIMenu *menu = [UIMenu menuWithChildren:@[
@@ -1475,10 +1465,10 @@ static BOOL cleaner_intro_accepted(void)
     BOOL logsSelected = self.crashLogs.selected;
     if (appCount > 0 && !self.processListAvailable) {
         UIAlertController *alert = [UIAlertController
-            alertControllerWithTitle:@"Kernel Access Needed"
-                             message:@"Cache Cleaner cannot tell which apps are active without kernel access. Run the chain once, then try again."
+            alertControllerWithTitle:NSLocalizedString(@"Kernel Access Needed", nil)
+                             message:NSLocalizedString(@"Cache Cleaner cannot tell which apps are active without kernel access. Run the chain once, then try again.", nil)
                       preferredStyle:UIAlertControllerStyleAlert];
-        [alert addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
+        [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil) style:UIAlertActionStyleDefault handler:nil]];
         [self presentViewController:alert animated:YES completion:nil];
         return;
     }
@@ -1486,18 +1476,18 @@ static BOOL cleaner_intro_accepted(void)
     if (count == 0) return;
 
     NSMutableString *message = [NSMutableString stringWithFormat:
-        @"Remove the selected disposable data (%@ in logical file sizes)? Documents, settings and app data are not touched.",
+        NSLocalizedString(@"Remove the selected disposable data (%@ in logical file sizes)? Documents, settings and app data are not touched.", nil),
         cleaner_bytes([self selectedBytes])];
     if (appCount > 0)
         [message appendFormat:@" %lu app cache/temp folder%@.", (unsigned long)appCount, appCount == 1 ? @"" : @"s"];
     if (logsSelected) [message appendString:@" CrashReporter logs."];
     [message appendString:@" Apps may need to redownload content."];
-    UIAlertController *confirm = [UIAlertController alertControllerWithTitle:@"Clean Caches?"
+    UIAlertController *confirm = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Clean Caches?", nil)
                                                                      message:message
                                                               preferredStyle:UIAlertControllerStyleAlert];
-    [confirm addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];
+    [confirm addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil) style:UIAlertActionStyleCancel handler:nil]];
     __weak typeof(self) weakSelf = self;
-    [confirm addAction:[UIAlertAction actionWithTitle:@"Clean" style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {
+    [confirm addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Clean", nil) style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {
         (void)action;
         [weakSelf performClean];
     }]];
@@ -1689,7 +1679,7 @@ static BOOL cleaner_intro_accepted(void)
                     self.sectionCacheValid = NO;  // everything moves to Not Checked
                 }
                 NSMutableString *result = [NSMutableString stringWithFormat:
-                    @"Removed %@ (logical size).", cleaner_bytes(freed)];
+                    NSLocalizedString(@"Removed %@ (logical size).", nil), cleaner_bytes(freed)];
                 if (cleanedApps > 0)
                     [result appendFormat:@" %lu app%@ cleaned.", (unsigned long)cleanedApps,
                      cleanedApps == 1 ? @"" : @"s"];
@@ -1757,9 +1747,9 @@ static BOOL cleaner_intro_accepted(void)
     NSUInteger count = section == CYCleanerSectionSummary ? 0 : [self itemsInSection:section].count;
     if (!count) return nil;
     switch ((CYCleanerSection)section) {
-        case CYCleanerSectionApps:   return [NSString stringWithFormat:@"Apps (%lu)", (unsigned long)count];
-        case CYCleanerSectionSystem: return [NSString stringWithFormat:@"Built-in Apps (%lu)", (unsigned long)count];
-        case CYCleanerSectionLogs:   return [NSString stringWithFormat:@"Crash Logs (%lu)", (unsigned long)count];
+        case CYCleanerSectionApps:   return [NSString stringWithFormat:NSLocalizedString(@"Apps (%lu)", nil), (unsigned long)count];
+        case CYCleanerSectionSystem: return [NSString stringWithFormat:NSLocalizedString(@"Built-in Apps (%lu)", nil), (unsigned long)count];
+        case CYCleanerSectionLogs:   return [NSString stringWithFormat:NSLocalizedString(@"Crash Logs (%lu)", nil), (unsigned long)count];
         default: return nil;
     }
 }
@@ -1815,33 +1805,32 @@ static BOOL cleaner_intro_accepted(void)
         cell.bar.progressTintColor = UIColor.systemBlueColor;
         switch (self.phase) {
             case CYCleanerPhaseAccess:
-                cell.captionLabel.text = @"Getting File Access";
-                cell.totalLabel.text = @"Preparing…";
+                cell.captionLabel.text = NSLocalizedString(@"Getting File Access", nil);
+                cell.totalLabel.text = NSLocalizedString(@"Preparing…", nil);
                 cell.bar.progress = 0;
-                cell.statusLabel.text = @"Cyanide opens SpringBoard to reach other apps' folders. This takes a few "
-                                        @"seconds the first time after Cyanide starts.";
+                cell.statusLabel.text = NSLocalizedString(@"Cyanide opens SpringBoard to reach other apps' folders. This takes a few seconds the first time after Cyanide starts.", nil);
                 break;
             case CYCleanerPhaseFinding:
-                cell.captionLabel.text = @"Finding Apps";
+                cell.captionLabel.text = NSLocalizedString(@"Finding Apps", nil);
                 cell.totalLabel.text = self.foundTotal ? [NSString stringWithFormat:@"%lu / %lu",
                                                           (unsigned long)self.foundDone, (unsigned long)self.foundTotal] : @"…";
                 cell.bar.progress = self.foundTotal ? (float)self.foundDone / (float)self.foundTotal : 0;
-                cell.statusLabel.text = @"Reading each app's name and icon.";
+                cell.statusLabel.text = NSLocalizedString(@"Reading each app's name and icon.", nil);
                 break;
             case CYCleanerPhaseProcesses:
-                cell.captionLabel.text = @"Checking Running Apps";
+                cell.captionLabel.text = NSLocalizedString(@"Checking Running Apps", nil);
                 cell.totalLabel.text = @"…";
                 cell.bar.progress = 1;
-                cell.statusLabel.text = @"Apps in use are left alone.";
+                cell.statusLabel.text = NSLocalizedString(@"Apps in use are left alone.", nil);
                 break;
             case CYCleanerPhaseLogs:
-                cell.captionLabel.text = @"Checking Crash Logs";
+                cell.captionLabel.text = NSLocalizedString(@"Checking Crash Logs", nil);
                 cell.totalLabel.text = @"…";
                 cell.bar.progress = 1;
-                cell.statusLabel.text = @"Reading CrashReporter folders.";
+                cell.statusLabel.text = NSLocalizedString(@"Reading CrashReporter folders.", nil);
                 break;
             case CYCleanerPhaseScanning:
-                cell.captionLabel.text = @"Measuring Caches";
+                cell.captionLabel.text = NSLocalizedString(@"Measuring Caches", nil);
                 cell.totalLabel.text = self.scanTotal ? [NSString stringWithFormat:@"%lu / %lu",
                                                          (unsigned long)self.scanDone, (unsigned long)self.scanTotal] : @"…";
                 cell.bar.progress = self.scanTotal ? (float)self.scanDone / (float)self.scanTotal : 0;
@@ -1854,19 +1843,19 @@ static BOOL cleaner_intro_accepted(void)
     [cell.spinner stopAnimating];
     cell.bar.progressTintColor = UIColor.systemBlueColor;
     if (!self.accessReady) {
-        cell.captionLabel.text = @"Cache Cleaner";
+        cell.captionLabel.text = NSLocalizedString(@"Cache Cleaner", nil);
         cell.totalLabel.text = @"—";
         cell.bar.progress = 0;
         cell.statusLabel.text = self.accessMessage ?: (cleaner_intro_accepted() ? @"Filesystem access is not available."
                                                                                 : @"Read the note first; nothing is scanned until then.");
         return;
     }
-    cell.captionLabel.text = @"Reclaimable";
+    cell.captionLabel.text = NSLocalizedString(@"Reclaimable", nil);
     cell.totalLabel.text = cleaner_bytes(total);
     cell.bar.progress = total ? (float)((double)selected / (double)total) : 0;
     NSMutableArray<NSString *> *lines = [NSMutableArray array];
     if (self.resultText) [lines addObject:self.resultText];
-    [lines addObject:[NSString stringWithFormat:@"%@ selected in %lu item%@", cleaner_bytes(selected),
+    [lines addObject:[NSString stringWithFormat:NSLocalizedString(@"%@ selected in %lu item%@", nil), cleaner_bytes(selected),
                       (unsigned long)[self selectedCount], [self selectedCount] == 1 ? @"" : @"s"]];
     [lines addObject:@"Logical file sizes, not guaranteed recovered storage."];
     if (!self.processListAvailable)
@@ -1894,7 +1883,7 @@ static BOOL cleaner_intro_accepted(void)
     if (item.isCrashLogs) {
         cell.iconView.image = [UIImage systemImageNamed:@"doc.text.magnifyingglass"];
         cell.iconView.tintColor = UIColor.systemOrangeColor;
-        cell.detailLabel.text = [NSString stringWithFormat:@"%lu crash log file%@ · CrashReporter",
+        cell.detailLabel.text = [NSString stringWithFormat:NSLocalizedString(@"%lu crash log file%@ · CrashReporter", nil),
                                  (unsigned long)item.fileCount, item.fileCount == 1 ? @"" : @"s"];
         if (item.incomplete) cell.detailLabel.text = [cell.detailLabel.text stringByAppendingString:@" · incomplete scan"];
     } else {
@@ -1958,7 +1947,7 @@ static BOOL cleaner_intro_accepted(void)
         if (item.isCrashLogs) {
             for (NSString *root in item.logRoots) {
                 NSString *name = root.lastPathComponent.length ? root.lastPathComponent : root;
-                [actions addObject:[UIAction actionWithTitle:[NSString stringWithFormat:@"Show %@ in File Browser", name]
+                [actions addObject:[UIAction actionWithTitle:[NSString stringWithFormat:NSLocalizedString(@"Show %@ in File Browser", nil), name]
                                                        image:[UIImage systemImageNamed:@"folder"]
                                                   identifier:nil
                                                      handler:^(UIAction *a) { [weakSelf openInFileBrowser:root]; }]];
@@ -1966,10 +1955,10 @@ static BOOL cleaner_intro_accepted(void)
         } else {
             NSString *caches = [item.container.path stringByAppendingPathComponent:@"Library/Caches"];
             NSString *tmp = [item.container.path stringByAppendingPathComponent:@"tmp"];
-            [actions addObject:[UIAction actionWithTitle:@"Show Caches in File Browser" image:[UIImage systemImageNamed:@"folder"]
+            [actions addObject:[UIAction actionWithTitle:NSLocalizedString(@"Show Caches in File Browser", nil) image:[UIImage systemImageNamed:@"folder"]
                                                identifier:nil handler:^(UIAction *a) { [weakSelf openInFileBrowser:caches]; }]];
             if (item.tempBytes > 0)
-                [actions addObject:[UIAction actionWithTitle:@"Show tmp in File Browser" image:[UIImage systemImageNamed:@"folder"]
+                [actions addObject:[UIAction actionWithTitle:NSLocalizedString(@"Show tmp in File Browser", nil) image:[UIImage systemImageNamed:@"folder"]
                                                   identifier:nil handler:^(UIAction *a) { [weakSelf openInFileBrowser:tmp]; }]];
         }
         return [UIMenu menuWithTitle:item.name children:actions];
@@ -1984,7 +1973,7 @@ static BOOL cleaner_intro_accepted(void)
 - (instancetype)init
 {
     self = [super initWithStyle:UITableViewStyleInsetGrouped];
-    if (self) self.title = @"Folders to Clean";
+    if (self) self.title = NSLocalizedString(@"Folders to Clean", nil);
     return self;
 }
 
@@ -1994,7 +1983,7 @@ static BOOL cleaner_intro_accepted(void)
     if (item.isCrashLogs) {
         for (NSString *root in item.logRoots) {
             NSNumber *bytes = item.logRootBytes[root] ?: @(item.cacheBytes);
-            [out addObject:@{ @"title": @"CrashReporter",
+            [out addObject:@{ @"title": NSLocalizedString(@"CrashReporter", nil),
                               @"path": root,
                               @"bytes": bytes }];
         }

@@ -49,7 +49,7 @@ static NSString * const kCatPkgCellID = @"CatPkgCell";
         [UIAlertController alertControllerWithTitle:(hideHomeBarReason ? @"Run Hide Home Bar Alone" : @"Cannot Queue Install")
                                             message:reason ?: @"This package cannot be queued yet."
                                      preferredStyle:UIAlertControllerStyleAlert];
-    [alert addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
+    [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil) style:UIAlertActionStyleDefault handler:nil]];
     [self presentViewController:alert animated:YES completion:nil];
     return YES;
 }
@@ -181,11 +181,11 @@ static NSString * const kCatPkgCellID = @"CatPkgCell";
     config.textProperties.font = [UIFont systemFontOfSize:16.0 weight:UIFontWeightSemibold];
     if (disabledForInstall) config.textProperties.color = UIColor.secondaryLabelColor;
     if (pkg.isInstallDisabled && installed && pkg.installDisabledReason.length > 0 && pkg.shortDescription.length > 0) {
-        config.secondaryText = [NSString stringWithFormat:@"Installed, unsupported here · %@ · %@",
+        config.secondaryText = [NSString stringWithFormat:NSLocalizedString(@"Installed, unsupported here · %@ · %@", nil),
                                 pkg.installDisabledReason,
                                 pkg.shortDescription];
     } else if (pkg.isInstallDisabled && installed && pkg.installDisabledReason.length > 0) {
-        config.secondaryText = [NSString stringWithFormat:@"Installed, unsupported here · %@",
+        config.secondaryText = [NSString stringWithFormat:NSLocalizedString(@"Installed, unsupported here · %@", nil),
                                 pkg.installDisabledReason];
     } else {
         config.secondaryText = pkg.shortDescription;
@@ -293,7 +293,7 @@ static NSString * const kCatPkgCellID = @"CatPkgCell";
 
     if (pkg.isInstallDisabled && !pkg.isInstalled && intent == PackageQueueIntentNone) return nil;
     if (pkg.kind == PackageInstallKindDirectTool) {
-        UIContextualAction *open = [UIContextualAction contextualActionWithStyle:UIContextualActionStyleNormal title:@"Open" handler:^(UIContextualAction *a, UIView *v, void (^done)(BOOL)) {
+        UIContextualAction *open = [UIContextualAction contextualActionWithStyle:UIContextualActionStyleNormal title:NSLocalizedString(@"Open", nil) handler:^(UIContextualAction *a, UIView *v, void (^done)(BOOL)) {
             done(YES);
             [self navigateToSettingsSectionForPackage:pkg];
         }];

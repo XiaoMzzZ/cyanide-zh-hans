@@ -187,7 +187,7 @@ static UIColor *category_color(NSString *cat)
     [super viewDidLoad];
     NSDictionary *repo = sources_repo_for_url(self.repoURL);
     NSString *name = sources_string_or_empty(repo[@"repoName"]);
-    self.title = name.length ? name : @"Source";
+    self.title = name.length ? name : NSLocalizedString(@"Source", nil);
     // Big title on the drill-down too, aligned with the root's inset. The jump
     // that used to happen here is fixed in CYNavigationBar: the leading margin is
     // now constant across root and pushed screens, so the large title keeps its
@@ -233,9 +233,9 @@ static UIColor *category_color(NSString *cat)
         config.textProperties.color = UIColor.secondaryLabelColor;
     }
     if (installed && unsupportedReason.length && desc.length) {
-        config.secondaryText = [NSString stringWithFormat:@"Installed, unsupported here · %@ · %@", unsupportedReason, desc];
+        config.secondaryText = [NSString stringWithFormat:NSLocalizedString(@"Installed, unsupported here · %@ · %@", nil), unsupportedReason, desc];
     } else if (installed && unsupportedReason.length) {
-        config.secondaryText = [NSString stringWithFormat:@"Installed, unsupported here · %@", unsupportedReason];
+        config.secondaryText = [NSString stringWithFormat:NSLocalizedString(@"Installed, unsupported here · %@", nil), unsupportedReason];
     } else if (version.length && compatibility.length && desc.length) {
         config.secondaryText = [NSString stringWithFormat:@"v%@ · %@ · %@", version, compatibility, desc];
     } else if (version.length && compatibility.length) {
@@ -260,7 +260,7 @@ static UIColor *category_color(NSString *cat)
 
     if (installed && unsupportedReason.length > 0) {
         UILabel *pill = [[UILabel alloc] init];
-        pill.text = @"INSTALLED";
+        pill.text = NSLocalizedString(@"INSTALLED", nil);
         pill.font = [UIFont systemFontOfSize:11.0 weight:UIFontWeightHeavy];
         pill.textColor = UIColor.systemGreenColor;
         pill.backgroundColor = [UIColor.systemGreenColor colorWithAlphaComponent:0.15];
@@ -276,7 +276,7 @@ static UIColor *category_color(NSString *cat)
         cell.accessoryView = pill;
     } else if (unsupportedReason.length > 0) {
         UILabel *pill = [[UILabel alloc] init];
-        pill.text = @"UNSUPPORTED";
+        pill.text = NSLocalizedString(@"UNSUPPORTED", nil);
         pill.font = [UIFont systemFontOfSize:11.0 weight:UIFontWeightHeavy];
         pill.textColor = UIColor.systemOrangeColor;
         pill.backgroundColor = [UIColor.systemOrangeColor colorWithAlphaComponent:0.15];
@@ -292,7 +292,7 @@ static UIColor *category_color(NSString *cat)
         cell.accessoryView = pill;
     } else if (sources_tweak_has_update(self.repoURL, tweak)) {
         UILabel *pill = [[UILabel alloc] init];
-        pill.text = @"UPDATE";
+        pill.text = NSLocalizedString(@"UPDATE", nil);
         pill.font = [UIFont systemFontOfSize:11.0 weight:UIFontWeightHeavy];
         pill.textColor = UIColor.systemBlueColor;
         pill.backgroundColor = [UIColor.systemBlueColor colorWithAlphaComponent:0.15];
@@ -337,8 +337,8 @@ static UIColor *category_color(NSString *cat)
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.title = @"Sources";
-    self.navigationItem.title = @"Sources";
+    self.title = NSLocalizedString(@"Sources", nil);
+    self.navigationItem.title = NSLocalizedString(@"Sources", nil);
     self.navigationItem.largeTitleDisplayMode = UINavigationItemLargeTitleDisplayModeAlways;
     self.navigationController.navigationBar.prefersLargeTitles = YES;
     self.tableView.rowHeight = UITableViewAutomaticDimension;
@@ -470,7 +470,7 @@ static UIColor *category_color(NSString *cat)
     config.imageToTextPadding = 12.0;
     config.text = cat;
     config.textProperties.font = [UIFont systemFontOfSize:16.0 weight:UIFontWeightSemibold];
-    config.secondaryText = [NSString stringWithFormat:@"%lu package%@",
+    config.secondaryText = [NSString stringWithFormat:NSLocalizedString(@"%lu package%@", nil),
                             (unsigned long)count, count == 1 ? @"" : @"s"];
     config.secondaryTextProperties.font = [UIFont systemFontOfSize:14.0 weight:UIFontWeightRegular];
     config.secondaryTextProperties.color = [UIColor.labelColor colorWithAlphaComponent:0.55];
@@ -506,11 +506,11 @@ static UIColor *category_color(NSString *cat)
 
     if (row == 0) {
         config.image = CYIconBadgeImage(@"hammer.fill", UIColor.systemOrangeColor, 32.0);
-        config.text = @"Build Your Own JS Tweak";
+        config.text = NSLocalizedString(@"Build Your Own JS Tweak", nil);
         config.secondaryText = @"Write scripts, declare parameters, use the RemoteCall API";
     } else {
         config.image = CYIconBadgeImage(@"server.rack", UIColor.systemIndigoColor, 32.0);
-        config.text = @"Set Up a Tweak Repository";
+        config.text = NSLocalizedString(@"Set Up a Tweak Repository", nil);
         config.secondaryText = @"Host a JSON feed on GitHub Pages or any HTTPS server";
     }
 
@@ -523,8 +523,8 @@ static UIColor *category_color(NSString *cat)
 
 - (void)addSource
 {
-    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Add Source"
-                                                                   message:@"Paste an HTTPS RepoTweaks JSON URL."
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Add Source", nil)
+                                                                   message:NSLocalizedString(@"Paste an HTTPS RepoTweaks JSON URL.", nil)
                                                             preferredStyle:UIAlertControllerStyleAlert];
     [alert addTextFieldWithConfigurationHandler:^(UITextField *tf) {
         tf.placeholder = @"https://example.com/packages.json";
@@ -532,7 +532,7 @@ static UIColor *category_color(NSString *cat)
         tf.autocapitalizationType = UITextAutocapitalizationTypeNone;
         tf.autocorrectionType = UITextAutocorrectionTypeNo;
     }];
-    [alert addAction:[UIAlertAction actionWithTitle:@"Add" style:UIAlertActionStyleDefault handler:^(UIAlertAction *_) {
+    [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Add", nil) style:UIAlertActionStyleDefault handler:^(UIAlertAction *_) {
         NSString *url = alert.textFields.firstObject.text ?: @"";
         repotweaks_add_repo(url, ^(BOOL success, NSString *message) {
             [self reloadSources];
@@ -544,7 +544,7 @@ static UIColor *category_color(NSString *cat)
             if (!success) [self presentError:message ?: @"Could not refresh that source."];
         });
     }]];
-    [alert addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];
+    [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil) style:UIAlertActionStyleCancel handler:nil]];
     [self presentViewController:alert animated:YES completion:nil];
 }
 
@@ -572,10 +572,10 @@ static UIColor *category_color(NSString *cat)
 
 - (void)presentError:(NSString *)message
 {
-    UIAlertController *err = [UIAlertController alertControllerWithTitle:@"Source Failed"
+    UIAlertController *err = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Source Failed", nil)
                                                                  message:message ?: @"Could not refresh source."
                                                           preferredStyle:UIAlertControllerStyleAlert];
-    [err addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
+    [err addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil) style:UIAlertActionStyleDefault handler:nil]];
     [self presentViewController:err animated:YES completion:nil];
 }
 
@@ -630,7 +630,7 @@ static UIColor *category_color(NSString *cat)
     config.imageProperties.reservedLayoutSize = CGSizeMake(32.0, 32.0);
     config.imageProperties.maximumSize = CGSizeMake(32.0, 32.0);
     config.imageToTextPadding = 12.0;
-    config.text = @"Open QuickLoader";
+    config.text = NSLocalizedString(@"Open QuickLoader", nil);
     config.textProperties.font = [UIFont systemFontOfSize:16.0 weight:UIFontWeightSemibold];
     config.secondaryText = @"Run a local .js tweak file";
     config.secondaryTextProperties.font = [UIFont systemFontOfSize:14.0 weight:UIFontWeightRegular];

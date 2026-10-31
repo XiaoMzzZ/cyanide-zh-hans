@@ -214,9 +214,9 @@ static BOOL ad_decrypt_range_in_springboard(NSString *src, NSString *dst, uint64
     do {
         if (!rsrc || !rdst) { *why = @"SpringBoard: no memory for the paths"; break; }
         fdIn = (int)r_dlsym_call(R_TIMEOUT, "open", rsrc, O_RDONLY | O_CLOEXEC, 0, 0, 0, 0, 0, 0);
-        if (fdIn < 0) { *why = [NSString stringWithFormat:@"SpringBoard: open failed (%s)", strerror(ad_sb_errno())]; break; }
+        if (fdIn < 0) { *why = [NSString stringWithFormat:NSLocalizedString(@"SpringBoard: open failed (%s)", nil), strerror(ad_sb_errno())]; break; }
         fdOut = (int)r_dlsym_call(R_TIMEOUT, "open", rdst, O_WRONLY | O_CLOEXEC, 0, 0, 0, 0, 0, 0);
-        if (fdOut < 0) { *why = [NSString stringWithFormat:@"SpringBoard: can't write the copy (%s)", strerror(ad_sb_errno())]; break; }
+        if (fdOut < 0) { *why = [NSString stringWithFormat:NSLocalizedString(@"SpringBoard: can't write the copy (%s)", nil), strerror(ad_sb_errno())]; break; }
         struct { const char *name; size_t mapOff, addrOff, len, readOff; } variants[] = {
             { "page-range",        aligned, 0,     mapLen, delta },
             { "crypt-range",       aligned, delta, mapLen > delta ? mapLen - delta : 0, delta },
@@ -239,7 +239,7 @@ static BOOL ad_decrypt_range_in_springboard(NSString *src, NSString *dst, uint64
             uint64_t map = r_dlsym_call(R_TIMEOUT, "mmap", 0, mapSize, PROT_READ, MAP_PRIVATE,
                                         (uint64_t)fdIn, variants[i].mapOff, 0, 0);
             if (!map || map == (uint64_t)-1) {
-                *why = [NSString stringWithFormat:@"SpringBoard: mmap failed (%s)", strerror(ad_sb_errno())];
+                *why = [NSString stringWithFormat:NSLocalizedString(@"SpringBoard: mmap failed (%s)", nil), strerror(ad_sb_errno())];
                 break;
             }
             uint64_t addr = map + variants[i].addrOff;
@@ -470,7 +470,7 @@ static BOOL ad_process_scan(ADProcess *proc, NSSet<NSData *> *wanted, NSString *
     char comm[64] = {0};
     uint64_t kproc = 0;
     if (procmgr_identity_for_pid(proc.pid, comm, sizeof(comm), &kproc) != 0 || !kproc) {
-        *why = [NSString stringWithFormat:@"process %d not found", proc.pid];
+        *why = [NSString stringWithFormat:NSLocalizedString(@"process %d not found", nil), proc.pid];
         return NO;
     }
     uint64_t task = proc_task(kproc);
@@ -508,12 +508,12 @@ static BOOL ad_process_copy(ADProcess *proc, const ADEncryptedSlice *s, int out,
         uint64_t pageAddr = addr & ~((uint64_t)page - 1);
         const struct VMEntryInfo *hit = NULL;
         for (NSUInteger i = 0; i < n; i++) if (pageAddr >= e[i].start && pageAddr < e[i].end) { hit = &e[i]; break; }
-        if (!hit) { *why = [NSString stringWithFormat:@"address 0x%llx isn't mapped in the app", addr]; return NO; }
+        if (!hit) { *why = [NSString stringWithFormat:NSLocalizedString(@"address 0x%llx isn't mapped in the app", nil), addr]; return NO; }
         uint64_t chunk = MIN(hit->end - pageAddr, 1ULL << 20);
         uint64_t want = fileEnd - pos + (addr - pageAddr);
         chunk = MIN(chunk, (want + page - 1) & ~((uint64_t)page - 1));
         struct VMShmem m = vm_map_object_range(hit->object, hit->offset + (pageAddr - hit->start), chunk);
-        if (!m.used) { *why = [NSString stringWithFormat:@"mapping 0x%llx failed", pageAddr]; return NO; }
+        if (!m.used) { *why = [NSString stringWithFormat:NSLocalizedString(@"mapping 0x%llx failed", nil), pageAddr]; return NO; }
         uint64_t avail = chunk - (addr - pageAddr);
         uint64_t take = MIN(avail, fileEnd - pos);
         BOOL wrote = ad_pwrite_all(out, (const uint8_t *)m.localAddress + (addr - pageAddr), (size_t)take,
@@ -566,7 +566,7 @@ static BOOL ad_decrypt_file(NSString *src, NSString *dst, BOOL useSpringBoard, A
     dispatch_once(&once, ^{ mremapEncrypted = (ADMremapEncrypted)dlsym(RTLD_DEFAULT, "mremap_encrypted"); });
 
     int fd = open(src.fileSystemRepresentation, O_RDONLY | O_CLOEXEC);
-    if (fd < 0) { *errorOut = [NSString stringWithFormat:@"%@: can't be read (%s)", src.lastPathComponent, strerror(errno)]; return NO; }
+    if (fd < 0) { *errorOut = [NSString stringWithFormat:NSLocalizedString(@"%@: can't be read (%s)", nil), src.lastPathComponent, strerror(errno)]; return NO; }
     struct stat st;
     fstat(fd, &st);
     NSMutableArray<NSValue *> *slices = [NSMutableArray array];
@@ -578,7 +578,7 @@ static BOOL ad_decrypt_file(NSString *src, NSString *dst, BOOL useSpringBoard, A
     [NSFileManager.defaultManager removeItemAtPath:dst error:nil];
     if (![NSFileManager.defaultManager copyItemAtPath:src toPath:dst error:&err]) {
         close(fd);
-        *errorOut = [NSString stringWithFormat:@"%@: copy failed (%@)", src.lastPathComponent, err.localizedDescription];
+        *errorOut = [NSString stringWithFormat:NSLocalizedString(@"%@: copy failed (%@)", nil), src.lastPathComponent, err.localizedDescription];
         return NO;
     }
     int out = open(dst.fileSystemRepresentation, O_RDWR | O_CLOEXEC);
@@ -630,7 +630,7 @@ static BOOL ad_decrypt_file(NSString *src, NSString *dst, BOOL useSpringBoard, A
             printf("[DECRYPT] %s: springboard=%s\n", src.lastPathComponent.UTF8String,
                    !useSpringBoard ? "not available" : sbOK ? "ok" : sbWhy.UTF8String);
             if (!sbOK) {
-                *errorOut = [NSString stringWithFormat:@"%@: iOS refused to decrypt it (Cyanide: %@%@)", src.lastPathComponent,
+                *errorOut = [NSString stringWithFormat:NSLocalizedString(@"%@: iOS refused to decrypt it (Cyanide: %@%@)", nil), src.lastPathComponent,
                              localWhy, useSpringBoard ? [@"; " stringByAppendingString:sbWhy ?: @"SpringBoard failed"] : @""];
                 ok = NO; break;
             }
@@ -641,7 +641,7 @@ static BOOL ad_decrypt_file(NSString *src, NSString *dst, BOOL useSpringBoard, A
         size_t probe = MIN(sizeof(enc), (size_t)s.cryptsize);
         if (ad_pread_all(fd, enc, probe, (off_t)start) && pread(out, dec, probe, (off_t)start) == (ssize_t)probe &&
             memcmp(enc, dec, probe) == 0) {
-            *errorOut = [NSString stringWithFormat:@"%@: the kernel returned still-encrypted data", src.lastPathComponent];
+            *errorOut = [NSString stringWithFormat:NSLocalizedString(@"%@: the kernel returned still-encrypted data", nil), src.lastPathComponent];
             ok = NO; break;
         }
         uint32_t zero = 0;
@@ -839,7 +839,7 @@ NSString *app_decrypt_make_ipa(NSDictionary *app, BOOL useSpringBoard,
     NSDictionary *attrs = [fm attributesOfFileSystemForPath:outDir error:nil];
     uint64_t freeBytes = [attrs[NSFileSystemFreeSize] unsignedLongLongValue];
     if (freeBytes && freeBytes < totalBytes + totalBytes / 5 + 50ULL * 1024 * 1024) {
-        if (errorOut) *errorOut = [NSString stringWithFormat:@"Not enough free space: the IPA needs about %@.",
+        if (errorOut) *errorOut = [NSString stringWithFormat:NSLocalizedString(@"Not enough free space: the IPA needs about %@.", nil),
                                    [NSByteCountFormatter stringFromByteCount:(long long)totalBytes countStyle:NSByteCountFormatterCountStyleFile]];
         return nil;
     }
@@ -930,7 +930,7 @@ NSString *app_decrypt_make_ipa(NSDictionary *app, BOOL useSpringBoard,
             err = nil;
             fileOK = ad_decrypt_file(src, dst, useSpringBoard, proc, &decrypted, &err);
         } else if (!fileOK && procWhy && !inExtension) {
-            err = [NSString stringWithFormat:@"%@ (reading it from the running app: %@)", err, procWhy];
+            err = [NSString stringWithFormat:NSLocalizedString(@"%@ (reading it from the running app: %@)", nil), err, procWhy];
         }
         if (!fileOK) {
             // Inside the Watch app or an .appex: drop that whole bundle (the
@@ -995,7 +995,7 @@ NSString *app_decrypt_make_ipa(NSDictionary *app, BOOL useSpringBoard,
             struct stat fs;
             uint32_t crc = 0;
             if (stat(from.fileSystemRepresentation, &fs) != 0 || !ad_crc_file(from, &crc)) {
-                errorText = [NSString stringWithFormat:@"%@ can't be read.", rel];
+                errorText = [NSString stringWithFormat:NSLocalizedString(@"%@ can't be read.", nil), rel];
                 ok = NO; break;
             }
             report([@"Packing " stringByAppendingString:rel.lastPathComponent],
@@ -1028,7 +1028,7 @@ NSString *app_decrypt_make_ipa(NSDictionary *app, BOOL useSpringBoard,
         NSMutableArray<NSString *> *names = [NSMutableArray array];
         for (NSString *bundle in droppedBundles)
             [names addObject:[bundle isEqualToString:@"Watch"] ? @"the Watch app" : bundle.lastPathComponent];
-        *errorOut = [NSString stringWithFormat:@"Left out (couldn't be decrypted): %@", [names componentsJoinedByString:@", "]];
+        *errorOut = [NSString stringWithFormat:NSLocalizedString(@"Left out (couldn't be decrypted): %@", nil), [names componentsJoinedByString:@", "]];
     }
     log_user("[DECRYPT] %s: %lu binar%s decrypted -> %s\n", [app[@"name"] UTF8String],
              (unsigned long)replaced.count, replaced.count == 1 ? "y" : "ies", ipa.lastPathComponent.UTF8String);

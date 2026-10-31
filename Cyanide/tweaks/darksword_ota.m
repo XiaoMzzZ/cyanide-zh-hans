@@ -437,7 +437,7 @@ static NSMutableDictionary *ota_read_local_preference(NSString *path)
     NSError *readError = nil;
     NSData *data = [NSData dataWithContentsOfFile:path options:0 error:&readError];
     if (!data) {
-        NSString *errorDesc = readError ? readError.description : @"none";
+        NSString *errorDesc = readError ? readError.description : NSLocalizedString(@"none", nil);
         printf("[OTA] customer catalog pref exists but can't be read: %s error=%s\n",
                path.UTF8String, errorDesc.UTF8String);
         return nil;
@@ -451,7 +451,7 @@ static NSMutableDictionary *ota_read_local_preference(NSString *path)
                       format:nil
                        error:&plistError] mutableCopy];
     if (![plist isKindOfClass:NSMutableDictionary.class]) {
-        NSString *errorDesc = plistError ? plistError.description : @"not a dictionary";
+        NSString *errorDesc = plistError ? plistError.description : NSLocalizedString(@"not a dictionary", nil);
         printf("[OTA] customer catalog pref parse failed: %s error=%s\n",
                path.UTF8String, errorDesc.UTF8String);
         return nil;
@@ -596,7 +596,7 @@ static bool ota_clear_internal_mobilegestalt_flags(void)
     NSError *readError = nil;
     NSData *data = [NSData dataWithContentsOfFile:kOTAMobileGestaltPath options:0 error:&readError];
     if (data.length == 0) {
-        NSString *errorDesc = readError ? readError.description : @"none";
+        NSString *errorDesc = readError ? readError.description : NSLocalizedString(@"none", nil);
         printf("[OTA][MG] unable to read %s error=%s\n",
                kOTAMobileGestaltPath.UTF8String, errorDesc.UTF8String);
         return false;
@@ -609,7 +609,7 @@ static bool ota_clear_internal_mobilegestalt_flags(void)
                       format:nil
                        error:&plistError] mutableCopy];
     if (![mg isKindOfClass:NSMutableDictionary.class]) {
-        NSString *errorDesc = plistError ? plistError.description : @"not a dictionary";
+        NSString *errorDesc = plistError ? plistError.description : NSLocalizedString(@"not a dictionary", nil);
         printf("[OTA][MG] parse failed for %s error=%s\n",
                kOTAMobileGestaltPath.UTF8String, errorDesc.UTF8String);
         return false;
@@ -661,7 +661,7 @@ static bool ota_clear_internal_mobilegestalt_flags(void)
                                                                 options:0
                                                                   error:&writeError];
     if (outData.length == 0) {
-        NSString *errorDesc = writeError ? writeError.description : @"none";
+        NSString *errorDesc = writeError ? writeError.description : NSLocalizedString(@"none", nil);
         printf("[OTA][MG] serialization failed error=%s\n", errorDesc.UTF8String);
         return false;
     }

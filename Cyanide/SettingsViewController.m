@@ -316,11 +316,11 @@ static NSArray<NSDictionary *> *settings_repotweaks_tweaks_for_url(NSString *rep
         UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"info-cell"];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
         if (indexPath.row == 0) {
-            cell.textLabel.text = @"Description";
+            cell.textLabel.text = NSLocalizedString(@"Description", nil);
             cell.detailTextLabel.text = settings_string_or_empty(self.tweak[@"description"]);
             cell.detailTextLabel.numberOfLines = 0;
         } else {
-            cell.textLabel.text = @"Version";
+            cell.textLabel.text = NSLocalizedString(@"Version", nil);
             cell.detailTextLabel.text = settings_string_or_empty(self.tweak[@"version"]);
         }
         return cell;
@@ -331,7 +331,7 @@ static NSArray<NSDictionary *> *settings_repotweaks_tweaks_for_url(NSString *rep
     if (indexPath.section == 1) {
         UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"toggle-cell"];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
-        cell.textLabel.text = @"Enable Tweak";
+        cell.textLabel.text = NSLocalizedString(@"Enable Tweak", nil);
 
         UISwitch *sw = [[UISwitch alloc] init];
         NSString *toggleKey = repotweaks_enabled_defaults_key(self.repoURL, self.tweakID);
@@ -503,7 +503,7 @@ static NSArray<NSDictionary *> *settings_repotweaks_tweaks_for_url(NSString *rep
 
     // The Delete Button
     if (indexPath.section == 1) {
-        cell.textLabel.text = @"Delete Repository";
+        cell.textLabel.text = NSLocalizedString(@"Delete Repository", nil);
         cell.textLabel.textColor = [UIColor systemRedColor];
         cell.textLabel.textAlignment = NSTextAlignmentCenter;
         return cell;
@@ -632,24 +632,24 @@ static NSArray<NSDictionary *> *settings_repotweaks_tweaks_for_url(NSString *rep
 }
 
 - (void)addRepo {
-    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Add Source" message:@"Paste the RAW link to your packages.json" preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Add Source", nil) message:NSLocalizedString(@"Paste the RAW link to your packages.json", nil) preferredStyle:UIAlertControllerStyleAlert];
     [alert addTextFieldWithConfigurationHandler:^(UITextField *textField) { textField.placeholder = @"https://raw.githubusercontent.com/..."; }];
-    [alert addAction:[UIAlertAction actionWithTitle:@"Add" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+    [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Add", nil) style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
         NSString *url = alert.textFields.firstObject.text;
         if (url.length > 0) {
             repotweaks_add_repo(url, ^(BOOL success, NSString *message) {
                 [self updateData];
                 if (!success) {
-                    UIAlertController *err = [UIAlertController alertControllerWithTitle:@"Source Failed"
+                    UIAlertController *err = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Source Failed", nil)
                                                                                  message:message ?: @"Could not refresh that repository."
                                                                           preferredStyle:UIAlertControllerStyleAlert];
-                    [err addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
+                    [err addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil) style:UIAlertActionStyleDefault handler:nil]];
                     [self presentViewController:err animated:YES completion:nil];
                 }
             });
         }
     }]];
-    [alert addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];
+    [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil) style:UIAlertActionStyleCancel handler:nil]];
     [self presentViewController:alert animated:YES completion:nil];
 }
 
@@ -658,8 +658,8 @@ static NSArray<NSDictionary *> *settings_repotweaks_tweaks_for_url(NSString *rep
     if (urls.count == 0) return;
 
     // Refresh Alert
-    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Refreshing Sources"
-                                                                   message:@"Nuking old scripts and downloading the latest..."
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Refreshing Sources", nil)
+                                                                   message:NSLocalizedString(@"Nuking old scripts and downloading the latest...", nil)
                                                             preferredStyle:UIAlertControllerStyleAlert];
     [self presentViewController:alert animated:YES completion:nil];
 
@@ -956,7 +956,7 @@ static const NSInteger kDSRespringBadgeTag = 0x5245;   // the logo + label shown
     [badge addSubview:logo];
 
     UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 88, 240, 24)];
-    label.text = @"Preparing respring…";
+    label.text = NSLocalizedString(@"Preparing respring…", nil);
     label.font = [UIFont systemFontOfSize:15.0 weight:UIFontWeightSemibold];
     label.textColor = [UIColor colorWithWhite:1.0 alpha:0.8];
     label.textAlignment = NSTextAlignmentCenter;
@@ -3329,14 +3329,14 @@ NSString *settings_unsupported_message(void)
 {
     NSString *version = UIDevice.currentDevice.systemVersion ?: @"unknown";
 #if CYANIDE_VPHONE_DEBUG
-    return [NSString stringWithFormat:@"VPhone debug build is bypassing Cyanide's iOS version gate on iOS %@.", version];
+    return [NSString stringWithFormat:NSLocalizedString(@"VPhone debug build is bypassing Cyanide's iOS version gate on iOS %@.", nil), version];
 #endif
     if (is_unsupported_new_device()) {
         return @"Not supported on this device: Memory Integrity Enforcement "
                 "(iPhone 17 and newer, M5 iPad Pro) blocks the kernel exploit "
                 "this relies on.";
     }
-    return [NSString stringWithFormat:@"Not supported on iOS %@. Supported: iOS/iPadOS 17.0-18.7.1 or 26.0-26.0.1.", version];
+    return [NSString stringWithFormat:NSLocalizedString(@"Not supported on iOS %@. Supported: iOS/iPadOS 17.0-18.7.1 or 26.0-26.0.1.", nil), version];
 }
 
 // Stage timing for the apply log. Each settings_progress() closes the previous
@@ -3417,7 +3417,7 @@ static void settings_post_apply_status(NSString *text)   // main queue
 
 static void settings_apply_heartbeat_start(NSString *label)
 {
-    NSString *msg = label.length ? label : @"Working";
+    NSString *msg = label.length ? label : NSLocalizedString(@"Working", nil);
     dispatch_async(dispatch_get_main_queue(), ^{
         if (g_apply_heartbeat_timer) return;   // one at a time
         NSTimeInterval now = [NSDate timeIntervalSinceReferenceDate];
@@ -4787,11 +4787,11 @@ void settings_present_respring_prompt(UIViewController *host, NSString *title, N
 {
     UIAlertController *ac = [UIAlertController alertControllerWithTitle:title message:message
                                                          preferredStyle:UIAlertControllerStyleAlert];
-    [ac addAction:[UIAlertAction actionWithTitle:@"Later"
+    [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Later", nil)
                                            style:UIAlertActionStyleCancel
                                          handler:nil]];
     __weak UIViewController *weakHost = host;
-    [ac addAction:[UIAlertAction actionWithTitle:@"Respring"
+    [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Respring", nil)
                                            style:UIAlertActionStyleDestructive
                                          handler:^(UIAlertAction *_) {
         dispatch_async(dispatch_get_global_queue(0, 0), ^{
@@ -5254,7 +5254,7 @@ NSString *settings_themer_selected_theme_display_name(void)
     if ([theme isEqualToString:kThemerThemeCustom]) {
         NSString *name = [[NSUserDefaults standardUserDefaults]
             stringForKey:kSettingsThemerCustomThemeName];
-        return name.length > 0 ? name : @"Imported Theme";
+        return name.length > 0 ? name : NSLocalizedString(@"Imported Theme", nil);
     }
     return @"None";
 }
@@ -7298,12 +7298,12 @@ void settings_location_services_set_async(int desired, BOOL allowFullExploit,
             settings_post_actions_complete_async(ok, message ?: @"");
         };
         NSString *(^doneText)(void) = ^NSString *{
-            return [NSString stringWithFormat:@"Location Services %@.", enable ? @"on" : @"off"];
+            return [NSString stringWithFormat:NSLocalizedString(@"Location Services %@.", nil), enable ? NSLocalizedString(@"on", nil) : NSLocalizedString(@"off", nil)];
         };
         @try {
             if (locationservices_enabled_local() == (enable ? 1 : 0)) {
                 ok = YES;
-                message = [NSString stringWithFormat:@"Location Services already %@.", enable ? @"on" : @"off"];
+                message = [NSString stringWithFormat:NSLocalizedString(@"Location Services already %@.", nil), enable ? NSLocalizedString(@"on", nil) : NSLocalizedString(@"off", nil)];
                 step(1.0f, enable ? @"Already on" : @"Already off", 0);
                 doneSent = YES;
                 return;
@@ -7572,7 +7572,7 @@ static void settings_simple_alert(UIViewController *presenter, NSString *title, 
 {
     UIAlertController *ac = [UIAlertController alertControllerWithTitle:title message:message
                                                          preferredStyle:UIAlertControllerStyleAlert];
-    [ac addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
+    [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil) style:UIAlertActionStyleDefault handler:nil]];
     [presenter presentViewController:ac animated:YES completion:nil];
 }
 
@@ -7580,7 +7580,7 @@ static void settings_run_exploit_with_log_confirmed(UIViewController *presenter,
 {
     g_settings_manual_exploit_running = YES;
     LogViewController *log = [[LogViewController alloc] init];
-    log.title = @"Run Exploit";
+    log.title = NSLocalizedString(@"Run Exploit", nil);
     UINavigationController *lnav = [[UINavigationController alloc] initWithRootViewController:log];
     __weak UINavigationController *weakNav = lnav;
     log.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]
@@ -7667,18 +7667,15 @@ static void settings_run_exploit_with_log_reason(UIViewController *presenter, NS
         settings_run_exploit_with_log_confirmed(presenter, completion);
         return;
     }
-    NSString *message = [NSString stringWithFormat:@"%@"
-                        @"Run the exploit now? No tweaks are applied, and the log is shown while it runs. "
-                        @"It can take a while.\n\n"
-                        @"On A18 / M4 a run can reboot the device (about a 50/50 chance). If it does, just try again.",
+    NSString *message = [NSString stringWithFormat:NSLocalizedString(@"%@Run the exploit now? No tweaks are applied, and the log is shown while it runs. It can take a while.\n\nOn A18 / M4 a run can reboot the device (about a 50/50 chance). If it does, just try again.", nil),
                         reason.length ? [reason stringByAppendingString:@"\n\n"] : @""];
-    UIAlertController *ac = [UIAlertController alertControllerWithTitle:@"Run Exploit?" message:message
+    UIAlertController *ac = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Run Exploit?", nil) message:message
                                                          preferredStyle:UIAlertControllerStyleAlert];
-    [ac addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction *a) {
+    [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil) style:UIAlertActionStyleCancel handler:^(UIAlertAction *a) {
         if (completion) completion(NO);
     }]];
     __weak UIViewController *weakPresenter = presenter;
-    [ac addAction:[UIAlertAction actionWithTitle:@"Run Exploit" style:UIAlertActionStyleDefault handler:^(UIAlertAction *a) {
+    [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Run Exploit", nil) style:UIAlertActionStyleDefault handler:^(UIAlertAction *a) {
         UIViewController *p = weakPresenter;
         if (p) {
             settings_run_exploit_with_log_confirmed(p, completion);
@@ -7734,7 +7731,7 @@ void settings_tool_needs_exploit(UIViewController *tool, UITableView *tableView,
                                  void (^retry)(void))
 {
     (void)tableView;
-    NSString *reason = [NSString stringWithFormat:@"%@ needs kernel access, and there is no saved session.", toolName];
+    NSString *reason = [NSString stringWithFormat:NSLocalizedString(@"%@ needs kernel access, and there is no saved session.", nil), toolName];
     void (^again)(void) = [retry copy];
     void (^done)(BOOL) = ^(BOOL ready) { if (ready && again) again(); };
     settings_offer_exploit_popup(tool, reason, done, 10);
@@ -8692,7 +8689,7 @@ static NSString *settings_location_sim_target_summary(NSUserDefaults *d)
     NSInteger altitude = [d integerForKey:kSettingsLocationSimAltitude];
     NSInteger accuracy = [d integerForKey:kSettingsLocationSimHorizontalAccuracy];
     if (accuracy <= 0) accuracy = kLocationSimDefaultAccuracy;
-    return [NSString stringWithFormat:@"%.7f, %.7f via %@ (%ldm alt, %ldm acc)",
+    return [NSString stringWithFormat:NSLocalizedString(@"%.7f, %.7f via %@ (%ldm alt, %ldm acc)", nil),
             lat,
             lon,
             settings_location_sim_host_process(d),
@@ -10136,8 +10133,8 @@ static void settings_run_actions_internal(BOOL pendingOnly)
                         darksword_layout_set_progress_handler(^(int pagesDone, int pagesTotal,
                                                                 int iconsDone, int iconsTotal) {
                             settings_apply_heartbeat_update(pagesDone == 0
-                                ? [NSString stringWithFormat:@"Resizing %d icons on %d pages", iconsTotal, pagesTotal]
-                                : [NSString stringWithFormat:@"Resizing icons: page %d of %d (%d of %d)",
+                                ? [NSString stringWithFormat:NSLocalizedString(@"Resizing %d icons on %d pages", nil), iconsTotal, pagesTotal]
+                                : [NSString stringWithFormat:NSLocalizedString(@"Resizing icons: page %d of %d (%d of %d)", nil),
                                                              pagesDone, pagesTotal, iconsDone, iconsTotal]);
                         });
                         bool ok = settings_apply_layout_extras_from_defaults_locked(d);
@@ -10318,7 +10315,7 @@ static void settings_run_actions_internal(BOOL pendingOnly)
             runSucceeded = YES;
             if (runWarnings.count) {
                 runPartial = YES;
-                runCompletionMessage = [NSString stringWithFormat:@"Finished with warnings. Did not apply: %@.",
+                runCompletionMessage = [NSString stringWithFormat:NSLocalizedString(@"Finished with warnings. Did not apply: %@.", nil),
                                         [runWarnings componentsJoinedByString:@", "]];
             } else {
                 runCompletionMessage = @"Done. All requested changes finished.";
@@ -10847,7 +10844,7 @@ static NSString * const kProcMgrAutoRefreshSecondsKey = @"procmgrAutoRefreshSeco
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.title = @"Process Viewer";
+    self.title = NSLocalizedString(@"Process Viewer", nil);
     self.allProcs = @[];
     self.procs = @[];
     self.filter = @"";
@@ -10954,7 +10951,7 @@ static NSString * const kProcMgrAutoRefreshSecondsKey = @"procmgrAutoRefreshSeco
     self.prevCpuTotalTicks = 0;
     self.havePrevCpuTicks = NO;
     self.prevCpuFullTotals = NO;
-    self.pmHdrCpu.text = @"CPU: —";
+    self.pmHdrCpu.text = NSLocalizedString(@"CPU: —", nil);
 }
 
 - (void)pm_backgrounded
@@ -11000,7 +10997,7 @@ static NSString * const kProcMgrAutoRefreshSecondsKey = @"procmgrAutoRefreshSeco
     [spin startAnimating];
 
     UILabel *l = [[UILabel alloc] init];
-    l.text = @"Finishing kill — keep Cyanide open for a second.";
+    l.text = NSLocalizedString(@"Finishing kill — keep Cyanide open for a second.", nil);
     l.font = [UIFont systemFontOfSize:13 weight:UIFontWeightMedium];
     l.textColor = UIColor.labelColor;
     l.translatesAutoresizingMaskIntoConstraints = NO;
@@ -11104,9 +11101,9 @@ static NSString *pm_chip_name(NSString *machine) {
     NSInteger pCores = pm_sysctl_int("hw.perflevel0.physicalcpu");
     NSInteger eCores = pm_sysctl_int("hw.perflevel1.physicalcpu");
     if (nperf >= 2 && pCores > 0 && eCores > 0)
-        return [NSString stringWithFormat:@"%@ · %ld cores (%ldP+%ldE)",
+        return [NSString stringWithFormat:NSLocalizedString(@"%@ · %ld cores (%ldP+%ldE)", nil),
                 chip, (long)cores, (long)pCores, (long)eCores];
-    return [NSString stringWithFormat:@"%@ · %ld cores", chip, (long)cores];
+    return [NSString stringWithFormat:NSLocalizedString(@"%@ · %ld cores", nil), chip, (long)cores];
 }
 
 - (void)buildSummaryHeader
@@ -11135,8 +11132,8 @@ static NSString *pm_chip_name(NSString *machine) {
     self.pmHdrMem  = mk(27, 12);
     self.pmHdrCpu  = mk(45, 12);
     self.pmHdrChip.text = [self chipSummaryString];
-    self.pmHdrMem.text = @"Memory: —";
-    self.pmHdrCpu.text = @"CPU: —";
+    self.pmHdrMem.text = NSLocalizedString(@"Memory: —", nil);
+    self.pmHdrCpu.text = NSLocalizedString(@"CPU: —", nil);
 
     // Sort control lives in the header (not a nav titleView, which fought the
     // large title). Always visible above the list.
@@ -11201,7 +11198,7 @@ static NSString *pm_chip_name(NSString *machine) {
                           (host_info64_t)&vm, &cnt) == KERN_SUCCESS) {
         uint64_t freeB = (uint64_t)vm.free_count * (uint64_t)vm_page_size;
         uint64_t usedB = total > freeB ? total - freeB : 0;
-        self.pmHdrMem.text = [NSString stringWithFormat:@"Memory: %@ used / %@ total (%@ free)",
+        self.pmHdrMem.text = [NSString stringWithFormat:NSLocalizedString(@"Memory: %@ used / %@ total (%@ free)", nil),
             [fmt stringFromByteCount:(long long)usedB],
             [fmt stringFromByteCount:(long long)total],
             [fmt stringFromByteCount:(long long)freeB]];
@@ -11219,9 +11216,9 @@ static NSString *pm_chip_name(NSString *machine) {
         if (self.havePrevCpuTicks && all > self.prevCpuTotalTicks) {
             double pct = 100.0 * (double)(busy - self.prevCpuBusyTicks)
                                / (double)(all - self.prevCpuTotalTicks);
-            self.pmHdrCpu.text = [NSString stringWithFormat:@"CPU: %.1f%% busy", pct];
+            self.pmHdrCpu.text = [NSString stringWithFormat:NSLocalizedString(@"CPU: %.1f%% busy", nil), pct];
         } else {
-            self.pmHdrCpu.text = @"CPU: —";
+            self.pmHdrCpu.text = NSLocalizedString(@"CPU: —", nil);
         }
         self.prevCpuBusyTicks = busy;
         self.prevCpuTotalTicks = all;
@@ -11374,14 +11371,14 @@ static NSString *pm_chip_name(NSString *machine) {
     double current = [self autoRefreshInterval];
 
     UIAlertController *ac = [UIAlertController
-        alertControllerWithTitle:@"Auto Refresh"
-                         message:@"How often should the process list refresh itself?"
+        alertControllerWithTitle:NSLocalizedString(@"Auto Refresh", nil)
+                         message:NSLocalizedString(@"How often should the process list refresh itself?", nil)
                   preferredStyle:UIAlertControllerStyleActionSheet];
 
     for (NSNumber *opt in options) {
         double seconds = opt.doubleValue;
         NSString *title = (seconds <= 0) ? @"Off"
-                                         : [NSString stringWithFormat:@"Every %d second%@", (int)seconds,
+                                         : [NSString stringWithFormat:NSLocalizedString(@"Every %d second%@", nil), (int)seconds,
                                             ((int)seconds == 1) ? @"" : @"s"];
         if (seconds == current) title = [title stringByAppendingString:@" ✓"];
         [ac addAction:[UIAlertAction actionWithTitle:title
@@ -11395,7 +11392,7 @@ static NSString *pm_chip_name(NSString *machine) {
     // Verbose RemoteCall logging now lives in Settings → Launch Options
     // (it affects exploit + tweak applies too, not just the Process Viewer).
 
-    [ac addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];
+    [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil) style:UIAlertActionStyleCancel handler:nil]];
 
     ac.popoverPresentationController.barButtonItem = sender;
     [self presentViewController:ac animated:YES completion:nil];
@@ -11778,11 +11775,11 @@ static NSString *pm_chip_name(NSString *machine) {
             if ([p[@"suspended"] boolValue]) suspended++;
         NSUInteger active = total - suspended;
         self.navigationItem.prompt =
-            [NSString stringWithFormat:@"%lu active · %lu suspended",
+            [NSString stringWithFormat:NSLocalizedString(@"%lu active · %lu suspended", nil),
              (unsigned long)active, (unsigned long)suspended];
     } else {
         self.navigationItem.prompt =
-            [NSString stringWithFormat:@"%lu of %lu", (unsigned long)self.procs.count,
+            [NSString stringWithFormat:NSLocalizedString(@"%lu of %lu", nil), (unsigned long)self.procs.count,
              (unsigned long)self.allProcs.count];
     }
     // One incomplete pass is a normal hiccup; two in a row means the list on
@@ -11937,14 +11934,14 @@ static NSString *pm_chip_name(NSString *machine) {
                                                  reuseIdentifier:@"pmarm"];
         cell.accessoryView = nil;
         if (self.exploitNeeded && !self.arming) {
-            cell.textLabel.text = @"No Kernel Access";
+            cell.textLabel.text = NSLocalizedString(@"No Kernel Access", nil);
             cell.detailTextLabel.text = kSettingsNoKernelAccessHint;
             cell.detailTextLabel.numberOfLines = 0;
             cell.textLabel.textColor = [UIColor secondaryLabelColor];
             cell.selectionStyle = UITableViewCellSelectionStyleNone;
         } else if (self.arming) {
-            cell.textLabel.text = @"Arming kernel access…";
-            cell.detailTextLabel.text = @"This can take a few seconds.";
+            cell.textLabel.text = NSLocalizedString(@"Arming kernel access…", nil);
+            cell.detailTextLabel.text = NSLocalizedString(@"This can take a few seconds.", nil);
             cell.textLabel.textColor = [UIColor labelColor];
             UIActivityIndicatorView *spin = [[UIActivityIndicatorView alloc]
                 initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleMedium];
@@ -11952,8 +11949,8 @@ static NSString *pm_chip_name(NSString *machine) {
             cell.accessoryView = spin;
             cell.selectionStyle = UITableViewCellSelectionStyleNone;
         } else {
-            cell.textLabel.text = @"Arm Kernel Access";
-            cell.detailTextLabel.text = @"Tap to restore kernel r/w (no tweaks re-applied).";
+            cell.textLabel.text = NSLocalizedString(@"Arm Kernel Access", nil);
+            cell.detailTextLabel.text = NSLocalizedString(@"Tap to restore kernel r/w (no tweaks re-applied).", nil);
             cell.textLabel.textColor = [UIColor systemBlueColor];
             cell.selectionStyle = UITableViewCellSelectionStyleDefault;
         }
@@ -11986,19 +11983,19 @@ static NSString *pm_chip_name(NSString *machine) {
                                           : [UIColor labelColor];
     NSString *approle = p[@"approle"];   // "foreground" / "switcher" / nil
     if (terminating) {
-        cell.pidL.text = [NSString stringWithFormat:@"PID %d · terminating…", pid];
+        cell.pidL.text = [NSString stringWithFormat:NSLocalizedString(@"PID %d · terminating…", nil), pid];
         cell.pidL.textColor = [UIColor tertiaryLabelColor];
     } else if (exiting) {
-        cell.pidL.text = [NSString stringWithFormat:@"PID %d · exiting", pid];
+        cell.pidL.text = [NSString stringWithFormat:NSLocalizedString(@"PID %d · exiting", nil), pid];
         cell.pidL.textColor = [UIColor tertiaryLabelColor];
     } else if (suspended) {
-        cell.pidL.text = [NSString stringWithFormat:@"PID %d · suspended", pid];
+        cell.pidL.text = [NSString stringWithFormat:NSLocalizedString(@"PID %d · suspended", nil), pid];
         cell.pidL.textColor = [UIColor tertiaryLabelColor];
     } else if ([approle isEqualToString:@"foreground"]) {
-        cell.pidL.text = [NSString stringWithFormat:@"PID %d · foreground app", pid];
+        cell.pidL.text = [NSString stringWithFormat:NSLocalizedString(@"PID %d · foreground app", nil), pid];
         cell.pidL.textColor = [UIColor systemBlueColor];
     } else if ([approle isEqualToString:@"switcher"]) {
-        cell.pidL.text = [NSString stringWithFormat:@"PID %d · app switcher", pid];
+        cell.pidL.text = [NSString stringWithFormat:NSLocalizedString(@"PID %d · app switcher", nil), pid];
         cell.pidL.textColor = [UIColor systemTealColor];
     } else {
         cell.pidL.text = [NSString stringWithFormat:@"PID %d", pid];
@@ -12075,20 +12072,20 @@ static NSString *pm_chip_name(NSString *machine) {
 
     BOOL isSystem = (pid < 100);   // low pids are core daemons — warn harder
     NSString *msg = isSystem
-        ? [NSString stringWithFormat:@"%@ (PID %d) is a system process. Force-quitting it may respring or reboot the device.", name, pid]
-        : [NSString stringWithFormat:@"Force-quit %@ (PID %d)?", name, pid];
+        ? [NSString stringWithFormat:NSLocalizedString(@"%@ (PID %d) is a system process. Force-quitting it may respring or reboot the device.", nil), name, pid]
+        : [NSString stringWithFormat:NSLocalizedString(@"Force-quit %@ (PID %d)?", nil), name, pid];
 
-    UIAlertController *ac = [UIAlertController alertControllerWithTitle:@"Force Quit"
+    UIAlertController *ac = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Force Quit", nil)
                                                                message:msg
                                                         preferredStyle:UIAlertControllerStyleAlert];
-    [ac addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];
+    [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil) style:UIAlertActionStyleCancel handler:nil]];
 
     // Clean termination via SIGTERM — only when we hold signal permission for
     // this pid (probed with kill(pid, 0)). SIGTERM can be caught or ignored by
     // the target, so verify like the force-quit path does.
     BOOL canSignal = (kill(pid, 0) == 0);
     if (canSignal) {
-        [ac addAction:[UIAlertAction actionWithTitle:@"Quit"
+        [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Quit", nil)
                                                style:UIAlertActionStyleDefault
                                              handler:^(UIAlertAction *a) {
             // FAIL CLOSED like every other kill entry point: the pid may have
@@ -12116,10 +12113,10 @@ static NSString *pm_chip_name(NSString *machine) {
                             return;
                         }
                         UIAlertController *err = [UIAlertController
-                            alertControllerWithTitle:@"Couldn't Quit"
-                                             message:@"The process identity couldn't be verified (it may have exited), so nothing was signalled."
+                            alertControllerWithTitle:NSLocalizedString(@"Couldn't Quit", nil)
+                                             message:NSLocalizedString(@"The process identity couldn't be verified (it may have exited), so nothing was signalled.", nil)
                                       preferredStyle:UIAlertControllerStyleAlert];
-                        [err addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
+                        [err addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil) style:UIAlertActionStyleDefault handler:nil]];
                         [self presentViewController:err animated:YES completion:nil];
                     });
                     return;
@@ -12132,10 +12129,10 @@ static NSString *pm_chip_name(NSString *machine) {
                             return;
                         }
                         UIAlertController *err = [UIAlertController
-                            alertControllerWithTitle:@"Couldn't Quit"
-                                             message:[NSString stringWithFormat:@"SIGTERM failed (errno %d — the process may have already exited).", termErr]
+                            alertControllerWithTitle:NSLocalizedString(@"Couldn't Quit", nil)
+                                             message:[NSString stringWithFormat:NSLocalizedString(@"SIGTERM failed (errno %d — the process may have already exited).", nil), termErr]
                                       preferredStyle:UIAlertControllerStyleAlert];
-                        [err addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
+                        [err addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil) style:UIAlertActionStyleDefault handler:nil]];
                         [self presentViewController:err animated:YES completion:nil];
                     });
                     return;
@@ -12182,10 +12179,10 @@ static NSString *pm_chip_name(NSString *machine) {
                             }
                             printf("[PROCMGR] fastkill: pid %d still alive after quit (SIGTERM+SIGCONT)\n", pid);
                             UIAlertController *nope = [UIAlertController
-                                alertControllerWithTitle:@"Didn't terminate"
-                                                 message:[NSString stringWithFormat:@"%@ (PID %d) is still running — it caught or ignored SIGTERM. Use Force Quit instead.", name, pid]
+                                alertControllerWithTitle:NSLocalizedString(@"Didn't terminate", nil)
+                                                 message:[NSString stringWithFormat:NSLocalizedString(@"%@ (PID %d) is still running — it caught or ignored SIGTERM. Use Force Quit instead.", nil), name, pid]
                                           preferredStyle:UIAlertControllerStyleAlert];
-                            [nope addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
+                            [nope addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil) style:UIAlertActionStyleDefault handler:nil]];
                             [self presentViewController:nope animated:YES completion:nil];
                             [self reloadProcs];
                         });
@@ -12195,7 +12192,7 @@ static NSString *pm_chip_name(NSString *machine) {
         }]];
     }
 
-    [ac addAction:[UIAlertAction actionWithTitle:@"Force Quit"
+    [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Force Quit", nil)
                                            style:UIAlertActionStyleDestructive
                                          handler:^(UIAlertAction *a) {
         // Optimistic: dim the row NOW so the kill feels instant, then run the
@@ -12268,14 +12265,14 @@ static NSString *pm_chip_name(NSString *machine) {
                             msg = @"A kernel call is stuck from an earlier backgrounding, so Force Quit is disabled for this session — nothing was signalled and the process is still running. Restart Cyanide to re-enable Force Quit.";
                             break;
                         default:
-                            msg = [NSString stringWithFormat:@"Error %d (the process may have already exited).", rc];
+                            msg = [NSString stringWithFormat:NSLocalizedString(@"Error %d (the process may have already exited).", nil), rc];
                             break;
                     }
                     UIAlertController *err = [UIAlertController
-                        alertControllerWithTitle:@"Couldn't Force Quit"
+                        alertControllerWithTitle:NSLocalizedString(@"Couldn't Force Quit", nil)
                                          message:msg
                                   preferredStyle:UIAlertControllerStyleAlert];
-                    [err addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
+                    [err addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil) style:UIAlertActionStyleDefault handler:nil]];
                     [self presentViewController:err animated:YES completion:nil];
                     return;
                 }
@@ -12310,10 +12307,10 @@ static NSString *pm_chip_name(NSString *machine) {
                         }
                         printf("[PROCMGR] fastkill: pid %d still alive after kill rc=%d\n", pid, rc);
                         UIAlertController *nope = [UIAlertController
-                            alertControllerWithTitle:@"Didn't terminate"
-                                             message:[NSString stringWithFormat:@"%@ (PID %d) is still running.", name, pid]
+                            alertControllerWithTitle:NSLocalizedString(@"Didn't terminate", nil)
+                                             message:[NSString stringWithFormat:NSLocalizedString(@"%@ (PID %d) is still running.", nil), name, pid]
                                       preferredStyle:UIAlertControllerStyleAlert];
-                        [nope addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
+                        [nope addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil) style:UIAlertActionStyleDefault handler:nil]];
                         [self presentViewController:nope animated:YES completion:nil];
                         [self reloadProcs];
                     });
@@ -13429,7 +13426,7 @@ BOOL settings_root_remove_xattr(NSString *path, const char *name, NSString **err
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.title = @"Theme Format";
+    self.title = NSLocalizedString(@"Theme Format", nil);
     self.tableView.rowHeight = UITableViewAutomaticDimension;
     self.tableView.estimatedRowHeight = 72.0;
 }
@@ -13481,29 +13478,25 @@ BOOL settings_root_remove_xattr(NSString *path, const char *name, NSString **err
 
     if (indexPath.section == 0) {
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
-        cell.textLabel.text = @"PNG Files";
+        cell.textLabel.text = NSLocalizedString(@"PNG Files", nil);
         cell.detailTextLabel.text =
-            @"Make a folder containing PNG files named by app bundle ID:\n"
-             "com.apple.mobilesafari.png\n"
-             "com.apple.MobileSMS.png\n"
-             "com.apple.mobiletimer.png";
+            NSLocalizedString(@"Make a folder containing PNG files named by app bundle ID:\ncom.apple.mobilesafari.png\ncom.apple.MobileSMS.png\ncom.apple.mobiletimer.png", nil);
     } else if (indexPath.section == 1) {
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
-        cell.textLabel.text = @"Bundle ID → PNG Data";
+        cell.textLabel.text = NSLocalizedString(@"Bundle ID → PNG Data", nil);
         cell.detailTextLabel.text =
-            @"Make a dictionary plist. Each key is a bundle ID. Each value is raw PNG data. "
-             "Cyanide imports the plist and copies it into Documents/Themes.";
+            NSLocalizedString(@"Make a dictionary plist. Each key is a bundle ID. Each value is raw PNG data. Cyanide imports the plist and copies it into Documents/Themes.", nil);
     } else {
         cell.selectionStyle = UITableViewCellSelectionStyleDefault;
         if (indexPath.row == 0) {
-            cell.textLabel.text = @"Share Sample Theme Plist";
-            cell.detailTextLabel.text = @"Exports a small binary plist template with example bundle IDs.";
+            cell.textLabel.text = NSLocalizedString(@"Share Sample Theme Plist", nil);
+            cell.detailTextLabel.text = NSLocalizedString(@"Exports a small binary plist template with example bundle IDs.", nil);
         } else if (indexPath.row == 1) {
-            cell.textLabel.text = @"Share iOS 6 Theme Plist";
-            cell.detailTextLabel.text = @"Exports the iOS 6 Theme plist. Icons by zagnut531/iOS-6-Icons.";
+            cell.textLabel.text = NSLocalizedString(@"Share iOS 6 Theme Plist", nil);
+            cell.detailTextLabel.text = NSLocalizedString(@"Exports the iOS 6 Theme plist. Icons by zagnut531/iOS-6-Icons.", nil);
         } else {
-            cell.textLabel.text = @"Share App Info.plist";
-            cell.detailTextLabel.text = @"Exports Cyanide's bundled Info.plist for reference.";
+            cell.textLabel.text = NSLocalizedString(@"Share App Info.plist", nil);
+            cell.detailTextLabel.text = NSLocalizedString(@"Exports Cyanide's bundled Info.plist for reference.", nil);
         }
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     }
@@ -13621,10 +13614,10 @@ BOOL settings_root_remove_xattr(NSString *path, const char *name, NSString **err
 
 - (void)showExportError:(NSError *)error
 {
-    UIAlertController *ac = [UIAlertController alertControllerWithTitle:@"Export Failed"
+    UIAlertController *ac = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Export Failed", nil)
                                                                 message:error.localizedDescription ?: @"Could not write the plist."
                                                          preferredStyle:UIAlertControllerStyleAlert];
-    [ac addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
+    [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil) style:UIAlertActionStyleDefault handler:nil]];
     [self presentViewController:ac animated:YES completion:nil];
 }
 
@@ -13669,17 +13662,17 @@ BOOL settings_root_remove_xattr(NSString *path, const char *name, NSString **err
     (void)note;
     dispatch_async(dispatch_get_main_queue(), ^{
         UIAlertController *alert = [UIAlertController
-            alertControllerWithTitle:@"Injection wedged — restart the iPhone soon"
-                             message:@"A SpringBoard/launchd injection deadlocked and the init watchdog aborted it cleanly. Cyanide is safe — but the stuck system-process thread cannot be recovered, so the device will very likely reboot on its own within ~2 minutes.\n\nSave anything open and restart the iPhone proactively; a controlled reboot beats the watchdog's. Then relaunch Cyanide (no new injection channels can open in this session)."
+            alertControllerWithTitle:NSLocalizedString(@"Injection wedged — restart the iPhone soon", nil)
+                             message:NSLocalizedString(@"A SpringBoard/launchd injection deadlocked and the init watchdog aborted it cleanly. Cyanide is safe — but the stuck system-process thread cannot be recovered, so the device will very likely reboot on its own within ~2 minutes.\n\nSave anything open and restart the iPhone proactively; a controlled reboot beats the watchdog's. Then relaunch Cyanide (no new injection channels can open in this session).", nil)
                       preferredStyle:UIAlertControllerStyleAlert];
-        [alert addAction:[UIAlertAction actionWithTitle:@"Restart Cyanide"
+        [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Restart Cyanide", nil)
                                                   style:UIAlertActionStyleDestructive
                                                 handler:^(UIAlertAction *action) {
             (void)action;
             settings_park_krw_filter_for_background();
             exit(0);
         }]];
-        [alert addAction:[UIAlertAction actionWithTitle:@"Later"
+        [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Later", nil)
                                                   style:UIAlertActionStyleCancel
                                                 handler:nil]];
         [self presentViewController:alert animated:YES completion:nil];
@@ -13787,27 +13780,27 @@ BOOL settings_root_remove_xattr(NSString *path, const char *name, NSString **err
     if (self.qlStandalone) {
         if (filename) {
             [rows addObject:@{ @"kind": @"button", @"action": @"quickloader-run-now",
-                               @"title": @"Run Tweak", @"style": @"prominent" }];
+                               @"title": NSLocalizedString(@"Run Tweak", nil), @"style": @"prominent" }];
         }
     } else {
         if (filename && !enabled) {
             [rows addObject:@{ @"kind": @"button", @"action": @"quickloader-apply-dynamic",
-                               @"title": @"Activate Tweak", @"style": @"prominent" }];
+                               @"title": NSLocalizedString(@"Activate Tweak", nil), @"style": @"prominent" }];
         } else if (filename && enabled && !applied) {
             [rows addObject:@{ @"kind": @"button", @"action": @"quickloader-apply-dynamic",
-                               @"title": @"Queued — Run Apply Tweaks" }];
+                               @"title": NSLocalizedString(@"Queued — Run Apply Tweaks", nil) }];
         } else if (filename && enabled) {
             [rows addObject:@{ @"kind": @"button", @"action": @"quickloader-apply-dynamic",
-                               @"title": @"Re-run Tweak" }];
+                               @"title": NSLocalizedString(@"Re-run Tweak", nil) }];
         }
     }
 
-    [rows addObject:@{ @"kind": @"button", @"action": @"quickloader-run-js", @"title": @"Select .js File" }];
-    [rows addObject:@{ @"kind": @"button", @"action": @"quickloader-open-sources", @"title": @"Browse Sources" }];
+    [rows addObject:@{ @"kind": @"button", @"action": @"quickloader-run-js", @"title": NSLocalizedString(@"Select .js File", nil) }];
+    [rows addObject:@{ @"kind": @"button", @"action": @"quickloader-open-sources", @"title": NSLocalizedString(@"Browse Sources", nil) }];
 
     if (filename) {
         [rows addObject:@{ @"kind": @"button", @"action": @"quickloader-clear",
-                           @"title": @"Clear Loaded Tweak", @"destructive": @YES }];
+                           @"title": NSLocalizedString(@"Clear Loaded Tweak", nil), @"destructive": @YES }];
     }
 
     return rows;
@@ -13898,7 +13891,7 @@ BOOL settings_root_remove_xattr(NSString *path, const char *name, NSString **err
     spin.translatesAutoresizingMaskIntoConstraints = NO;
     [spin startAnimating];
     UILabel *label = [UILabel new];
-    label.text = @"Rebooting…";
+    label.text = NSLocalizedString(@"Rebooting…", nil);
     label.textColor = UIColor.whiteColor;
     label.font = [UIFont systemFontOfSize:17.0 weight:UIFontWeightSemibold];
     label.translatesAutoresizingMaskIntoConstraints = NO;
@@ -13924,10 +13917,10 @@ BOOL settings_root_remove_xattr(NSString *path, const char *name, NSString **err
 - (void)showRebootFailedAlert
 {
     UIAlertController *ac = [UIAlertController
-        alertControllerWithTitle:@"Reboot Didn't Happen"
-                         message:@"Cyanide couldn't ask the system to reboot. It needs kernel access from an earlier Run; run Cyanide, then try again, or restart the device yourself. Details are in the log."
+        alertControllerWithTitle:NSLocalizedString(@"Reboot Didn't Happen", nil)
+                         message:NSLocalizedString(@"Cyanide couldn't ask the system to reboot. It needs kernel access from an earlier Run; run Cyanide, then try again, or restart the device yourself. Details are in the log.", nil)
                   preferredStyle:UIAlertControllerStyleAlert];
-    [ac addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
+    [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil) style:UIAlertActionStyleDefault handler:nil]];
     settings_present_controller(ac, self);
 }
 
@@ -13937,11 +13930,11 @@ BOOL settings_root_remove_xattr(NSString *path, const char *name, NSString **err
         alertControllerWithTitle:title
                          message:message
                   preferredStyle:UIAlertControllerStyleAlert];
-    [ac addAction:[UIAlertAction actionWithTitle:@"Later"
+    [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Later", nil)
                                            style:UIAlertActionStyleCancel
                                          handler:nil]];
     __weak typeof(self) weakSelf = self;
-    [ac addAction:[UIAlertAction actionWithTitle:@"Respring"
+    [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Respring", nil)
                                            style:UIAlertActionStyleDestructive
                                          handler:^(UIAlertAction *_) {
         dispatch_async(dispatch_get_global_queue(0, 0), ^{
@@ -13985,16 +13978,16 @@ BOOL settings_root_remove_xattr(NSString *path, const char *name, NSString **err
             if (!strongSelf) return;
             if (!ok) {
                 UIAlertController *err = [UIAlertController
-                    alertControllerWithTitle:@"Lock Screen Duration"
-                                     message:@"Could not write the setting. Run the chain first, then try again."
+                    alertControllerWithTitle:NSLocalizedString(@"Lock Screen Duration", nil)
+                                     message:NSLocalizedString(@"Could not write the setting. Run the chain first, then try again.", nil)
                               preferredStyle:UIAlertControllerStyleAlert];
-                [err addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
+                [err addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil) style:UIAlertActionStyleDefault handler:nil]];
                 settings_present_controller(err, strongSelf);
                 return;
             }
             NSString *msg = remove
                 ? @"Lock screen duration cleared. Respring now to apply?"
-                : [NSString stringWithFormat:@"Lock screen will stay awake for %lld seconds. Respring now to apply?", seconds];
+                : [NSString stringWithFormat:NSLocalizedString(@"Lock screen will stay awake for %lld seconds. Respring now to apply?", nil), seconds];
             [strongSelf presentRespringPromptWithTitle:@"Applied" message:msg];
         });
     });
@@ -14014,12 +14007,12 @@ BOOL settings_root_remove_xattr(NSString *path, const char *name, NSString **err
             else if (v < 0)   msg = @"Could not read the value — the SpringBoard channel wasn't available.";
             else if (v == 0)  msg = @"No floor is set — the lock screen uses stock timing.";
             else              msg = [NSString stringWithFormat:
-                @"Configured floor: %lld seconds.\n\nThis is the value written to SpringBoard (SBMinimumLockscreenIdleTime). It takes effect after a respring.", v];
+                NSLocalizedString(@"Configured floor: %lld seconds.\n\nThis is the value written to SpringBoard (SBMinimumLockscreenIdleTime). It takes effect after a respring.", nil), v];
             UIAlertController *ac = [UIAlertController
-                alertControllerWithTitle:@"Lock Screen Duration"
+                alertControllerWithTitle:NSLocalizedString(@"Lock Screen Duration", nil)
                                  message:msg
                           preferredStyle:UIAlertControllerStyleAlert];
-            [ac addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
+            [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil) style:UIAlertActionStyleDefault handler:nil]];
             settings_present_controller(ac, strongSelf);
         });
     });
@@ -14041,10 +14034,10 @@ BOOL settings_root_remove_xattr(NSString *path, const char *name, NSString **err
             else if (st == 1)  msg = @"OTA updates are DISABLED. All update daemons are blocked in launchd.";
             else               msg = @"OTA updates are PARTIALLY disabled — some update daemons are blocked but not all. Tap “Disable OTA Updates” to finish.";
             UIAlertController *ac = [UIAlertController
-                alertControllerWithTitle:@"OTA Updates"
+                alertControllerWithTitle:NSLocalizedString(@"OTA Updates", nil)
                                  message:msg
                           preferredStyle:UIAlertControllerStyleAlert];
-            [ac addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
+            [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil) style:UIAlertActionStyleDefault handler:nil]];
             settings_present_controller(ac, strongSelf);
         });
     });
@@ -14215,12 +14208,12 @@ static NSUInteger settings_tab_index_for_title(UITabBarController *tab, NSString
     BOOL alreadyNominal = [level isEqualToString:@"nominal"];
     NSString *message = @"Powercuff now defaults to Nominal.\n\nLight, Moderate, and Heavy intentionally underclock the CPU. That means lag or slower app launches can happen, especially on older devices. The lag means Powercuff is working, but those levels may be too slow for comfortable day-to-day use.\n\nUse Nominal for daily use, then raise it only when you want stronger throttling.";
 
-    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Powercuff Level"
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Powercuff Level", nil)
                                                                    message:message
                                                             preferredStyle:UIAlertControllerStyleAlert];
     __weak typeof(self) weakSelf = self;
     if (!alreadyNominal) {
-        [alert addAction:[UIAlertAction actionWithTitle:@"Use Nominal"
+        [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Use Nominal", nil)
                                                   style:UIAlertActionStyleDefault
                                                 handler:^(UIAlertAction *_) {
             NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
@@ -14274,7 +14267,7 @@ static NSUInteger settings_tab_index_for_title(UITabBarController *tab, NSString
     [icon setContentCompressionResistancePriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisHorizontal];
 
     UILabel *label = [[UILabel alloc] init];
-    label.text = @"Cyanide is a limited tweak environment. Session tweaks reset on reboot, while a few packages intentionally modify local system files and may persist until restored. Backups are best-effort only. Use these tools only where you have permission, understand the legal and service-rule impact, and accept the risk. Live tweaks like StatBar and Axon Lite stop if you force-quit Cyanide. A progress log opens while changes apply; tap Hide to dismiss.";
+    label.text = NSLocalizedString(@"Cyanide is a limited tweak environment. Session tweaks reset on reboot, while a few packages intentionally modify local system files and may persist until restored. Backups are best-effort only. Use these tools only where you have permission, understand the legal and service-rule impact, and accept the risk. Live tweaks like StatBar and Axon Lite stop if you force-quit Cyanide. A progress log opens while changes apply; tap Hide to dismiss.", nil);
     label.textColor = UIColor.labelColor;
     label.font = [UIFont systemFontOfSize:13 weight:UIFontWeightRegular];
     label.numberOfLines = 0;
@@ -14302,28 +14295,28 @@ static NSUInteger settings_tab_index_for_title(UITabBarController *tab, NSString
 {
     BOOL autoRetryOn = [NSUserDefaults.standardUserDefaults boolForKey:kSettingsRunAutoRetry];
     NSArray<NSDictionary *> *rows = @[
-        @{ @"kind": @"a18path", @"key": kSettingsA18ExploitPath, @"a18Only": @YES, @"title": @"A18 exploit path" },
-        @{ @"key": kSettingsA18Interleave, @"peV1Only": @YES, @"a18Only": @YES, @"title": @"A18 interleaved search",
-           @"subtitle": @"Experimental. On interleaves the socket spray with search-mapping allocation and scans each mapping tail-first, aiming to find the PCB in fewer reads. Off uses the proven bulk-spray + forward-scan path. A18/M4 only; effective on the next fresh chain run." },
-        @{ @"kind": @"a18shape", @"key": kSettingsA18MemoryShaping, @"peV1Only": @YES, @"a18Only": @YES, @"title": @"A18 memory shaping" },
-        @{ @"key": kSettingsA18BoundedSearch, @"peV1Only": @YES, @"a18Only": @YES, @"title": @"A18 bounded search",
-           @"subtitle": @"On stops after 4 search passes and reports a clean retry instead of grinding — which can otherwise end in an aperture panic on a device that never lands the PCB. On (default) stops; Off (legacy, matches 1.5.5) grinds until the exploit acquires. A18/M4 only; effective on the next fresh chain run." },
-        @{ @"key": kSettingsRunAutoRetry, @"title": @"Auto-retry failed chain runs",
-           @"subtitle": @"On re-runs the chain automatically when the exploit misses, up to the attempt cap below — the progress screen just keeps spinning until it lands or the cap is hit. Never retries a wedged injection. Every attempt is an independent panic dice roll, so the cap bounds your exposure per tap." },
-        @{ @"kind": @"stepper", @"key": kSettingsRunAutoRetryMaxAttempts, @"title": @"Auto-retry attempt cap",
+        @{ @"kind": @"a18path", @"key": kSettingsA18ExploitPath, @"a18Only": @YES, @"title": NSLocalizedString(@"A18 exploit path", nil) },
+        @{ @"key": kSettingsA18Interleave, @"peV1Only": @YES, @"a18Only": @YES, @"title": NSLocalizedString(@"A18 interleaved search", nil),
+           @"subtitle": NSLocalizedString(@"Experimental. On interleaves the socket spray with search-mapping allocation and scans each mapping tail-first, aiming to find the PCB in fewer reads. Off uses the proven bulk-spray + forward-scan path. A18/M4 only; effective on the next fresh chain run.", nil) },
+        @{ @"kind": @"a18shape", @"key": kSettingsA18MemoryShaping, @"peV1Only": @YES, @"a18Only": @YES, @"title": NSLocalizedString(@"A18 memory shaping", nil) },
+        @{ @"key": kSettingsA18BoundedSearch, @"peV1Only": @YES, @"a18Only": @YES, @"title": NSLocalizedString(@"A18 bounded search", nil),
+           @"subtitle": NSLocalizedString(@"On stops after 4 search passes and reports a clean retry instead of grinding — which can otherwise end in an aperture panic on a device that never lands the PCB. On (default) stops; Off (legacy, matches 1.5.5) grinds until the exploit acquires. A18/M4 only; effective on the next fresh chain run.", nil) },
+        @{ @"key": kSettingsRunAutoRetry, @"title": NSLocalizedString(@"Auto-retry failed chain runs", nil),
+           @"subtitle": NSLocalizedString(@"On re-runs the chain automatically when the exploit misses, up to the attempt cap below — the progress screen just keeps spinning until it lands or the cap is hit. Never retries a wedged injection. Every attempt is an independent panic dice roll, so the cap bounds your exposure per tap.", nil) },
+        @{ @"kind": @"stepper", @"key": kSettingsRunAutoRetryMaxAttempts, @"title": NSLocalizedString(@"Auto-retry attempt cap", nil),
            @"min": @1, @"max": @20, @"default": @8, @"disabled": @(!autoRetryOn),
-           @"subtitle": @"Maximum automatic re-runs after the first miss. Enable Auto-retry failed chain runs to change this." },
-        @{ @"key": kRemoteCallControlledPanicOnWedge, @"title": @"Controlled panic on injection wedge",
-           @"subtitle": @"Diagnostic. When an injection wedges, the stuck system-process thread dooms the device to a hardware-watchdog reset within ~2 minutes — which can leave no panic log at all. On instead flushes the log and panics the kernel immediately via KRW: the reboot is instant and always writes a panic-full stamped with the CYANIDE signature address 0x4359414e494445xx. Off keeps the standard abort + restart flow." },
-        @{ @"kind": @"settlemode", @"key": kSettingsRemoteSettleMode, @"title": @"Tweak apply speed" },
-        @{ @"key": kSettingsVerboseLoggingEnabled, @"title": @"Verbose logging",
-           @"subtitle": @"Logs the full RemoteCall internals for every exploit run, tweak apply and Process Viewer action. Off keeps the log readable; turn it on before reproducing an issue, then share the log." },
-        @{ @"key": kSettingsLocationServicesLinksEnabled, @"title": @"Location Services links",
-           @"subtitle": @"Lets cyanide://location-services links turn Location Services on or off. Any app can open these links without asking, so this is off by default. The Control Center toggle and the Shortcuts action work without it." },
-        @{ @"key": kRepoSourcesEnabledKey,      @"title": @"Repo sources",
-           @"subtitle": @"Off hides the Sources tab and repo packages, stops refreshing sources, and skips repo tweaks when applying (running ones are stopped). Local QuickLoader .js files still work." },
-        @{ @"key": kSettingsKeepAlive,          @"title": @"Keep app alive in background",
-           @"subtitle": @"Required for app-driven live tweaks to persist while minimized, including StatBar receiving fresh live data." },
+           @"subtitle": NSLocalizedString(@"Maximum automatic re-runs after the first miss. Enable Auto-retry failed chain runs to change this.", nil) },
+        @{ @"key": kRemoteCallControlledPanicOnWedge, @"title": NSLocalizedString(@"Controlled panic on injection wedge", nil),
+           @"subtitle": NSLocalizedString(@"Diagnostic. When an injection wedges, the stuck system-process thread dooms the device to a hardware-watchdog reset within ~2 minutes — which can leave no panic log at all. On instead flushes the log and panics the kernel immediately via KRW: the reboot is instant and always writes a panic-full stamped with the CYANIDE signature address 0x4359414e494445xx. Off keeps the standard abort + restart flow.", nil) },
+        @{ @"kind": @"settlemode", @"key": kSettingsRemoteSettleMode, @"title": NSLocalizedString(@"Tweak apply speed", nil) },
+        @{ @"key": kSettingsVerboseLoggingEnabled, @"title": NSLocalizedString(@"Verbose logging", nil),
+           @"subtitle": NSLocalizedString(@"Logs the full RemoteCall internals for every exploit run, tweak apply and Process Viewer action. Off keeps the log readable; turn it on before reproducing an issue, then share the log.", nil) },
+        @{ @"key": kSettingsLocationServicesLinksEnabled, @"title": NSLocalizedString(@"Location Services links", nil),
+           @"subtitle": NSLocalizedString(@"Lets cyanide://location-services links turn Location Services on or off. Any app can open these links without asking, so this is off by default. The Control Center toggle and the Shortcuts action work without it.", nil) },
+        @{ @"key": kRepoSourcesEnabledKey,      @"title": NSLocalizedString(@"Repo sources", nil),
+           @"subtitle": NSLocalizedString(@"Off hides the Sources tab and repo packages, stops refreshing sources, and skips repo tweaks when applying (running ones are stopped). Local QuickLoader .js files still work.", nil) },
+        @{ @"key": kSettingsKeepAlive,          @"title": NSLocalizedString(@"Keep app alive in background", nil),
+           @"subtitle": NSLocalizedString(@"Required for app-driven live tweaks to persist while minimized, including StatBar receiving fresh live data.", nil) },
     ];
     // A18/M4-only options (exploit path, interleave, shaping, bounded) are
     // meaningless on other hardware -- pe_v1 standard geometry always runs there.
@@ -14346,38 +14339,38 @@ static NSUInteger settings_tab_index_for_title(UITabBarController *tab, NSString
     // the run will not do.
     BOOL hidingLabels = [NSUserDefaults.standardUserDefaults boolForKey:kSettingsSBCHideLabels];
     return @[
-        @{ @"kind": @"stepper", @"key": kSettingsSBCDockIcons,  @"title": @"Dock icons", @"min": @4, @"max": @7, @"default": @(kSBCDefaultDockIcons) },
-        @{ @"kind": @"toggle",  @"key": kSettingsSBCAutoDockApp, @"title": @"Auto-add selected app to Dock",
-           @"subtitle": @"Moves the selected Home Screen app into a newly available Dock slot when SBCustomizer is applied." },
-        @{ @"kind": @"text",    @"key": kSettingsSBCDockAppBundleID, @"title": @"Dock app bundle ID",
+        @{ @"kind": @"stepper", @"key": kSettingsSBCDockIcons,  @"title": NSLocalizedString(@"Dock icons", nil), @"min": @4, @"max": @7, @"default": @(kSBCDefaultDockIcons) },
+        @{ @"kind": @"toggle",  @"key": kSettingsSBCAutoDockApp, @"title": NSLocalizedString(@"Auto-add selected app to Dock", nil),
+           @"subtitle": NSLocalizedString(@"Moves the selected Home Screen app into a newly available Dock slot when SBCustomizer is applied.", nil) },
+        @{ @"kind": @"text",    @"key": kSettingsSBCDockAppBundleID, @"title": NSLocalizedString(@"Dock app bundle ID", nil),
            @"placeholder": kSBCDefaultDockAppBundleID,
-           @"subtitle": @"Defaults to the Watusi WhatsApp duplicate." },
-        @{ @"kind": @"stepper", @"key": kSettingsSBCCols,       @"title": @"Home columns", @"min": @3, @"max": @7, @"default": @(kSBCDefaultCols) },
-        @{ @"kind": @"stepper", @"key": kSettingsSBCRows,       @"title": @"Home rows", @"min": @4, @"max": @8, @"default": @(kSBCDefaultRows) },
-        @{ @"kind": @"toggle",  @"key": kSettingsSBCHideLabels, @"title": @"Hide icon labels" },
-        @{ @"kind": @"toggle",  @"key": kSettingsSBCDockLabels, @"title": @"Show dock labels",
+           @"subtitle": NSLocalizedString(@"Defaults to the Watusi WhatsApp duplicate.", nil) },
+        @{ @"kind": @"stepper", @"key": kSettingsSBCCols,       @"title": NSLocalizedString(@"Home columns", nil), @"min": @3, @"max": @7, @"default": @(kSBCDefaultCols) },
+        @{ @"kind": @"stepper", @"key": kSettingsSBCRows,       @"title": NSLocalizedString(@"Home rows", nil), @"min": @4, @"max": @8, @"default": @(kSBCDefaultRows) },
+        @{ @"kind": @"toggle",  @"key": kSettingsSBCHideLabels, @"title": NSLocalizedString(@"Hide icon labels", nil) },
+        @{ @"kind": @"toggle",  @"key": kSettingsSBCDockLabels, @"title": NSLocalizedString(@"Show dock labels", nil),
            @"disabled": @(hidingLabels),
-           @"subtitle": @"Draws app names under the dock icons, which stock iOS leaves off. Unavailable while Hide icon labels is on \u2014 the dock follows the home screen." },
-        @{ @"kind": @"toggle",  @"key": kSettingsSBCArrangePages, @"title": @"Arrange icons by page" },
-        @{ @"kind": @"stepper", @"key": kSettingsSBCFirstPageIcons, @"title": @"First page icons", @"min": @12, @"max": @49, @"default": @(kSBCDefaultFirstPageIcons) },
-        @{ @"kind": @"stepper", @"key": kSettingsSBCOtherPageIcons, @"title": @"Other page icons", @"min": @12, @"max": @49, @"default": @(kSBCDefaultOtherPageIcons) },
-        @{ @"kind": @"button",  @"title": @"Reset to Defaults" },
+           @"subtitle": NSLocalizedString(@"Draws app names under the dock icons, which stock iOS leaves off. Unavailable while Hide icon labels is on \u2014 the dock follows the home screen.", nil) },
+        @{ @"kind": @"toggle",  @"key": kSettingsSBCArrangePages, @"title": NSLocalizedString(@"Arrange icons by page", nil) },
+        @{ @"kind": @"stepper", @"key": kSettingsSBCFirstPageIcons, @"title": NSLocalizedString(@"First page icons", nil), @"min": @12, @"max": @49, @"default": @(kSBCDefaultFirstPageIcons) },
+        @{ @"kind": @"stepper", @"key": kSettingsSBCOtherPageIcons, @"title": NSLocalizedString(@"Other page icons", nil), @"min": @12, @"max": @49, @"default": @(kSBCDefaultOtherPageIcons) },
+        @{ @"kind": @"button",  @"title": NSLocalizedString(@"Reset to Defaults", nil) },
     ];
 }
 
 - (NSArray<NSDictionary *> *)powercuffRows
 {
     return @[
-        @{ @"kind": @"segmented", @"key": kSettingsPowercuffLevel,   @"title": @"Level" },
+        @{ @"kind": @"segmented", @"key": kSettingsPowercuffLevel,   @"title": NSLocalizedString(@"Level", nil) },
     ];
 }
 
 - (NSArray<NSDictionary *> *)otaRows
 {
     return @[
-        @{ @"kind": @"button", @"title": @"Disable OTA Updates" },
-        @{ @"kind": @"button", @"title": @"Enable OTA Updates" },
-        @{ @"kind": @"button", @"title": @"Read Current Status",
+        @{ @"kind": @"button", @"title": NSLocalizedString(@"Disable OTA Updates", nil) },
+        @{ @"kind": @"button", @"title": NSLocalizedString(@"Enable OTA Updates", nil) },
+        @{ @"kind": @"button", @"title": NSLocalizedString(@"Read Current Status", nil),
            @"requiresKRW": @YES },
     ];
 }
@@ -14385,9 +14378,9 @@ static NSUInteger settings_tab_index_for_title(UITabBarController *tab, NSString
 - (NSArray<NSDictionary *> *)supervisionRows
 {
     return @[
-        @{ @"kind": @"button", @"title": @"Activate Supervision",   @"action": @"supervision-activate" },
-        @{ @"kind": @"button", @"title": @"Deactivate Supervision", @"action": @"supervision-deactivate" },
-        @{ @"kind": @"button", @"title": @"Read Current Status",    @"action": @"supervision-read",
+        @{ @"kind": @"button", @"title": NSLocalizedString(@"Activate Supervision", nil),   @"action": @"supervision-activate" },
+        @{ @"kind": @"button", @"title": NSLocalizedString(@"Deactivate Supervision", nil), @"action": @"supervision-deactivate" },
+        @{ @"kind": @"button", @"title": NSLocalizedString(@"Read Current Status", nil),    @"action": @"supervision-read",
            @"requiresKRW": @YES },
     ];
 }
@@ -14397,50 +14390,50 @@ static NSUInteger settings_tab_index_for_title(UITabBarController *tab, NSString
     return @[
         @{ @"kind": @"stepper",
            @"key": kSettingsNanoMaxPairing,
-           @"title": @"watchOS Pairing Limit",
-           @"subtitle": @"Highest watchOS pairing generation this iPhone will accept. 99 raises the phone-side ceiling for newer watchOS releases.",
+           @"title": NSLocalizedString(@"watchOS Pairing Limit", nil),
+           @"subtitle": NSLocalizedString(@"Highest watchOS pairing generation this iPhone will accept. 99 raises the phone-side ceiling for newer watchOS releases.", nil),
            @"min": @(kNanoUIRowMin),
            @"max": @(kNanoUIRowMax),
            @"default": @(kNanoDefaultMaxPairing) },
 
         @{ @"kind": @"stepper",
            @"key": kSettingsNanoMinPairing,
-           @"title": @"Setup Protocol Floor",
-           @"subtitle": @"Lowest pairing setup generation this iPhone will accept. Keep this at 23 so generation-23 setup messages are not rejected.",
+           @"title": NSLocalizedString(@"Setup Protocol Floor", nil),
+           @"subtitle": NSLocalizedString(@"Lowest pairing setup generation this iPhone will accept. Keep this at 23 so generation-23 setup messages are not rejected.", nil),
            @"min": @(kNanoUIRowMin),
            @"max": @(kNanoUIRowMax),
            @"default": @(kNanoDefaultMinPairing) },
 
         @{ @"kind": @"stepper",
            @"key": kSettingsNanoMinPairingChipID,
-           @"title": @"Legacy Chip Floor",
-           @"subtitle": @"Leave this alone unless you are trying to pair an old S-chip watch, such as a Series 3.",
+           @"title": NSLocalizedString(@"Legacy Chip Floor", nil),
+           @"subtitle": NSLocalizedString(@"Leave this alone unless you are trying to pair an old S-chip watch, such as a Series 3.", nil),
            @"min": @(kNanoUIRowMin),
            @"max": @(kNanoUIRowMax),
            @"default": @(kNanoDefaultMinPairingChipID) },
 
         @{ @"kind": @"stepper",
            @"key": kSettingsNanoMinQuickSwitch,
-           @"title": @"Multi-Watch Switching",
-           @"subtitle": @"Leave this alone unless switching between multiple older paired watches is not working.",
+           @"title": NSLocalizedString(@"Multi-Watch Switching", nil),
+           @"subtitle": NSLocalizedString(@"Leave this alone unless switching between multiple older paired watches is not working.", nil),
            @"min": @(kNanoUIRowMin),
            @"max": @(kNanoUIRowMax),
            @"default": @(kNanoDefaultMinQuickSwitch) },
 
         @{ @"kind": @"button",
-           @"title": @"Load Saved Override",
+           @"title": NSLocalizedString(@"Load Saved Override", nil),
            @"action": @"nano-load" },
 
         @{ @"kind": @"button",
-           @"title": @"Use watchOS Range 99/23/10/6",
+           @"title": NSLocalizedString(@"Use watchOS Range 99/23/10/6", nil),
            @"action": @"nano-preset-newer" },
 
         @{ @"kind": @"button",
-           @"title": @"Apply Pairing Override",
+           @"title": NSLocalizedString(@"Apply Pairing Override", nil),
            @"action": @"nano-apply" },
 
         @{ @"kind": @"button",
-           @"title": @"Remove Override",
+           @"title": NSLocalizedString(@"Remove Override", nil),
            @"action": @"nano-clear",
            @"destructive": @YES },
     ];
@@ -14456,23 +14449,22 @@ static NSUInteger settings_tab_index_for_title(UITabBarController *tab, NSString
     return @[
         @{ @"kind": @"number",
            @"key": kSettingsLockDurationValue,
-           @"title": @"Duration",
-           @"subtitle": @"Seconds the lock screen stays awake before it dims and sleeps, while you read notifications. Separate from Settings > Auto-Lock. Default 60, min 5, max 3600. Face ID gaze can keep it on longer.",
+           @"title": NSLocalizedString(@"Duration", nil),
+           @"subtitle": NSLocalizedString(@"Seconds the lock screen stays awake before it dims and sleeps, while you read notifications. Separate from Settings > Auto-Lock. Default 60, min 5, max 3600. Face ID gaze can keep it on longer.", nil),
            @"min": @(kSettingsLockDurationMin),
            @"max": @(kSettingsLockDurationMax),
            @"step": @1, @"unit": @"s",
            @"default": @(kSettingsLockDurationDefault) },
         @{ @"kind": @"button", @"action": @"lockdur-apply",
-           @"title": @"Apply Lock Screen Duration",
-           @"subtitle": @"Writes the value and offers a respring to apply it." },
+           @"title": NSLocalizedString(@"Apply Lock Screen Duration", nil),
+           @"subtitle": NSLocalizedString(@"Writes the value and offers a respring to apply it.", nil) },
         @{ @"kind": @"button", @"action": @"lockdur-remove",
-           @"title": @"Remove (restore stock)",
-           @"subtitle": @"Clears the floor; offers a respring to apply." },
+           @"title": NSLocalizedString(@"Remove (restore stock)", nil),
+           @"subtitle": NSLocalizedString(@"Clears the floor; offers a respring to apply.", nil) },
         @{ @"kind": @"button", @"action": @"lockdur-read",
-           @"title": @"Read Current Value",
+           @"title": NSLocalizedString(@"Read Current Value", nil),
            @"requiresKRW": @YES,
-           @"subtitle": @"Shows the floor currently written in SpringBoard. "
-                        @"Needs kernel access — run the chain first." },
+           @"subtitle": NSLocalizedString(@"Shows the floor currently written in SpringBoard. Needs kernel access — run the chain first.", nil) },
     ];
 }
 
@@ -14481,8 +14473,8 @@ static NSUInteger settings_tab_index_for_title(UITabBarController *tab, NSString
     return @[
         @{ @"kind": @"number",
            @"key": kSettingsDSDragCoefficientValue,
-           @"title": @"Coefficient",
-           @"subtitle": @"1.00 = default, 0.50 = 2× faster, 0.25 = 4× faster. Minimum is 0.01.",
+           @"title": NSLocalizedString(@"Coefficient", nil),
+           @"subtitle": NSLocalizedString(@"1.00 = default, 0.50 = 2× faster, 0.25 = 4× faster. Minimum is 0.01.", nil),
            @"min": @0.01, @"max": @2.0, @"step": @0.01,
            @"precision": @2, @"default": @0.5 },
     ];
@@ -14492,34 +14484,34 @@ static NSUInteger settings_tab_index_for_title(UITabBarController *tab, NSString
 {
     return @[
         @{ @"kind": @"number", @"key": kSettingsLayoutHomeExtraLeft,
-           @"title": @"Home extra left",   @"min": @0,  @"max": @300, @"step": @1, @"unit": @"pt", @"default": @0 },
+           @"title": NSLocalizedString(@"Home extra left", nil),   @"min": @0,  @"max": @300, @"step": @1, @"unit": @"pt", @"default": @0 },
         @{ @"kind": @"number", @"key": kSettingsLayoutHomeExtraRight,
-           @"title": @"Home extra right",  @"min": @0,  @"max": @300, @"step": @1, @"unit": @"pt", @"default": @0 },
+           @"title": NSLocalizedString(@"Home extra right", nil),  @"min": @0,  @"max": @300, @"step": @1, @"unit": @"pt", @"default": @0 },
         @{ @"kind": @"number", @"key": kSettingsLayoutHomeExtraTop,
-           @"title": @"Home extra top",    @"min": @0,  @"max": @400, @"step": @1, @"unit": @"pt", @"default": @0 },
+           @"title": NSLocalizedString(@"Home extra top", nil),    @"min": @0,  @"max": @400, @"step": @1, @"unit": @"pt", @"default": @0 },
         @{ @"kind": @"number", @"key": kSettingsLayoutHomeExtraBottom,
-           @"title": @"Home extra bottom", @"min": @0,  @"max": @400, @"step": @1, @"unit": @"pt", @"default": @0 },
+           @"title": NSLocalizedString(@"Home extra bottom", nil), @"min": @0,  @"max": @400, @"step": @1, @"unit": @"pt", @"default": @0 },
         @{ @"kind": @"number", @"key": kSettingsLayoutDockExtraLeft,
-           @"title": @"Dock extra left",  @"min": @0,  @"max": @200, @"step": @1, @"unit": @"pt", @"default": @0 },
+           @"title": NSLocalizedString(@"Dock extra left", nil),  @"min": @0,  @"max": @200, @"step": @1, @"unit": @"pt", @"default": @0 },
         @{ @"kind": @"number", @"key": kSettingsLayoutDockExtraRight,
-           @"title": @"Dock extra right", @"min": @0,  @"max": @200, @"step": @1, @"unit": @"pt", @"default": @0 },
+           @"title": NSLocalizedString(@"Dock extra right", nil), @"min": @0,  @"max": @200, @"step": @1, @"unit": @"pt", @"default": @0 },
         @{ @"kind": @"number", @"key": kSettingsLayoutHomeScalePct,
-           @"title": @"Home icon scale",   @"min": @25, @"max": @250, @"step": @1, @"unit": @"%", @"default": @100 },
+           @"title": NSLocalizedString(@"Home icon scale", nil),   @"min": @25, @"max": @250, @"step": @1, @"unit": @"%", @"default": @100 },
         @{ @"kind": @"number", @"key": kSettingsLayoutDockScalePct,
-           @"title": @"Dock icon scale",   @"min": @25, @"max": @250, @"step": @1, @"unit": @"%", @"default": @100 },
+           @"title": NSLocalizedString(@"Dock icon scale", nil),   @"min": @25, @"max": @250, @"step": @1, @"unit": @"%", @"default": @100 },
     ];
 }
 
 - (NSArray<NSDictionary *> *)statbarRows
 {
     return @[
-        @{ @"kind": @"toggle", @"key": kSettingsStatBarCelsius,     @"title": @"Celsius" },
-        @{ @"kind": @"toggle", @"key": kSettingsStatBarShowCPU,     @"title": @"Show CPU %" },
-        @{ @"kind": @"toggle", @"key": kSettingsStatBarShowLabels,  @"title": @"Show CPU / RAM labels" },
-        @{ @"kind": @"toggle", @"key": kSettingsStatBarShowNet,     @"title": @"Show network speed" },
-        @{ @"kind": @"toggle", @"key": kSettingsStatBarNetworkOnly, @"title": @"Network speed only" },
+        @{ @"kind": @"toggle", @"key": kSettingsStatBarCelsius,     @"title": NSLocalizedString(@"Celsius", nil) },
+        @{ @"kind": @"toggle", @"key": kSettingsStatBarShowCPU,     @"title": NSLocalizedString(@"Show CPU %", nil) },
+        @{ @"kind": @"toggle", @"key": kSettingsStatBarShowLabels,  @"title": NSLocalizedString(@"Show CPU / RAM labels", nil) },
+        @{ @"kind": @"toggle", @"key": kSettingsStatBarShowNet,     @"title": NSLocalizedString(@"Show network speed", nil) },
+        @{ @"kind": @"toggle", @"key": kSettingsStatBarNetworkOnly, @"title": NSLocalizedString(@"Network speed only", nil) },
         @{ @"kind": @"slider", @"key": kSettingsStatBarRefreshRateSec,
-           @"title": @"Refresh rate", @"min": @1, @"max": @30, @"step": @1,
+           @"title": NSLocalizedString(@"Refresh rate", nil), @"min": @1, @"max": @30, @"step": @1,
            @"unit": @"s", @"default": @(kStatBarDefaultRefreshRateSec) },
     ];
 }
@@ -14529,10 +14521,10 @@ static NSUInteger settings_tab_index_for_title(UITabBarController *tab, NSString
     NSUserDefaults *d = NSUserDefaults.standardUserDefaults;
     return @[
         @{ @"kind": @"info",
-           @"title": @"Position",
+           @"title": NSLocalizedString(@"Position", nil),
            @"subtitle": settings_nsbar_position_name([d integerForKey:kSettingsNSBarPosition]) },
         @{ @"kind": @"button",
-           @"title": @"Choose Position…",
+           @"title": NSLocalizedString(@"Choose Position…", nil),
            @"action": @"nsbar-position" },
     ];
 }
@@ -14542,22 +14534,22 @@ static NSUInteger settings_tab_index_for_title(UITabBarController *tab, NSString
     return @[
         @{ @"kind": @"nicebar-grid" },
         @{ @"kind": @"info",
-           @"title": @"Layout",
-           @"subtitle": @"Top and bottom rows move separately. Changes update live while NiceBar Lite is running." },
+           @"title": NSLocalizedString(@"Layout", nil),
+           @"subtitle": NSLocalizedString(@"Top and bottom rows move separately. Changes update live while NiceBar Lite is running.", nil) },
         @{ @"kind": @"slider", @"key": kSettingsNiceBarLiteLayoutTopSideInset,
-           @"title": @"Top side inset", @"min": @(-80), @"max": @80, @"step": @1, @"unit": @"pt", @"default": @0 },
+           @"title": NSLocalizedString(@"Top side inset", nil), @"min": @(-80), @"max": @80, @"step": @1, @"unit": @"pt", @"default": @0 },
         @{ @"kind": @"slider", @"key": kSettingsNiceBarLiteLayoutBottomSideInset,
-           @"title": @"Bottom side inset", @"min": @(-80), @"max": @80, @"step": @1, @"unit": @"pt", @"default": @0 },
+           @"title": NSLocalizedString(@"Bottom side inset", nil), @"min": @(-80), @"max": @80, @"step": @1, @"unit": @"pt", @"default": @0 },
         @{ @"kind": @"slider", @"key": kSettingsNiceBarLiteLayoutTopY,
-           @"title": @"Top Y offset", @"min": @(-40), @"max": @80, @"step": @1, @"unit": @"pt", @"default": @0 },
+           @"title": NSLocalizedString(@"Top Y offset", nil), @"min": @(-40), @"max": @80, @"step": @1, @"unit": @"pt", @"default": @0 },
         @{ @"kind": @"slider", @"key": kSettingsNiceBarLiteLayoutBottomY,
-           @"title": @"Bottom Y offset", @"min": @(-40), @"max": @80, @"step": @1, @"unit": @"pt", @"default": @0 },
+           @"title": NSLocalizedString(@"Bottom Y offset", nil), @"min": @(-40), @"max": @80, @"step": @1, @"unit": @"pt", @"default": @0 },
         @{ @"kind": @"slider", @"key": kSettingsNiceBarLiteLayoutCenterX,
-           @"title": @"Center X offset", @"min": @(-120), @"max": @120, @"step": @1, @"unit": @"pt", @"default": @0 },
-        @{ @"kind": @"toggle", @"key": kSettingsNiceBarLiteCelsius, @"title": @"Use Celsius" },
-        @{ @"kind": @"button", @"title": @"Traffic History", @"action": @"nicebar-traffic-history" },
+           @"title": NSLocalizedString(@"Center X offset", nil), @"min": @(-120), @"max": @120, @"step": @1, @"unit": @"pt", @"default": @0 },
+        @{ @"kind": @"toggle", @"key": kSettingsNiceBarLiteCelsius, @"title": NSLocalizedString(@"Use Celsius", nil) },
+        @{ @"kind": @"button", @"title": NSLocalizedString(@"Traffic History", nil), @"action": @"nicebar-traffic-history" },
         @{ @"kind": @"button",
-           @"title": @"Apply Now",
+           @"title": NSLocalizedString(@"Apply Now", nil),
            @"action": @"nicebar-apply" },
     ];
 }
@@ -14574,21 +14566,21 @@ static NSUInteger settings_tab_index_for_title(UITabBarController *tab, NSString
     return @[
         active
             ? @{ @"kind": @"button",
-                 @"title": @"Deactivate",
-                 @"subtitle": @"Stops the physics and puts the icons back.",
+                 @"title": NSLocalizedString(@"Deactivate", nil),
+                 @"subtitle": NSLocalizedString(@"Stops the physics and puts the icons back.", nil),
                  @"action": @"gravitylite-deactivate",
                  @"destructive": @YES }
             : @{ @"kind": @"button",
-                 @"title": @"Activate",
-                 @"subtitle": @"Starts Gravity Lite right away, without the Apply queue.",
+                 @"title": NSLocalizedString(@"Activate", nil),
+                 @"subtitle": NSLocalizedString(@"Starts Gravity Lite right away, without the Apply queue.", nil),
                  @"action": @"gravitylite-activate",
                  @"style": @"prominent" },
         @{ @"kind": @"toggle",
            @"key": kSettingsGravityLiteDockEnabled,
-           @"title": @"Include Dock" },
+           @"title": NSLocalizedString(@"Include Dock", nil) },
         @{ @"kind": @"slider",
            @"key": kSettingsGravityLiteMagnitudePct,
-           @"title": @"Gravity strength",
+           @"title": NSLocalizedString(@"Gravity strength", nil),
            @"min": @25,
            @"max": @300,
            @"step": @5,
@@ -14596,7 +14588,7 @@ static NSUInteger settings_tab_index_for_title(UITabBarController *tab, NSString
            @"default": @100 },
         @{ @"kind": @"slider",
            @"key": kSettingsGravityLiteBouncePct,
-           @"title": @"Bounce",
+           @"title": NSLocalizedString(@"Bounce", nil),
            @"min": @0,
            @"max": @100,
            @"step": @5,
@@ -14604,7 +14596,7 @@ static NSUInteger settings_tab_index_for_title(UITabBarController *tab, NSString
            @"default": @50 },
         @{ @"kind": @"slider",
            @"key": kSettingsGravityLiteFrictionPct,
-           @"title": @"Friction",
+           @"title": NSLocalizedString(@"Friction", nil),
            @"min": @0,
            @"max": @100,
            @"step": @5,
@@ -14612,7 +14604,7 @@ static NSUInteger settings_tab_index_for_title(UITabBarController *tab, NSString
            @"default": @50 },
         @{ @"kind": @"slider",
            @"key": kSettingsGravityLiteResistancePct,
-           @"title": @"Resistance",
+           @"title": NSLocalizedString(@"Resistance", nil),
            @"min": @0,
            @"max": @200,
            @"step": @5,
@@ -14620,17 +14612,17 @@ static NSUInteger settings_tab_index_for_title(UITabBarController *tab, NSString
            @"default": @50 },
         @{ @"kind": @"slider",
            @"key": kSettingsGravityLiteAngularResistancePct,
-           @"title": @"Spin resistance",
+           @"title": NSLocalizedString(@"Spin resistance", nil),
            @"min": @0,
            @"max": @200,
            @"step": @5,
            @"unit": @"%",
            @"default": @0 },
         @{ @"kind": @"button",
-           @"title": @"Explosion Pulse",
+           @"title": NSLocalizedString(@"Explosion Pulse", nil),
            @"action": @"gravitylite-explosion" },
         @{ @"kind": @"button",
-           @"title": @"Restore Icon Layout",
+           @"title": NSLocalizedString(@"Restore Icon Layout", nil),
            @"action": @"gravitylite-restore",
            @"destructive": @YES },
     ];
@@ -14642,34 +14634,34 @@ static NSUInteger settings_tab_index_for_title(UITabBarController *tab, NSString
     BOOL locationOn = locationservices_enabled_local() == 1;
     return @[
         @{ @"kind": @"info",
-           @"title": @"Location Services",
-           @"subtitle": locationOn ? @"On" : @"Off" },
+           @"title": NSLocalizedString(@"Location Services", nil),
+           @"subtitle": locationOn ? NSLocalizedString(@"On", nil) : NSLocalizedString(@"Off", nil) },
 
         @{ @"kind": @"button",
            @"title": locationOn ? @"Turn Location Services Off" : @"Turn Location Services On",
-           @"subtitle": @"The same system-wide switch as Settings → Privacy & Security → Location Services.",
+           @"subtitle": NSLocalizedString(@"The same system-wide switch as Settings → Privacy & Security → Location Services.", nil),
            @"action": @"locsvc-toggle",
            @"destructive": @(locationOn) },
 
         @{ @"kind": @"info",
-           @"title": @"Mode",
+           @"title": NSLocalizedString(@"Mode", nil),
            @"subtitle": settings_location_sim_mode_summary(d) },
 
         @{ @"kind": @"button",
-           @"title": @"Set Exact Coordinates…",
+           @"title": NSLocalizedString(@"Set Exact Coordinates…", nil),
            @"action": @"locsim-set-exact" },
 
         @{ @"kind": @"button",
-           @"title": @"Major Cities…",
+           @"title": NSLocalizedString(@"Major Cities…", nil),
            @"action": @"locsim-major-cities" },
 
         @{ @"kind": @"button",
-           @"title": @"Simulate Rockaway Test Point",
+           @"title": NSLocalizedString(@"Simulate Rockaway Test Point", nil),
            @"action": @"locsim-preset-rockaway" },
 
         @{ @"kind": @"slider",
            @"key": kSettingsLocationSimAltitude,
-           @"title": @"Altitude",
+           @"title": NSLocalizedString(@"Altitude", nil),
            @"min": @(-100),
            @"max": @1000,
            @"step": @1,
@@ -14678,7 +14670,7 @@ static NSUInteger settings_tab_index_for_title(UITabBarController *tab, NSString
 
         @{ @"kind": @"slider",
            @"key": kSettingsLocationSimHorizontalAccuracy,
-           @"title": @"Accuracy",
+           @"title": NSLocalizedString(@"Accuracy", nil),
            @"min": @1,
            @"max": @100,
            @"step": @1,
@@ -14686,12 +14678,12 @@ static NSUInteger settings_tab_index_for_title(UITabBarController *tab, NSString
            @"default": @(kLocationSimDefaultAccuracy) },
 
         @{ @"kind": @"button",
-           @"title": @"Simulate Current Target",
+           @"title": NSLocalizedString(@"Simulate Current Target", nil),
            @"action": @"locsim-apply" },
 
         @{ @"kind": @"button",
-           @"title": @"Restore Real Location",
-           @"subtitle": @"Reset can take a few minutes. If location still looks simulated, reboot and wait a little longer.",
+           @"title": NSLocalizedString(@"Restore Real Location", nil),
+           @"subtitle": NSLocalizedString(@"Reset can take a few minutes. If location still looks simulated, reboot and wait a little longer.", nil),
            @"action": @"locsim-stop",
            @"destructive": @YES },
     ];
@@ -14703,7 +14695,7 @@ static NSUInteger settings_tab_index_for_title(UITabBarController *tab, NSString
     NSString *selected = settings_themer_selected_theme_display_name();
     NSMutableArray<NSDictionary *> *rows = [NSMutableArray arrayWithArray:@[
         @{ @"kind": @"info",
-           @"title": @"Selected Theme",
+           @"title": NSLocalizedString(@"Selected Theme", nil),
            @"subtitle": hasSelection ? selected : @"None selected. Pick a theme before running the icon theme engine." },
 
         @{ @"kind": @"button",
@@ -14712,16 +14704,16 @@ static NSUInteger settings_tab_index_for_title(UITabBarController *tab, NSString
            @"action": @"themer-select-ios6" },
 
         @{ @"kind": @"button",
-           @"title": @"Import Custom Theme…",
+           @"title": NSLocalizedString(@"Import Custom Theme…", nil),
            @"action": @"themer-import" },
 
         @{ @"kind": @"button",
-           @"title": @"Theme Format Guide",
+           @"title": NSLocalizedString(@"Theme Format Guide", nil),
            @"action": @"themer-guide" },
     ]];
     if (hasSelection) {
         [rows addObject:@{ @"kind": @"button",
-                           @"title": @"Clear Selected Theme",
+                           @"title": NSLocalizedString(@"Clear Selected Theme", nil),
                            @"action": @"themer-clear",
                            @"destructive": @YES }];
     }
@@ -14734,21 +14726,21 @@ static NSUInteger settings_tab_index_for_title(UITabBarController *tab, NSString
     NSString *selected = settings_snowboardlite_selected_theme_display_name();
     NSMutableArray<NSDictionary *> *rows = [NSMutableArray arrayWithArray:@[
         @{ @"kind": @"info",
-           @"title": @"Selected Theme",
+           @"title": NSLocalizedString(@"Selected Theme", nil),
            @"subtitle": hasSelection ? selected : @"None selected. Pick or import a theme before running SnowBoard Lite." },
         @{ @"kind": @"button",
            @"title": [selected isEqualToString:@"iOS 6 Theme"] ? @"iOS 6 Theme ✓" : @"Use iOS 6 Theme",
            @"action": @"sbl-select-ios6" },
         @{ @"kind": @"button",
-           @"title": @"Import Theme Folder…",
+           @"title": NSLocalizedString(@"Import Theme Folder…", nil),
            @"action": @"sbl-import-folder" },
         @{ @"kind": @"button",
-           @"title": @"Import Theme Archive (ZIP/DEB)…",
+           @"title": NSLocalizedString(@"Import Theme Archive (ZIP/DEB)…", nil),
            @"action": @"sbl-import-archive" },
     ]];
     if (hasSelection) {
         [rows addObject:@{ @"kind": @"button",
-                           @"title": @"Clear Selected Theme",
+                           @"title": NSLocalizedString(@"Clear Selected Theme", nil),
                            @"action": @"sbl-clear",
                            @"destructive": @YES }];
     }
@@ -14781,7 +14773,7 @@ static const NSInteger kPasscodePreviewRow = 1;
 
     [rows addObject:@{
         @"kind": @"info",
-        @"title": @"Selected Style",
+        @"title": NSLocalizedString(@"Selected Style", nil),
         @"subtitle": theme
             ? [NSString stringWithFormat:@"%@ · %lu/10 digits · %@",
                                        settings_passcode_selected_theme_display_name(),
@@ -14793,15 +14785,15 @@ static const NSInteger kPasscodePreviewRow = 1;
     [rows addObject:@{ @"kind": @"passcode-preview" }];
 
     [rows addObject:@{ @"kind": @"button",
-                       @"title": @"Import Style (.passthm/ZIP)…",
+                       @"title": NSLocalizedString(@"Import Style (.passthm/ZIP)…", nil),
                        @"action": @"passcode-import" }];
 
     if (theme) {
         [rows addObject:@{ @"kind": @"button",
-                           @"title": @"Apply Style Now",
+                           @"title": NSLocalizedString(@"Apply Style Now", nil),
                            @"action": @"passcode-apply" }];
         [rows addObject:@{ @"kind": @"button",
-                           @"title": @"Clear Selected Style",
+                           @"title": NSLocalizedString(@"Clear Selected Style", nil),
                            @"action": @"passcode-clear",
                            @"destructive": @YES }];
     }
@@ -14812,15 +14804,15 @@ static const NSInteger kPasscodePreviewRow = 1;
     NSUInteger backupDigits = settings_passcode_backup_digit_count();
     [rows addObject:@{
         @"kind": @"info",
-        @"title": @"Originals",
+        @"title": NSLocalizedString(@"Originals", nil),
         @"subtitle": backups > 0
-            ? [NSString stringWithFormat:@"%lu file(s) across %lu digit(s) saved",
+            ? [NSString stringWithFormat:NSLocalizedString(@"%lu file(s) across %lu digit(s) saved", nil),
                                          (unsigned long)backups, (unsigned long)backupDigits]
             : @"None saved yet. Restore needs a saved original to write back.",
     }];
 
     [rows addObject:@{ @"kind": @"button",
-                       @"title": @"Restore Original Digits",
+                       @"title": NSLocalizedString(@"Restore Original Digits", nil),
                        @"action": @"passcode-restore",
                        @"destructive": @YES }];
 
@@ -14828,11 +14820,11 @@ static const NSInteger kPasscodePreviewRow = 1;
     // so it must not read as part of the style actions above.
     if (backups > 0) {
         [rows addObject:@{ @"kind": @"button",
-                           @"title": @"Export Originals…",
+                           @"title": NSLocalizedString(@"Export Originals…", nil),
                            @"action": @"passcode-export-backups" }];
     }
     [rows addObject:@{ @"kind": @"button",
-                       @"title": @"Import Originals…",
+                       @"title": NSLocalizedString(@"Import Originals…", nil),
                        @"action": @"passcode-import-backups" }];
 
     return rows;
@@ -14889,15 +14881,15 @@ static const NSInteger kPasscodePreviewRow = 1;
 {
     NSMutableArray<NSDictionary *> *rows = [NSMutableArray arrayWithArray:@[
         @{ @"kind": @"info",
-           @"title": @"Selected Video",
+           @"title": NSLocalizedString(@"Selected Video", nil),
            @"subtitle": settings_livewp_video_detail() },
         @{ @"kind": @"button",
-           @"title": @"Choose Video…",
+           @"title": NSLocalizedString(@"Choose Video…", nil),
            @"action": @"livewp-select-video" },
     ]];
     if ([[NSUserDefaults standardUserDefaults] stringForKey:kSettingsLiveWPVideoPath].length > 0) {
         [rows addObject:@{ @"kind": @"button",
-                           @"title": @"Clear Selected Video",
+                           @"title": NSLocalizedString(@"Clear Selected Video", nil),
                            @"action": @"livewp-clear",
                            @"destructive": @YES }];
     }
@@ -14910,13 +14902,13 @@ static const NSInteger kPasscodePreviewRow = 1;
     return @[
         @{ @"kind": @"info",
            @"title": applied ? @"Current Style: Grid" : @"Current Style: Stock",
-           @"subtitle": @"This is a runtime SpringBoard method patch. It does not write system files; respring restores the stock app switcher." },
+           @"subtitle": NSLocalizedString(@"This is a runtime SpringBoard method patch. It does not write system files; respring restores the stock app switcher.", nil) },
         @{ @"kind": @"info",
-           @"title": @"Session note",
-           @"subtitle": @"If you respring after Hide Home Bar, run App Switcher Grid again because respring resets this live SpringBoard patch." },
+           @"title": NSLocalizedString(@"Session note", nil),
+           @"subtitle": NSLocalizedString(@"If you respring after Hide Home Bar, run App Switcher Grid again because respring resets this live SpringBoard patch.", nil) },
         @{ @"kind": @"button",
-           @"title": @"Restore Stock Switcher",
-           @"subtitle": @"Restores the original switcher style in the active SpringBoard session when available.",
+           @"title": NSLocalizedString(@"Restore Stock Switcher", nil),
+           @"subtitle": NSLocalizedString(@"Restores the original switcher style in the active SpringBoard session when available.", nil),
            @"action": @"appswitchergrid-restore",
            @"destructive": @YES },
     ];
@@ -14928,7 +14920,7 @@ static const NSInteger kPasscodePreviewRow = 1;
     return @[
         @{ @"kind": @"info",
            @"title": applied ? @"Dock: iPad" : @"Dock: Stock",
-           @"subtitle": @"Turn it off in the Installer to bring the stock Dock back; a respring always does." },
+           @"subtitle": NSLocalizedString(@"Turn it off in the Installer to bring the stock Dock back; a respring always does.", nil) },
     ];
 }
 
@@ -14937,31 +14929,31 @@ static const NSInteger kPasscodePreviewRow = 1;
     return @[
         @{ @"kind": @"info",
            @"title": @"FastLockX Lite",
-           @"subtitle": @"Always On keeps the Face ID retry pulse and unlock request armed in SpringBoard until Disable, Clean Up, or respring." },
+           @"subtitle": NSLocalizedString(@"Always On keeps the Face ID retry pulse and unlock request armed in SpringBoard until Disable, Clean Up, or respring.", nil) },
         @{ @"kind": @"button",
-           @"title": @"Enable Always On",
-           @"subtitle": @"Keeps pickup-to-unlock armed after Cyanide closes.",
+           @"title": NSLocalizedString(@"Enable Always On", nil),
+           @"subtitle": NSLocalizedString(@"Keeps pickup-to-unlock armed after Cyanide closes.", nil),
            @"action": @"fastlockx-enable" },
         @{ @"kind": @"button",
-           @"title": @"Disable",
-           @"subtitle": @"Stops the SpringBoard timers.",
+           @"title": NSLocalizedString(@"Disable", nil),
+           @"subtitle": NSLocalizedString(@"Stops the SpringBoard timers.", nil),
            @"action": @"fastlockx-disable" },
         @{ @"kind": @"number",
            @"key": kSettingsFastLockXLiteRetryInterval,
-           @"title": @"Retry interval",
-           @"subtitle": @"Always On uses this as the off→on pulse gap. Default is 0.3s.",
+           @"title": NSLocalizedString(@"Retry interval", nil),
+           @"subtitle": NSLocalizedString(@"Always On uses this as the off→on pulse gap. Default is 0.3s.", nil),
            @"min": @0.1, @"max": @2.0, @"step": @0.1, @"unit": @"s", @"precision": @1, @"default": @0.3 },
         @{ @"key": kSettingsFastLockXLiteBlockMusic,
-           @"title": @"Block if media is active — In progress",
-           @"subtitle": @"In progress — not wired yet. This blocker is disabled for now.",
+           @"title": NSLocalizedString(@"Block if media is active — In progress", nil),
+           @"subtitle": NSLocalizedString(@"In progress — not wired yet. This blocker is disabled for now.", nil),
            @"disabled": @YES },
         @{ @"key": kSettingsFastLockXLiteBlockFlashlight,
-           @"title": @"Block if flashlight is on — In progress",
-           @"subtitle": @"In progress — not wired yet. This blocker is disabled for now.",
+           @"title": NSLocalizedString(@"Block if flashlight is on — In progress", nil),
+           @"subtitle": NSLocalizedString(@"In progress — not wired yet. This blocker is disabled for now.", nil),
            @"disabled": @YES },
         @{ @"key": kSettingsFastLockXLiteBlockLowPower,
-           @"title": @"Block in Low Power Mode — In progress",
-           @"subtitle": @"In progress — not wired yet. This blocker is disabled for now.",
+           @"title": NSLocalizedString(@"Block in Low Power Mode — In progress", nil),
+           @"subtitle": NSLocalizedString(@"In progress — not wired yet. This blocker is disabled for now.", nil),
            @"disabled": @YES },
     ];
 }
@@ -14971,44 +14963,44 @@ static const NSInteger kPasscodePreviewRow = 1;
     NSUserDefaults *d = NSUserDefaults.standardUserDefaults;
     NSMutableArray *out = [NSMutableArray array];
     if (section == SectionSBC) {
-        [out addObject:@{@"title": @"Dock icons",       @"value": [@([d integerForKey:kSettingsSBCDockIcons])  stringValue]}];
-        [out addObject:@{@"title": @"Auto-add Dock app", @"value": [d boolForKey:kSettingsSBCAutoDockApp] ? @"On" : @"Off"}];
+        [out addObject:@{@"title": NSLocalizedString(@"Dock icons", nil),       @"value": [@([d integerForKey:kSettingsSBCDockIcons])  stringValue]}];
+        [out addObject:@{@"title": NSLocalizedString(@"Auto-add Dock app", nil), @"value": [d boolForKey:kSettingsSBCAutoDockApp] ? NSLocalizedString(@"On", nil) : NSLocalizedString(@"Off", nil)}];
         if ([d boolForKey:kSettingsSBCAutoDockApp]) {
-            [out addObject:@{@"title": @"Selected Dock app",
+            [out addObject:@{@"title": NSLocalizedString(@"Selected Dock app", nil),
                              @"value": [d stringForKey:kSettingsSBCDockAppBundleID] ?: kSBCDefaultDockAppBundleID}];
         }
-        [out addObject:@{@"title": @"Home columns",     @"value": [@([d integerForKey:kSettingsSBCCols])        stringValue]}];
-        [out addObject:@{@"title": @"Home rows",        @"value": [@([d integerForKey:kSettingsSBCRows])        stringValue]}];
-        [out addObject:@{@"title": @"Hide icon labels", @"value": [d boolForKey:kSettingsSBCHideLabels] ? @"On" : @"Off"}];
-        [out addObject:@{@"title": @"Arrange pages", @"value": [d boolForKey:kSettingsSBCArrangePages] ? @"On" : @"Off"}];
+        [out addObject:@{@"title": NSLocalizedString(@"Home columns", nil),     @"value": [@([d integerForKey:kSettingsSBCCols])        stringValue]}];
+        [out addObject:@{@"title": NSLocalizedString(@"Home rows", nil),        @"value": [@([d integerForKey:kSettingsSBCRows])        stringValue]}];
+        [out addObject:@{@"title": NSLocalizedString(@"Hide icon labels", nil), @"value": [d boolForKey:kSettingsSBCHideLabels] ? NSLocalizedString(@"On", nil) : NSLocalizedString(@"Off", nil)}];
+        [out addObject:@{@"title": NSLocalizedString(@"Arrange pages", nil), @"value": [d boolForKey:kSettingsSBCArrangePages] ? NSLocalizedString(@"On", nil) : NSLocalizedString(@"Off", nil)}];
         if ([d boolForKey:kSettingsSBCArrangePages]) {
-            [out addObject:@{@"title": @"Page icon counts",
+            [out addObject:@{@"title": NSLocalizedString(@"Page icon counts", nil),
                              @"value": [NSString stringWithFormat:@"%ld / %ld",
                                         (long)[d integerForKey:kSettingsSBCFirstPageIcons],
                                         (long)[d integerForKey:kSettingsSBCOtherPageIcons]]}];
         }
     } else if (section == SectionLayoutExtras) {
-        [out addObject:@{@"title": @"Home extra L/R",   @"value": [NSString stringWithFormat:@"%ld/%ld",
+        [out addObject:@{@"title": NSLocalizedString(@"Home extra L/R", nil),   @"value": [NSString stringWithFormat:@"%ld/%ld",
                                                                     (long)[d integerForKey:kSettingsLayoutHomeExtraLeft],
                                                                     (long)[d integerForKey:kSettingsLayoutHomeExtraRight]]}];
-        [out addObject:@{@"title": @"Home extra T/B",   @"value": [NSString stringWithFormat:@"%ld/%ld",
+        [out addObject:@{@"title": NSLocalizedString(@"Home extra T/B", nil),   @"value": [NSString stringWithFormat:@"%ld/%ld",
                                                                     (long)[d integerForKey:kSettingsLayoutHomeExtraTop],
                                                                     (long)[d integerForKey:kSettingsLayoutHomeExtraBottom]]}];
-        [out addObject:@{@"title": @"Dock extra L/R",   @"value": [NSString stringWithFormat:@"%ld/%ld",
+        [out addObject:@{@"title": NSLocalizedString(@"Dock extra L/R", nil),   @"value": [NSString stringWithFormat:@"%ld/%ld",
                                                                     (long)[d integerForKey:kSettingsLayoutDockExtraLeft],
                                                                     (long)[d integerForKey:kSettingsLayoutDockExtraRight]]}];
-        [out addObject:@{@"title": @"Home scale %",     @"value": [@([d integerForKey:kSettingsLayoutHomeScalePct]) stringValue]}];
-        [out addObject:@{@"title": @"Dock scale %",     @"value": [@([d integerForKey:kSettingsLayoutDockScalePct]) stringValue]}];
+        [out addObject:@{@"title": NSLocalizedString(@"Home scale %", nil),     @"value": [@([d integerForKey:kSettingsLayoutHomeScalePct]) stringValue]}];
+        [out addObject:@{@"title": NSLocalizedString(@"Dock scale %", nil),     @"value": [@([d integerForKey:kSettingsLayoutDockScalePct]) stringValue]}];
     } else if (section == SectionStatBar) {
-        [out addObject:@{@"title": @"Celsius",             @"value": [d boolForKey:kSettingsStatBarCelsius]    ? @"On" : @"Off"}];
-        [out addObject:@{@"title": @"Show CPU %",          @"value": [d boolForKey:kSettingsStatBarShowCPU]    ? @"On" : @"Off"}];
-        [out addObject:@{@"title": @"Show CPU/RAM labels", @"value": [d boolForKey:kSettingsStatBarShowLabels] ? @"On" : @"Off"}];
-        [out addObject:@{@"title": @"Show net speed",      @"value": [d boolForKey:kSettingsStatBarShowNet]    ? @"On" : @"Off"}];
-        [out addObject:@{@"title": @"Network speed only",  @"value": [d boolForKey:kSettingsStatBarNetworkOnly] ? @"On" : @"Off"}];
-        [out addObject:@{@"title": @"Refresh rate",        @"value": [NSString stringWithFormat:@"%lds",
+        [out addObject:@{@"title": NSLocalizedString(@"Celsius", nil),             @"value": [d boolForKey:kSettingsStatBarCelsius]    ? NSLocalizedString(@"On", nil) : NSLocalizedString(@"Off", nil)}];
+        [out addObject:@{@"title": NSLocalizedString(@"Show CPU %", nil),          @"value": [d boolForKey:kSettingsStatBarShowCPU]    ? NSLocalizedString(@"On", nil) : NSLocalizedString(@"Off", nil)}];
+        [out addObject:@{@"title": NSLocalizedString(@"Show CPU/RAM labels", nil), @"value": [d boolForKey:kSettingsStatBarShowLabels] ? NSLocalizedString(@"On", nil) : NSLocalizedString(@"Off", nil)}];
+        [out addObject:@{@"title": NSLocalizedString(@"Show net speed", nil),      @"value": [d boolForKey:kSettingsStatBarShowNet]    ? NSLocalizedString(@"On", nil) : NSLocalizedString(@"Off", nil)}];
+        [out addObject:@{@"title": NSLocalizedString(@"Network speed only", nil),  @"value": [d boolForKey:kSettingsStatBarNetworkOnly] ? NSLocalizedString(@"On", nil) : NSLocalizedString(@"Off", nil)}];
+        [out addObject:@{@"title": NSLocalizedString(@"Refresh rate", nil),        @"value": [NSString stringWithFormat:@"%lds",
                                                                        (long)[d integerForKey:kSettingsStatBarRefreshRateSec]]}];
     } else if (section == SectionNSBar) {
-        [out addObject:@{@"title": @"Position", @"value": settings_nsbar_position_name([d integerForKey:kSettingsNSBarPosition])}];
+        [out addObject:@{@"title": NSLocalizedString(@"Position", nil), @"value": settings_nsbar_position_name([d integerForKey:kSettingsNSBarPosition])}];
     } else if (section == SectionNiceBarLite) {
         for (NSInteger i = 0; i < NiceBarLiteSlotCount; i++) {
             NSInteger kind = [d integerForKey:settings_nicebar_key(kSettingsNiceBarLiteSlotKindPrefix, i)];
@@ -15016,60 +15008,60 @@ static const NSInteger kPasscodePreviewRow = 1;
                              @"value": settings_nicebar_kind_name(kind)}];
         }
     } else if (section == SectionAppSwitcherGrid) {
-        [out addObject:@{@"title": @"Switcher style",
+        [out addObject:@{@"title": NSLocalizedString(@"Switcher style", nil),
                          @"value": settings_tweak_is_applied(kSettingsAppSwitcherGridEnabled) ? @"Grid" : @"Stock"}];
     } else if (section == SectionFloatingDock) {
-        [out addObject:@{@"title": @"Dock",
+        [out addObject:@{@"title": NSLocalizedString(@"Dock", nil),
                          @"value": settings_tweak_is_applied(kSettingsFloatingDockEnabled) ? @"iPad" : @"Stock"}];
     } else if (section == SectionFastLockXLite) {
         BOOL alwaysOnIntent = [d boolForKey:kSettingsFastLockXLiteEnabled];
         BOOL alwaysOnApplied = settings_tweak_is_applied(kSettingsFastLockXLiteEnabled);
-        [out addObject:@{@"title": @"Always On",
+        [out addObject:@{@"title": NSLocalizedString(@"Always On", nil),
                          @"value": alwaysOnApplied ? @"Enabled" : (alwaysOnIntent ? @"Queued" : @"Off")}];
-        [out addObject:@{@"title": @"Retry interval",
+        [out addObject:@{@"title": NSLocalizedString(@"Retry interval", nil),
                          @"value": [NSString stringWithFormat:@"%.1fs", settings_fastlockx_lite_retry_interval(d)]}];
-        [out addObject:@{@"title": @"Blockers",
+        [out addObject:@{@"title": NSLocalizedString(@"Blockers", nil),
                          @"value": @"In progress"}];
     } else if (section == SectionPowercuff) {
         NSString *lvl = [d stringForKey:kSettingsPowercuffLevel] ?: @"nominal";
-        [out addObject:@{@"title": @"Level", @"value": lvl}];
+        [out addObject:@{@"title": NSLocalizedString(@"Level", nil), @"value": lvl}];
     } else if (section == SectionDragCoefficient) {
         double v = settings_drag_coefficient_value(d);
-        [out addObject:@{@"title": @"Coefficient", @"value": [NSString stringWithFormat:@"%.2f", v]}];
+        [out addObject:@{@"title": NSLocalizedString(@"Coefficient", nil), @"value": [NSString stringWithFormat:@"%.2f", v]}];
     } else if (section == SectionLockScreenDuration) {
-        [out addObject:@{@"title": @"Duration",
+        [out addObject:@{@"title": NSLocalizedString(@"Duration", nil),
                          @"value": [NSString stringWithFormat:@"%llds", settings_lock_duration_value(d)]}];
     } else if (section == SectionNanoRegistry) {
-        [out addObject:@{@"title": @"watchOS limit",      @"value": [@([d integerForKey:kSettingsNanoMaxPairing])       stringValue]}];
-        [out addObject:@{@"title": @"Setup floor",        @"value": [@([d integerForKey:kSettingsNanoMinPairing])       stringValue]}];
-        [out addObject:@{@"title": @"Legacy chip floor",  @"value": [@([d integerForKey:kSettingsNanoMinPairingChipID]) stringValue]}];
-        [out addObject:@{@"title": @"Multi-watch switch", @"value": [@([d integerForKey:kSettingsNanoMinQuickSwitch])   stringValue]}];
+        [out addObject:@{@"title": NSLocalizedString(@"watchOS limit", nil),      @"value": [@([d integerForKey:kSettingsNanoMaxPairing])       stringValue]}];
+        [out addObject:@{@"title": NSLocalizedString(@"Setup floor", nil),        @"value": [@([d integerForKey:kSettingsNanoMinPairing])       stringValue]}];
+        [out addObject:@{@"title": NSLocalizedString(@"Legacy chip floor", nil),  @"value": [@([d integerForKey:kSettingsNanoMinPairingChipID]) stringValue]}];
+        [out addObject:@{@"title": NSLocalizedString(@"Multi-watch switch", nil), @"value": [@([d integerForKey:kSettingsNanoMinQuickSwitch])   stringValue]}];
     } else if (section == SectionThemer) {
-        [out addObject:@{@"title": @"Theme", @"value": settings_themer_selected_theme_display_name()}];
+        [out addObject:@{@"title": NSLocalizedString(@"Theme", nil), @"value": settings_themer_selected_theme_display_name()}];
     } else if (section == SectionSnowBoardLite) {
-        [out addObject:@{@"title": @"Theme", @"value": settings_snowboardlite_selected_theme_display_name()}];
+        [out addObject:@{@"title": NSLocalizedString(@"Theme", nil), @"value": settings_snowboardlite_selected_theme_display_name()}];
     } else if (section == SectionPasscodeTheme) {
         NSDictionary *passcodeTheme = settings_passcode_selected_theme();
-        [out addObject:@{@"title": @"Style",
+        [out addObject:@{@"title": NSLocalizedString(@"Style", nil),
                          @"value": passcodeTheme ? settings_passcode_selected_theme_display_name() : @"None selected"}];
         if (passcodeTheme) {
-            [out addObject:@{@"title": @"Digits in style",
+            [out addObject:@{@"title": NSLocalizedString(@"Digits in style", nil),
                              @"value": [NSString stringWithFormat:@"%lu/10",
                                         (unsigned long)settings_passcode_theme_digit_presence(passcodeTheme).count]}];
         }
-        [out addObject:@{@"title": @"Saved originals",
+        [out addObject:@{@"title": NSLocalizedString(@"Saved originals", nil),
                          @"value": [@(settings_passcode_theme_backup_count()) stringValue]}];
     } else if (section == SectionLiveWP) {
-        [out addObject:@{@"title": @"Video", @"value": settings_livewp_video_detail()}];
+        [out addObject:@{@"title": NSLocalizedString(@"Video", nil), @"value": settings_livewp_video_detail()}];
     } else if (section == SectionLocationSim) {
-        [out addObject:@{@"title": @"Target", @"value": settings_location_sim_target_summary(d)}];
+        [out addObject:@{@"title": NSLocalizedString(@"Target", nil), @"value": settings_location_sim_target_summary(d)}];
     } else if (section == SectionGravityLite) {
-        [out addObject:@{@"title": @"Dock",         @"value": [d boolForKey:kSettingsGravityLiteDockEnabled] ? @"Included" : @"Home only"}];
-        [out addObject:@{@"title": @"Strength",     @"value": [NSString stringWithFormat:@"%ld%%", (long)[d integerForKey:kSettingsGravityLiteMagnitudePct]]}];
-        [out addObject:@{@"title": @"Bounce",       @"value": [NSString stringWithFormat:@"%ld%%", (long)[d integerForKey:kSettingsGravityLiteBouncePct]]}];
-        [out addObject:@{@"title": @"Friction",     @"value": [NSString stringWithFormat:@"%ld%%", (long)[d integerForKey:kSettingsGravityLiteFrictionPct]]}];
-        [out addObject:@{@"title": @"Resistance",   @"value": [NSString stringWithFormat:@"%ld%%", (long)[d integerForKey:kSettingsGravityLiteResistancePct]]}];
-        [out addObject:@{@"title": @"Spin resist.", @"value": [NSString stringWithFormat:@"%ld%%", (long)[d integerForKey:kSettingsGravityLiteAngularResistancePct]]}];
+        [out addObject:@{@"title": NSLocalizedString(@"Dock", nil),         @"value": [d boolForKey:kSettingsGravityLiteDockEnabled] ? @"Included" : @"Home only"}];
+        [out addObject:@{@"title": NSLocalizedString(@"Strength", nil),     @"value": [NSString stringWithFormat:@"%ld%%", (long)[d integerForKey:kSettingsGravityLiteMagnitudePct]]}];
+        [out addObject:@{@"title": NSLocalizedString(@"Bounce", nil),       @"value": [NSString stringWithFormat:@"%ld%%", (long)[d integerForKey:kSettingsGravityLiteBouncePct]]}];
+        [out addObject:@{@"title": NSLocalizedString(@"Friction", nil),     @"value": [NSString stringWithFormat:@"%ld%%", (long)[d integerForKey:kSettingsGravityLiteFrictionPct]]}];
+        [out addObject:@{@"title": NSLocalizedString(@"Resistance", nil),   @"value": [NSString stringWithFormat:@"%ld%%", (long)[d integerForKey:kSettingsGravityLiteResistancePct]]}];
+        [out addObject:@{@"title": NSLocalizedString(@"Spin resist.", nil), @"value": [NSString stringWithFormat:@"%ld%%", (long)[d integerForKey:kSettingsGravityLiteAngularResistancePct]]}];
     }
     return out;
 }
@@ -15115,7 +15107,7 @@ static const NSInteger kPasscodePreviewRow = 1;
 - (NSArray<NSDictionary *> *)allTweakBundleRows
 {
     return @[
-        @{ @"title": @"Launch Options",     @"icon": @"bolt.fill",                          @"color": [UIColor systemRedColor],    @"section": @(SectionLaunch) },
+        @{ @"title": NSLocalizedString(@"Launch Options", nil),     @"icon": @"bolt.fill",                          @"color": [UIColor systemRedColor],    @"section": @(SectionLaunch) },
         @{ @"title": @"SBCustomizer",       @"icon": @"square.grid.3x3.fill",                @"color": [UIColor systemBlueColor],   @"section": @(SectionSBC) },
         @{ @"title": @"StatBar",            @"icon": @"thermometer.medium",                  @"color": [UIColor systemRedColor],    @"section": @(SectionStatBar) },
         @{ @"title": @"NSBar",              @"icon": @"network",                             @"color": [UIColor systemBlueColor],   @"section": @(SectionNSBar) },
@@ -15125,18 +15117,18 @@ static const NSInteger kPasscodePreviewRow = 1;
         @{ @"title": @"FastLockX Lite",     @"icon": @"lock.open.fill",                      @"color": [UIColor systemGreenColor],  @"section": @(SectionFastLockXLite) },
 #endif
         @{ @"title": @"Gravity Lite",       @"icon": @"arrow.down.circle.fill",              @"color": [UIColor systemGreenColor],  @"section": @(SectionGravityLite) },
-        @{ @"title": @"App Switcher Grid",  @"icon": @"square.grid.2x2.fill",                @"color": [UIColor systemOrangeColor], @"section": @(SectionAppSwitcherGrid) },
-        @{ @"title": @"iPad Dock",          @"icon": @"dock.rectangle",                      @"color": [UIColor systemBlueColor],   @"section": @(SectionFloatingDock) },
-        @{ @"title": @"Location Simulator", @"icon": @"location.fill",                       @"color": [UIColor systemGreenColor],  @"section": @(SectionLocationSim) },
+        @{ @"title": NSLocalizedString(@"App Switcher Grid", nil),  @"icon": @"square.grid.2x2.fill",                @"color": [UIColor systemOrangeColor], @"section": @(SectionAppSwitcherGrid) },
+        @{ @"title": NSLocalizedString(@"iPad Dock", nil),          @"icon": @"dock.rectangle",                      @"color": [UIColor systemBlueColor],   @"section": @(SectionFloatingDock) },
+        @{ @"title": NSLocalizedString(@"Location Simulator", nil), @"icon": @"location.fill",                       @"color": [UIColor systemGreenColor],  @"section": @(SectionLocationSim) },
         @{ @"title": @"SnowBoard Lite",     @"icon": @"square.stack.3d.up.fill",             @"color": [UIColor systemCyanColor],   @"section": @(SectionSnowBoardLite) },
         @{ @"title": @"LiveWP",             @"icon": @"play.rectangle.fill",                 @"color": [UIColor systemPurpleColor], @"section": @(SectionLiveWP) },
         @{ @"title": @"QuickLoader",        @"icon": @"bolt.fill",                           @"color": [UIColor systemYellowColor], @"section": @(SectionQuickLoader) },
         @{ @"title": @"RepoTweaks",         @"icon": @"tray.and.arrow.down.fill",            @"color": [UIColor systemBlueColor],   @"section": @(SectionRepoTweaks) },
         @{ @"title": @"Powercuff",          @"icon": @"bolt.slash.fill",                     @"color": [UIColor systemOrangeColor], @"section": @(SectionPowercuff) },
-        @{ @"title": @"Drag Coefficient",   @"icon": @"dial.medium.fill",                    @"color": [UIColor systemIndigoColor], @"section": @(SectionDragCoefficient) },
-        @{ @"title": @"Home Layout Extras", @"icon": @"square.dashed.inset.filled",          @"color": [UIColor systemPurpleColor], @"section": @(SectionLayoutExtras) },
-        @{ @"title": @"Lock Screen Duration", @"icon": @"lock.rectangle.on.rectangle",       @"color": [UIColor systemIndigoColor], @"section": @(SectionLockScreenDuration) },
-        @{ @"title": @"Passcode Style",     @"icon": @"circle.grid.3x3.fill",                @"color": [UIColor systemPinkColor],   @"section": @(SectionPasscodeTheme) },
+        @{ @"title": NSLocalizedString(@"Drag Coefficient", nil),   @"icon": @"dial.medium.fill",                    @"color": [UIColor systemIndigoColor], @"section": @(SectionDragCoefficient) },
+        @{ @"title": NSLocalizedString(@"Home Layout Extras", nil), @"icon": @"square.dashed.inset.filled",          @"color": [UIColor systemPurpleColor], @"section": @(SectionLayoutExtras) },
+        @{ @"title": NSLocalizedString(@"Lock Screen Duration", nil), @"icon": @"lock.rectangle.on.rectangle",       @"color": [UIColor systemIndigoColor], @"section": @(SectionLockScreenDuration) },
+        @{ @"title": NSLocalizedString(@"Passcode Style", nil),     @"icon": @"circle.grid.3x3.fill",                @"color": [UIColor systemPinkColor],   @"section": @(SectionPasscodeTheme) },
     ];
 }
 
@@ -15158,17 +15150,17 @@ UIViewController *settings_make_daemons_viewer(void)
 - (NSArray<NSDictionary *> *)allSystemBundleRows
 {
     return @[
-        @{ @"title": @"OTA Updates",       @"icon": @"icloud.slash.fill",    @"color": [UIColor systemGrayColor],   @"section": @(SectionOTA) },
-        @{ @"title": @"Supervision",       @"icon": @"building.2.fill",      @"color": [UIColor systemIndigoColor], @"section": @(SectionSupervision) },
-        @{ @"title": @"Watch Pairing",     @"icon": @"applewatch.radiowaves.left.and.right", @"color": [UIColor systemPurpleColor], @"section": @(SectionNanoRegistry) },
+        @{ @"title": NSLocalizedString(@"OTA Updates", nil),       @"icon": @"icloud.slash.fill",    @"color": [UIColor systemGrayColor],   @"section": @(SectionOTA) },
+        @{ @"title": NSLocalizedString(@"Supervision", nil),       @"icon": @"building.2.fill",      @"color": [UIColor systemIndigoColor], @"section": @(SectionSupervision) },
+        @{ @"title": NSLocalizedString(@"Watch Pairing", nil),     @"icon": @"applewatch.radiowaves.left.and.right", @"color": [UIColor systemPurpleColor], @"section": @(SectionNanoRegistry) },
         // Process Viewer: shipped in 1.7.0 after the rounds 23–42 stability work
         // (launchd-hijack ABBA avoidance, tro-dance helper liveness, safe-detach
         // drains) — no longer WIP.
-        @{ @"title": @"Process Viewer",    @"icon": @"list.bullet.rectangle.fill", @"color": [UIColor systemGrayColor], @"section": @(-1), @"custom": @"procmgr" },
-        @{ @"title": @"File Browser",      @"icon": @"folder.fill", @"color": [UIColor systemBlueColor], @"section": @(-1), @"custom": @"filebrowser" },
-        @{ @"title": @"Daemon Manager",    @"icon": @"gearshape.2.fill", @"color": [UIColor systemTealColor], @"section": @(-1), @"custom": @"daemons" },
-        @{ @"title": @"System Info",       @"icon": @"info.circle.fill", @"color": [UIColor systemGreenColor], @"section": @(-1), @"custom": @"sysinfo" },
-        @{ @"title": @"Cache Cleaner",     @"icon": @"trash.fill", @"color": [UIColor systemCyanColor], @"section": @(-1), @"custom": @"cleaner" },
+        @{ @"title": NSLocalizedString(@"Process Viewer", nil),    @"icon": @"list.bullet.rectangle.fill", @"color": [UIColor systemGrayColor], @"section": @(-1), @"custom": @"procmgr" },
+        @{ @"title": NSLocalizedString(@"File Browser", nil),      @"icon": @"folder.fill", @"color": [UIColor systemBlueColor], @"section": @(-1), @"custom": @"filebrowser" },
+        @{ @"title": NSLocalizedString(@"Daemon Manager", nil),    @"icon": @"gearshape.2.fill", @"color": [UIColor systemTealColor], @"section": @(-1), @"custom": @"daemons" },
+        @{ @"title": NSLocalizedString(@"System Info", nil),       @"icon": @"info.circle.fill", @"color": [UIColor systemGreenColor], @"section": @(-1), @"custom": @"sysinfo" },
+        @{ @"title": NSLocalizedString(@"Cache Cleaner", nil),     @"icon": @"trash.fill", @"color": [UIColor systemCyanColor], @"section": @(-1), @"custom": @"cleaner" },
     ];
 }
 
@@ -15176,16 +15168,16 @@ UIViewController *settings_make_daemons_viewer(void)
 - (NSArray<NSDictionary *> *)laraRows
 {
     return @[
-        @{ @"title": @"Performance HUD",  @"icon": @"gauge.with.dots.needle.67percent", @"color": [UIColor systemPinkColor],   @"section": @(-1), @"custom": @"lara", @"lara": @(LaraToolPerformanceHUD) },
-        @{ @"title": @"Debug Overlay",    @"icon": @"ladybug.fill",          @"color": [UIColor systemOrangeColor], @"section": @(-1), @"custom": @"lara", @"lara": @(LaraToolDebugOverlay) },
-        @{ @"title": @"Upside Down",      @"icon": @"arrow.up.and.down.circle.fill", @"color": [UIColor systemIndigoColor], @"section": @(-1), @"custom": @"lara", @"lara": @(LaraToolUpsideDown) },
-        @{ @"title": @"Hidden Settings",  @"icon": @"eye.slash.fill",        @"color": [UIColor systemGrayColor],   @"section": @(-1), @"custom": @"lara", @"lara": @(LaraToolHiddenSettings) },
-        @{ @"title": @"JIT Enabler",      @"icon": @"bolt.horizontal.fill",  @"color": [UIColor systemYellowColor], @"section": @(-1), @"custom": @"lara", @"lara": @(LaraToolJIT) },
-        @{ @"title": @"3-App Limit",      @"icon": @"square.stack.3d.up.fill", @"color": [UIColor systemTealColor], @"section": @(-1), @"custom": @"lara", @"lara": @(LaraToolAppLimit) },
-        @{ @"title": @"Wallet Card Art",  @"icon": @"creditcard.fill",       @"color": [UIColor systemGreenColor],  @"section": @(-1), @"custom": @"lara", @"lara": @(LaraToolCards) },
-        @{ @"title": @"App Decrypt",      @"icon": @"lock.open.display",     @"color": [UIColor systemBlueColor],   @"section": @(-1), @"custom": @"lara", @"lara": @(LaraToolDecrypt) },
-        @{ @"title": @"SpringBoard Tools", @"icon": @"dock.rectangle",       @"color": [UIColor systemTealColor],   @"section": @(-1), @"custom": @"lara", @"lara": @(LaraToolSpringBoard) },
-        @{ @"title": @"Font Overwrite",   @"icon": @"textformat",            @"color": [UIColor systemPurpleColor], @"section": @(-1), @"custom": @"lara", @"lara": @(LaraToolFonts) },
+        @{ @"title": NSLocalizedString(@"Performance HUD", nil),  @"icon": @"gauge.with.dots.needle.67percent", @"color": [UIColor systemPinkColor],   @"section": @(-1), @"custom": @"lara", @"lara": @(LaraToolPerformanceHUD) },
+        @{ @"title": NSLocalizedString(@"Debug Overlay", nil),    @"icon": @"ladybug.fill",          @"color": [UIColor systemOrangeColor], @"section": @(-1), @"custom": @"lara", @"lara": @(LaraToolDebugOverlay) },
+        @{ @"title": NSLocalizedString(@"Upside Down", nil),      @"icon": @"arrow.up.and.down.circle.fill", @"color": [UIColor systemIndigoColor], @"section": @(-1), @"custom": @"lara", @"lara": @(LaraToolUpsideDown) },
+        @{ @"title": NSLocalizedString(@"Hidden Settings", nil),  @"icon": @"eye.slash.fill",        @"color": [UIColor systemGrayColor],   @"section": @(-1), @"custom": @"lara", @"lara": @(LaraToolHiddenSettings) },
+        @{ @"title": NSLocalizedString(@"JIT Enabler", nil),      @"icon": @"bolt.horizontal.fill",  @"color": [UIColor systemYellowColor], @"section": @(-1), @"custom": @"lara", @"lara": @(LaraToolJIT) },
+        @{ @"title": NSLocalizedString(@"3-App Limit", nil),      @"icon": @"square.stack.3d.up.fill", @"color": [UIColor systemTealColor], @"section": @(-1), @"custom": @"lara", @"lara": @(LaraToolAppLimit) },
+        @{ @"title": NSLocalizedString(@"Wallet Card Art", nil),  @"icon": @"creditcard.fill",       @"color": [UIColor systemGreenColor],  @"section": @(-1), @"custom": @"lara", @"lara": @(LaraToolCards) },
+        @{ @"title": NSLocalizedString(@"App Decrypt", nil),      @"icon": @"lock.open.display",     @"color": [UIColor systemBlueColor],   @"section": @(-1), @"custom": @"lara", @"lara": @(LaraToolDecrypt) },
+        @{ @"title": NSLocalizedString(@"SpringBoard Tools", nil), @"icon": @"dock.rectangle",       @"color": [UIColor systemTealColor],   @"section": @(-1), @"custom": @"lara", @"lara": @(LaraToolSpringBoard) },
+        @{ @"title": NSLocalizedString(@"Font Overwrite", nil),   @"icon": @"textformat",            @"color": [UIColor systemPurpleColor], @"section": @(-1), @"custom": @"lara", @"lara": @(LaraToolFonts) },
     ];
 }
 
@@ -15301,7 +15293,7 @@ UIViewController *settings_make_daemons_viewer(void)
         return @"kexploit_opa334 runs once per app lifetime. Keep Alive applies only while Cyanide is minimized; an App Switcher kill still terminates the process.";
     }
     if (s == SectionSBC) {
-        return [NSString stringWithFormat:@"Stock iOS defaults: dock %ld, columns %ld, rows %ld. The optional Dock app move runs after Dock expansion and before page arrangement; the Watusi WhatsApp duplicate is the initial selection. Page defaults are %ld icons on page one and %ld on later pages.",
+        return [NSString stringWithFormat:NSLocalizedString(@"Stock iOS defaults: dock %ld, columns %ld, rows %ld. The optional Dock app move runs after Dock expansion and before page arrangement; the Watusi WhatsApp duplicate is the initial selection. Page defaults are %ld icons on page one and %ld on later pages.", nil),
                 (long)kSBCDefaultDockIcons, (long)kSBCDefaultCols, (long)kSBCDefaultRows,
                 (long)kSBCDefaultFirstPageIcons, (long)kSBCDefaultOtherPageIcons];
     }
@@ -15318,8 +15310,7 @@ UIViewController *settings_make_daemons_viewer(void)
         NSInteger major = [[NSProcessInfo processInfo] operatingSystemVersion].majorVersion;
         if (major >= 26) {
             return [NSString stringWithFormat:
-                @"Adds extra padding and per-icon scaling on top of the stock home/dock layout.\n\n"
-                @"Running on iOS %ld: the upstream config-mutation path doesn't exist (AMUIInfographIconListLayout has no mutable configuration), so the iOS 26 path instead walks the live SBIconListView/SBIconView hierarchy and adjusts frames + iconImageInfo directly. One-shot at Run; iOS 26 may re-fit on a subsequent layout pass (rotation, page swipe).",
+                NSLocalizedString(@"Adds extra padding and per-icon scaling on top of the stock home/dock layout.\n\nRunning on iOS %ld: the upstream config-mutation path doesn't exist (AMUIInfographIconListLayout has no mutable configuration), so the iOS 26 path instead walks the live SBIconListView/SBIconView hierarchy and adjusts frames + iconImageInfo directly. One-shot at Run; iOS 26 may re-fit on a subsequent layout pass (rotation, page swipe).", nil),
                 (long)major];
         }
         return @"Adds extra padding and per-icon scaling on top of the stock home/dock layout. Defaults are zero padding and 100% scale (no change). Toggle Enable on and hit Run to apply; values aren't persisted across respring.";
@@ -15467,7 +15458,7 @@ UIViewController *settings_make_daemons_viewer(void)
     cell.textLabel.text = row[@"title"];
     cell.textLabel.font = [UIFont systemFontOfSize:17.0];
     cell.textLabel.textColor = UIColor.tertiaryLabelColor;
-    cell.detailTextLabel.text = @"In Development";
+    cell.detailTextLabel.text = NSLocalizedString(@"In Development", nil);
     cell.detailTextLabel.font = [UIFont systemFontOfSize:13.0];
     cell.detailTextLabel.textColor = UIColor.tertiaryLabelColor;
     cell.accessoryType = UITableViewCellAccessoryNone;
@@ -15574,7 +15565,7 @@ UIViewController *settings_make_daemons_viewer(void)
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"changelog-footer"];
     }
     cell.imageView.image = nil;
-    cell.textLabel.text = @"See all releases on GitHub";
+    cell.textLabel.text = NSLocalizedString(@"See all releases on GitHub", nil);
     cell.textLabel.font = [UIFont systemFontOfSize:15.0];
     cell.textLabel.textColor = settings_cell_tint_color(self.view);
     cell.detailTextLabel.text = nil;
@@ -15608,10 +15599,10 @@ UIViewController *settings_make_daemons_viewer(void)
     NSInteger count = 0;
     for (id c in first[@"changes"]) { if ([c isKindOfClass:[NSString class]]) count++; }
     cell.imageView.image = [SettingsViewController iconBadgeWithSymbol:@"sparkles" color:UIColor.systemYellowColor size:29.0];
-    cell.textLabel.text = [NSString stringWithFormat:@"What's New in v%@", version];
+    cell.textLabel.text = [NSString stringWithFormat:NSLocalizedString(@"What's New in v%@", nil), version];
     cell.textLabel.font = [UIFont systemFontOfSize:17.0];
     cell.textLabel.textColor = UIColor.labelColor;
-    cell.detailTextLabel.text = [NSString stringWithFormat:@"%ld change%@", (long)count, count == 1 ? @"" : @"s"];
+    cell.detailTextLabel.text = [NSString stringWithFormat:NSLocalizedString(@"%ld change%@", nil), (long)count, count == 1 ? @"" : @"s"];
     cell.detailTextLabel.textColor = UIColor.secondaryLabelColor;
     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     cell.selectionStyle = UITableViewCellSelectionStyleDefault;
@@ -15625,7 +15616,7 @@ UIViewController *settings_make_daemons_viewer(void)
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"changelog-collapse"];
     }
     cell.imageView.image = nil;
-    cell.textLabel.text = @"Show Less";
+    cell.textLabel.text = NSLocalizedString(@"Show Less", nil);
     cell.textLabel.font = [UIFont systemFontOfSize:15.0];
     cell.textLabel.textColor = settings_cell_tint_color(self.view);
     cell.textLabel.textAlignment = NSTextAlignmentCenter;
@@ -15649,9 +15640,9 @@ UIViewController *settings_make_daemons_viewer(void)
     cell.imageView.image = [SettingsViewController iconBadgeWithSymbol:@"book.closed.fill" color:UIColor.systemPurpleColor size:29.0];
     cell.textLabel.font = [UIFont systemFontOfSize:17.0];
     cell.textLabel.textColor = UIColor.labelColor;
-    cell.textLabel.text = @"Tweak SDK";
+    cell.textLabel.text = NSLocalizedString(@"Tweak SDK", nil);
     cell.detailTextLabel.textColor = UIColor.secondaryLabelColor;
-    cell.detailTextLabel.text = @"How to write Cyanide tweaks";
+    cell.detailTextLabel.text = NSLocalizedString(@"How to write Cyanide tweaks", nil);
     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     cell.selectionStyle = UITableViewCellSelectionStyleDefault;
     return cell;
@@ -15674,25 +15665,25 @@ UIViewController *settings_make_daemons_viewer(void)
     switch (row) {
         case 0:
             cell.imageView.image = [SettingsViewController iconBadgeWithSymbol:@"at" color:UIColor.systemBlueColor size:29.0];
-            cell.textLabel.text = @"Twitter";
+            cell.textLabel.text = NSLocalizedString(@"Twitter", nil);
             cell.detailTextLabel.text = @"@_kolbicz";
             break;
         case 1:
             cell.imageView.image = [SettingsViewController iconBadgeWithSymbol:@"book.closed.fill" color:UIColor.systemPurpleColor size:29.0];
-            cell.textLabel.text = @"Tweak SDK";
+            cell.textLabel.text = NSLocalizedString(@"Tweak SDK", nil);
             break;
         case 2:
             cell.imageView.image = [SettingsViewController iconBadgeWithSymbol:@"app.fill" color:UIColor.systemTealColor size:29.0];
-            cell.textLabel.text = @"App Icon";
+            cell.textLabel.text = NSLocalizedString(@"App Icon", nil);
             cell.detailTextLabel.text = [[self currentAppIconStyle] isEqualToString:@"classic"] ? @"Classic" : @"Modern";
             break;
         case 3:
             cell.imageView.image = [SettingsViewController iconBadgeWithSymbol:@"doc.text.magnifyingglass" color:UIColor.systemGrayColor size:29.0];
-            cell.textLabel.text = @"View Log";
+            cell.textLabel.text = NSLocalizedString(@"View Log", nil);
             break;
         default:
             cell.imageView.image = [SettingsViewController iconBadgeWithSymbol:@"square.and.arrow.up" color:UIColor.systemGreenColor size:29.0];
-            cell.textLabel.text = @"Share Log";
+            cell.textLabel.text = NSLocalizedString(@"Share Log", nil);
             break;
     }
     return cell;
@@ -15756,10 +15747,10 @@ UIViewController *settings_make_daemons_viewer(void)
 - (void)presentThemerImporter
 {
     UIAlertController *hint = [UIAlertController
-        alertControllerWithTitle:@"Import Theme Folder"
-                         message:@"Navigate into your theme folder so you can see the PNG files inside, then tap Open in the top-right corner to import the folder."
+        alertControllerWithTitle:NSLocalizedString(@"Import Theme Folder", nil)
+                         message:NSLocalizedString(@"Navigate into your theme folder so you can see the PNG files inside, then tap Open in the top-right corner to import the folder.", nil)
                   preferredStyle:UIAlertControllerStyleAlert];
-    [hint addAction:[UIAlertAction actionWithTitle:@"Continue" style:UIAlertActionStyleDefault handler:^(UIAlertAction *a) {
+    [hint addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Continue", nil) style:UIAlertActionStyleDefault handler:^(UIAlertAction *a) {
         (void)a;
         UIDocumentPickerViewController *picker =
             [[UIDocumentPickerViewController alloc] initForOpeningContentTypes:@[UTTypeFolder, UTTypePropertyList]];
@@ -15768,17 +15759,17 @@ UIViewController *settings_make_daemons_viewer(void)
         picker.allowsMultipleSelection = NO;
         [self presentViewController:picker animated:YES completion:nil];
     }]];
-    [hint addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];
+    [hint addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil) style:UIAlertActionStyleCancel handler:nil]];
     [self presentViewController:hint animated:YES completion:nil];
 }
 
 - (void)presentSnowBoardLiteFolderImporter
 {
     UIAlertController *hint = [UIAlertController
-        alertControllerWithTitle:@"Import Theme Folder"
-                         message:@"Navigate into your theme folder so you can see IconBundles inside, then tap Open.\n\nIf tapping Open does nothing, your signing tool may need \"Match provisioning identifier\" enabled, or you can use Import Theme Archive instead."
+        alertControllerWithTitle:NSLocalizedString(@"Import Theme Folder", nil)
+                         message:NSLocalizedString(@"Navigate into your theme folder so you can see IconBundles inside, then tap Open.\n\nIf tapping Open does nothing, your signing tool may need \"Match provisioning identifier\" enabled, or you can use Import Theme Archive instead.", nil)
                   preferredStyle:UIAlertControllerStyleAlert];
-    [hint addAction:[UIAlertAction actionWithTitle:@"Continue" style:UIAlertActionStyleDefault handler:^(UIAlertAction *a) {
+    [hint addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Continue", nil) style:UIAlertActionStyleDefault handler:^(UIAlertAction *a) {
         (void)a;
         UIDocumentPickerViewController *picker =
             [[UIDocumentPickerViewController alloc] initForOpeningContentTypes:@[UTTypeFolder]];
@@ -15787,17 +15778,17 @@ UIViewController *settings_make_daemons_viewer(void)
         picker.allowsMultipleSelection = NO;
         [self presentViewController:picker animated:YES completion:nil];
     }]];
-    [hint addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];
+    [hint addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil) style:UIAlertActionStyleCancel handler:nil]];
     [self presentViewController:hint animated:YES completion:nil];
 }
 
 - (void)presentSnowBoardLiteArchiveImporter
 {
     UIAlertController *hint = [UIAlertController
-        alertControllerWithTitle:@"Import Theme Archive"
-                         message:@"Pick a ZIP or DEB file that contains an IconBundles directory. Cyanide extracts and imports a local copy."
+        alertControllerWithTitle:NSLocalizedString(@"Import Theme Archive", nil)
+                         message:NSLocalizedString(@"Pick a ZIP or DEB file that contains an IconBundles directory. Cyanide extracts and imports a local copy.", nil)
                   preferredStyle:UIAlertControllerStyleAlert];
-    [hint addAction:[UIAlertAction actionWithTitle:@"Continue" style:UIAlertActionStyleDefault handler:^(UIAlertAction *a) {
+    [hint addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Continue", nil) style:UIAlertActionStyleDefault handler:^(UIAlertAction *a) {
         (void)a;
         NSArray<UTType *> *types = @[
             UTTypeZIP,
@@ -15810,7 +15801,7 @@ UIViewController *settings_make_daemons_viewer(void)
         picker.allowsMultipleSelection = NO;
         [self presentViewController:picker animated:YES completion:nil];
     }]];
-    [hint addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];
+    [hint addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil) style:UIAlertActionStyleCancel handler:nil]];
     [self presentViewController:hint animated:YES completion:nil];
 }
 
@@ -15820,10 +15811,10 @@ UIViewController *settings_make_daemons_viewer(void)
     if (backups == 0) {
         log_user("[PASSCODE] Nothing to export: no original backups are saved yet.\n");
         UIAlertController *ac = [UIAlertController
-            alertControllerWithTitle:@"Nothing to Export"
-                             message:@"Cyanide saves a keypad original the first time a style writes over it. Nothing has been saved yet — apply a style first, then export before reinstalling Cyanide."
+            alertControllerWithTitle:NSLocalizedString(@"Nothing to Export", nil)
+                             message:NSLocalizedString(@"Cyanide saves a keypad original the first time a style writes over it. Nothing has been saved yet — apply a style first, then export before reinstalling Cyanide.", nil)
                       preferredStyle:UIAlertControllerStyleAlert];
-        [ac addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
+        [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil) style:UIAlertActionStyleDefault handler:nil]];
         [self presentViewController:ac animated:YES completion:nil];
         return;
     }
@@ -15837,10 +15828,10 @@ UIViewController *settings_make_daemons_viewer(void)
         log_user("[PASSCODE] Could not pack the backups: %s\n",
                  error.localizedDescription.UTF8String ?: "unknown");
         UIAlertController *ac = [UIAlertController
-            alertControllerWithTitle:@"Could Not Pack Originals"
+            alertControllerWithTitle:NSLocalizedString(@"Could Not Pack Originals", nil)
                              message:(error.localizedDescription ?: @"The originals could not be read.")
                       preferredStyle:UIAlertControllerStyleAlert];
-        [ac addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
+        [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil) style:UIAlertActionStyleDefault handler:nil]];
         [self presentViewController:ac animated:YES completion:nil];
         return;
     }
@@ -15868,16 +15859,16 @@ UIViewController *settings_make_daemons_viewer(void)
     // the picker opens: an archive that quietly omits originals is worse than no
     // archive at all, because it looks complete.
     UIAlertController *skipAlert = [UIAlertController
-        alertControllerWithTitle:@"Some Originals Were Skipped"
+        alertControllerWithTitle:NSLocalizedString(@"Some Originals Were Skipped", nil)
                          message:[NSString stringWithFormat:
-                                  @"%lu saved original(s) could not be read and are not in this archive. Export the rest now, then retry on a device that still has them.",
+                                  NSLocalizedString(@"%lu saved original(s) could not be read and are not in this archive. Export the rest now, then retry on a device that still has them.", nil),
                                   (unsigned long)skipped]
                   preferredStyle:UIAlertControllerStyleAlert];
-    [skipAlert addAction:[UIAlertAction actionWithTitle:@"Continue" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+    [skipAlert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Continue", nil) style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
         (void)action;
         presentExportPicker();
     }]];
-    [skipAlert addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];
+    [skipAlert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil) style:UIAlertActionStyleCancel handler:nil]];
     [self presentViewController:skipAlert animated:YES completion:nil];
 }
 
@@ -15907,10 +15898,10 @@ UIViewController *settings_make_daemons_viewer(void)
                                       remaining:(NSInteger)remaining
 {
     NSString *warning = [NSString stringWithFormat:
-        @"This erases %lu saved original(s) covering %lu digit(s). Restore Original Digits will not be able to put the stock keypad art back afterwards — use Export Originals first if you want to keep a copy.",
+        NSLocalizedString(@"This erases %lu saved original(s) covering %lu digit(s). Restore Original Digits will not be able to put the stock keypad art back afterwards — use Export Originals first if you want to keep a copy.", nil),
         (unsigned long)backups, (unsigned long)digits];
     if (remaining <= 0) return warning;
-    return [NSString stringWithFormat:@"Delete becomes available in %lds…\n\n%@", (long)remaining, warning];
+    return [NSString stringWithFormat:NSLocalizedString(@"Delete becomes available in %lds…\n\n%@", nil), (long)remaining, warning];
 }
 
 - (void)presentPasscodeBackupDeletion
@@ -15920,10 +15911,10 @@ UIViewController *settings_make_daemons_viewer(void)
     if (backups == 0) {
         log_user("[PASSCODE] Nothing to delete: no original backups are saved.\n");
         UIAlertController *ac = [UIAlertController
-            alertControllerWithTitle:@"Nothing to Delete"
-                             message:@"No saved originals are on this device."
+            alertControllerWithTitle:NSLocalizedString(@"Nothing to Delete", nil)
+                             message:NSLocalizedString(@"No saved originals are on this device.", nil)
                       preferredStyle:UIAlertControllerStyleAlert];
-        [ac addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
+        [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil) style:UIAlertActionStyleDefault handler:nil]];
         [self presentViewController:ac animated:YES completion:nil];
         return;
     }
@@ -15934,14 +15925,14 @@ UIViewController *settings_make_daemons_viewer(void)
     __block NSInteger remaining = 5;
 
     UIAlertController *alert = [UIAlertController
-        alertControllerWithTitle:@"Delete All Originals?"
+        alertControllerWithTitle:NSLocalizedString(@"Delete All Originals?", nil)
                          message:[self passcodeDeletionMessageForBackups:backups
                                                                   digits:digits
                                                                remaining:remaining]
                   preferredStyle:UIAlertControllerStyleAlert];
 
     UIAlertAction *deleteAction = [UIAlertAction
-        actionWithTitle:@"Delete All Originals"
+        actionWithTitle:NSLocalizedString(@"Delete All Originals", nil)
                   style:UIAlertActionStyleDestructive
                 handler:^(UIAlertAction *action) {
         (void)action;
@@ -15949,7 +15940,7 @@ UIViewController *settings_make_daemons_viewer(void)
     }];
     deleteAction.enabled = NO;
     [alert addAction:deleteAction];
-    [alert addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];
+    [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil) style:UIAlertActionStyleCancel handler:nil]];
 
     __weak typeof(self) weakSelf = self;
     [self presentViewController:alert animated:YES completion:nil];
@@ -15984,14 +15975,14 @@ UIViewController *settings_make_daemons_viewer(void)
     settings_notify_package_queue_changed_async();
 
     NSString *message = removed > 0
-        ? [NSString stringWithFormat:@"%lu original(s) deleted. Restore Original Digits has nothing to write back now.",
+        ? [NSString stringWithFormat:NSLocalizedString(@"%lu original(s) deleted. Restore Original Digits has nothing to write back now.", nil),
                                      (unsigned long)removed]
         : @"No original files were found to delete.";
     UIAlertController *ac = [UIAlertController
         alertControllerWithTitle:(removed > 0 ? @"Originals Deleted" : @"Nothing Deleted")
                          message:message
                   preferredStyle:UIAlertControllerStyleAlert];
-    [ac addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
+    [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil) style:UIAlertActionStyleDefault handler:nil]];
     [self presentViewController:ac animated:YES completion:nil];
 }
 
@@ -16017,10 +16008,10 @@ UIViewController *settings_make_daemons_viewer(void)
     NSProgress *progress = [NSProgress progressWithTotalUnitCount:MAX((NSInteger)archives.count, 1)];
     progress.cancellable = YES;
     UIAlertController *progressAlert = [UIAlertController
-        alertControllerWithTitle:@"Importing Originals"
+        alertControllerWithTitle:NSLocalizedString(@"Importing Originals", nil)
                          message:archives.count > 0 ? @"Reading the selected archive(s)…" : @"Reading the selected files…"
                   preferredStyle:UIAlertControllerStyleAlert];
-    [progressAlert addAction:[UIAlertAction actionWithTitle:@"Cancel"
+    [progressAlert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil)
                                                         style:UIAlertActionStyleCancel
                                                       handler:^(UIAlertAction *action) {
         (void)action;
@@ -16049,7 +16040,7 @@ UIViewController *settings_make_daemons_viewer(void)
                 NSString *why = progress.isCancelled ? @"cancelled" :
                     (unzipError.localizedDescription ?: @"not a readable archive");
                 log_user("[PASSCODE] Could not open selected archive: %s\n", why.UTF8String);
-                [unzipFailures addObject:[NSString stringWithFormat:@"Archive %lu — %@",
+                [unzipFailures addObject:[NSString stringWithFormat:NSLocalizedString(@"Archive %lu — %@", nil),
                                           (unsigned long)unzipFailures.count + 1, why]];
             }
             progress.completedUnitCount += 1;
@@ -16076,35 +16067,35 @@ UIViewController *settings_make_daemons_viewer(void)
                 message = @"Import cancelled. Nothing was imported.";
             } else if (progress.isCancelled) {
                 message = [NSString stringWithFormat:
-                    @"Import cancelled after it had started: %lu original(s) were already imported and were kept.",
+                    NSLocalizedString(@"Import cancelled after it had started: %lu original(s) were already imported and were kept.", nil),
                     (unsigned long)added];
             } else if (added == 0 && skipped == 0 && failed == 0 && unzipFailures.count > 0) {
-                message = [NSString stringWithFormat:@"Could not open the selected archive(s):\n\n%@",
+                message = [NSString stringWithFormat:NSLocalizedString(@"Could not open the selected archive(s):\n\n%@", nil),
                                                      [unzipFailures componentsJoinedByString:@"\n"]];
             } else if (added == 0 && skipped == 0 && failed == 0) {
                 message = @"No saved originals were found in the selection. On the device that still has the originals, tap Export Originals, then import the .zip it saves here.";
             } else if (added == 0 && failed == 0) {
                 message = [NSString stringWithFormat:
-                    @"Nothing to import: all %lu original(s) are already present on this device.",
+                    NSLocalizedString(@"Nothing to import: all %lu original(s) are already present on this device.", nil),
                     (unsigned long)skipped];
             } else {
                 NSMutableArray<NSString *> *parts = [NSMutableArray array];
-                [parts addObject:[NSString stringWithFormat:@"Imported %lu original(s).", (unsigned long)added]];
+                [parts addObject:[NSString stringWithFormat:NSLocalizedString(@"Imported %lu original(s).", nil), (unsigned long)added]];
                 if (skipped > 0) {
-                    [parts addObject:[NSString stringWithFormat:@"%lu were already present and were kept.",
+                    [parts addObject:[NSString stringWithFormat:NSLocalizedString(@"%lu were already present and were kept.", nil),
                                                                 (unsigned long)skipped]];
                 }
                 if (failed > 0) {
-                    [parts addObject:[NSString stringWithFormat:@"%lu could not be copied or verified.",
+                    [parts addObject:[NSString stringWithFormat:NSLocalizedString(@"%lu could not be copied or verified.", nil),
                                                                 (unsigned long)failed]];
                 }
                 if (unusable > 0) {
                     [parts addObject:[NSString stringWithFormat:
-                        @"%lu cannot be matched to keypad files, so Restore Original Digits can't write them back.",
+                        NSLocalizedString(@"%lu cannot be matched to keypad files, so Restore Original Digits can't write them back.", nil),
                         (unsigned long)unusable]];
                 }
                 if (unzipFailures.count > 0) {
-                    [parts addObject:[NSString stringWithFormat:@"%lu archive(s) could not be opened.",
+                    [parts addObject:[NSString stringWithFormat:NSLocalizedString(@"%lu archive(s) could not be opened.", nil),
                                                                 (unsigned long)unzipFailures.count]];
                 }
                 [parts addObject:@"Tap Restore Original Digits to write the imported originals back."];
@@ -16113,10 +16104,10 @@ UIViewController *settings_make_daemons_viewer(void)
 
             [strongSelf reloadSectionOrAll:SectionPasscodeTheme];
             settings_notify_package_queue_changed_async();
-            UIAlertController *ac = [UIAlertController alertControllerWithTitle:@"Import Originals"
+            UIAlertController *ac = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Import Originals", nil)
                                                                       message:message
                                                                preferredStyle:UIAlertControllerStyleAlert];
-            [ac addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
+            [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil) style:UIAlertActionStyleDefault handler:nil]];
             // The result can only be presented once the progress alert is gone:
             // presenting during its dismissal is dropped and the user never sees
             // the outcome. Cancel dismisses it by itself, so it may already be
@@ -16148,10 +16139,10 @@ UIViewController *settings_make_daemons_viewer(void)
 - (void)presentPasscodeThemeImporter
 {
     UIAlertController *hint = [UIAlertController
-        alertControllerWithTitle:@"Import Passcode Style"
-                         message:@"Pick a .passthm style or a ZIP of keypad digit art — a .passthm is the same archive under another extension. An export of the saved originals works too. The art is copied into Cyanide's library; the file you pick stays untouched."
+        alertControllerWithTitle:NSLocalizedString(@"Import Passcode Style", nil)
+                         message:NSLocalizedString(@"Pick a .passthm style or a ZIP of keypad digit art — a .passthm is the same archive under another extension. An export of the saved originals works too. The art is copied into Cyanide's library; the file you pick stays untouched.", nil)
                   preferredStyle:UIAlertControllerStyleAlert];
-    [hint addAction:[UIAlertAction actionWithTitle:@"Continue" style:UIAlertActionStyleDefault handler:^(UIAlertAction *a) {
+    [hint addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Continue", nil) style:UIAlertActionStyleDefault handler:^(UIAlertAction *a) {
         (void)a;
         NSMutableArray<UTType *> *types = [NSMutableArray arrayWithObject:UTTypeZIP];
         UTType *passthm = [UTType typeWithFilenameExtension:@"passthm"];
@@ -16164,7 +16155,7 @@ UIViewController *settings_make_daemons_viewer(void)
         picker.allowsMultipleSelection = NO;
         [self presentViewController:picker animated:YES completion:nil];
     }]];
-    [hint addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];
+    [hint addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil) style:UIAlertActionStyleCancel handler:nil]];
     [self presentViewController:hint animated:YES completion:nil];
 }
 
@@ -16195,10 +16186,10 @@ UIViewController *settings_make_daemons_viewer(void)
     if (apply && settings_passcode_selected_theme() == nil) {
         log_user("[PASSCODE] Failed: no style is selected. Import or build one first.\n");
         UIAlertController *ac = [UIAlertController
-            alertControllerWithTitle:@"No Style Selected"
-                             message:@"Import a .passthm / ZIP style below, or tap a key in the preview to pick that digit's photo, then apply again."
+            alertControllerWithTitle:NSLocalizedString(@"No Style Selected", nil)
+                             message:NSLocalizedString(@"Import a .passthm / ZIP style below, or tap a key in the preview to pick that digit's photo, then apply again.", nil)
                       preferredStyle:UIAlertControllerStyleAlert];
-        [ac addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
+        [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil) style:UIAlertActionStyleDefault handler:nil]];
         [self presentViewController:ac animated:YES completion:nil];
         return;
     }
@@ -16206,10 +16197,10 @@ UIViewController *settings_make_daemons_viewer(void)
     if (!apply && settings_passcode_theme_backup_count() == 0) {
         log_user("[PASSCODE] Nothing to restore: no original digit backups were found.\n");
         UIAlertController *ac = [UIAlertController
-            alertControllerWithTitle:@"Nothing To Restore"
-                             message:@"No originals are saved on this device. Styles applied by another app are not covered by Cyanide's originals."
+            alertControllerWithTitle:NSLocalizedString(@"Nothing To Restore", nil)
+                             message:NSLocalizedString(@"No originals are saved on this device. Styles applied by another app are not covered by Cyanide's originals.", nil)
                       preferredStyle:UIAlertControllerStyleAlert];
-        [ac addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
+        [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil) style:UIAlertActionStyleDefault handler:nil]];
         [self presentViewController:ac animated:YES completion:nil];
         return;
     }
@@ -16240,7 +16231,7 @@ UIViewController *settings_make_daemons_viewer(void)
         (void)a;
         [self performPasscodeThemeApply:apply];
     }]];
-    [confirm addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];
+    [confirm addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil) style:UIAlertActionStyleCancel handler:nil]];
     [self presentViewController:confirm animated:YES completion:nil];
 }
 
@@ -16299,22 +16290,22 @@ UIViewController *settings_make_daemons_viewer(void)
 
 - (void)presentLiveWPVideoPicker
 {
-    UIAlertController *sheet = [UIAlertController alertControllerWithTitle:@"Choose Video"
+    UIAlertController *sheet = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Choose Video", nil)
                                                                    message:nil
                                                             preferredStyle:UIAlertControllerStyleActionSheet];
-    [sheet addAction:[UIAlertAction actionWithTitle:@"Photos"
+    [sheet addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Photos", nil)
                                               style:UIAlertActionStyleDefault
                                             handler:^(UIAlertAction *a) {
         (void)a;
         [self presentLiveWPPhotosPicker];
     }]];
-    [sheet addAction:[UIAlertAction actionWithTitle:@"Files"
+    [sheet addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Files", nil)
                                               style:UIAlertActionStyleDefault
                                             handler:^(UIAlertAction *a) {
         (void)a;
         [self presentLiveWPDocumentPicker];
     }]];
-    [sheet addAction:[UIAlertAction actionWithTitle:@"Cancel"
+    [sheet addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil)
                                               style:UIAlertActionStyleCancel
                                             handler:nil]];
     UIPopoverPresentationController *pop = sheet.popoverPresentationController;
@@ -16461,24 +16452,24 @@ UIViewController *settings_make_daemons_viewer(void)
     BOOL liveReady = settings_tweak_is_applied(kSettingsLiveWPEnabled) && g_springboard_rc_ready;
     NSString *name = displayName.length ? displayName : (url.lastPathComponent ?: @"Video");
     NSString *successMessage = liveReady
-        ? [NSString stringWithFormat:@"%@ was imported and will swap into the running LiveWP session.", name]
-        : [NSString stringWithFormat:@"%@ is ready. Toggle LiveWP on and tap Run to apply.", name];
+        ? [NSString stringWithFormat:NSLocalizedString(@"%@ was imported and will swap into the running LiveWP session.", nil), name]
+        : [NSString stringWithFormat:NSLocalizedString(@"%@ is ready. Toggle LiveWP on and tap Run to apply.", nil), name];
 
     dispatch_async(dispatch_get_main_queue(), ^{
         if (!ok) {
             NSString *msg = err.localizedDescription ?: @"The selected video could not be imported.";
-            UIAlertController *ac = [UIAlertController alertControllerWithTitle:@"Import Failed"
+            UIAlertController *ac = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Import Failed", nil)
                                                                          message:msg
                                                                   preferredStyle:UIAlertControllerStyleAlert];
-            [ac addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
+            [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil) style:UIAlertActionStyleDefault handler:nil]];
             [self presentViewController:ac animated:YES completion:nil];
             return;
         }
         [self finishLiveWPVideoImportAndSwapIfRunning];
-        UIAlertController *ac = [UIAlertController alertControllerWithTitle:@"Video Selected"
+        UIAlertController *ac = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Video Selected", nil)
                                                                      message:successMessage
                                                               preferredStyle:UIAlertControllerStyleAlert];
-        [ac addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
+        [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil) style:UIAlertActionStyleDefault handler:nil]];
         [self presentViewController:ac animated:YES completion:nil];
     });
 }
@@ -16504,10 +16495,10 @@ didFinishPicking:(NSArray<PHPickerResult *> *)results
     NSItemProvider *provider = result.itemProvider;
     NSString *identifier = [self liveWPPreferredTypeIdentifierForProvider:provider];
     if (identifier.length == 0) {
-        UIAlertController *ac = [UIAlertController alertControllerWithTitle:@"Import Failed"
-                                                                     message:@"Choose an MP4, MOV, or M4V video."
+        UIAlertController *ac = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Import Failed", nil)
+                                                                     message:NSLocalizedString(@"Choose an MP4, MOV, or M4V video.", nil)
                                                               preferredStyle:UIAlertControllerStyleAlert];
-        [ac addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
+        [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil) style:UIAlertActionStyleDefault handler:nil]];
         [self presentViewController:ac animated:YES completion:nil];
         return;
     }
@@ -16518,10 +16509,10 @@ didFinishPicking:(NSArray<PHPickerResult *> *)results
         if (!url || error) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 NSString *msg = error.localizedDescription ?: @"The selected video could not be opened.";
-                UIAlertController *ac = [UIAlertController alertControllerWithTitle:@"Import Failed"
+                UIAlertController *ac = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Import Failed", nil)
                                                                              message:msg
                                                                       preferredStyle:UIAlertControllerStyleAlert];
-                [ac addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
+                [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil) style:UIAlertActionStyleDefault handler:nil]];
                 [self presentViewController:ac animated:YES completion:nil];
             });
             return;
@@ -16534,10 +16525,10 @@ didFinishPicking:(NSArray<PHPickerResult *> *)results
 {
     NSItemProvider *provider = result.itemProvider;
     if (![provider canLoadObjectOfClass:UIImage.class]) {
-        UIAlertController *ac = [UIAlertController alertControllerWithTitle:@"Import Failed"
-                                                                     message:@"That item is not a photo. Choose an image for the keypad digit."
+        UIAlertController *ac = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Import Failed", nil)
+                                                                     message:NSLocalizedString(@"That item is not a photo. Choose an image for the keypad digit.", nil)
                                                               preferredStyle:UIAlertControllerStyleAlert];
-        [ac addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
+        [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil) style:UIAlertActionStyleDefault handler:nil]];
         [self presentViewController:ac animated:YES completion:nil];
         return;
     }
@@ -16555,12 +16546,12 @@ didFinishPicking:(NSArray<PHPickerResult *> *)results
 
             if (png.length == 0) {
                 UIAlertController *ac = [UIAlertController
-                    alertControllerWithTitle:@"Import Failed"
+                    alertControllerWithTitle:NSLocalizedString(@"Import Failed", nil)
                                      message:(error.localizedDescription ?:
                                               (image ? @"The selected photo is too wide or too large for keypad art. Crop it closer to the digit and try again."
                                                      : @"The selected photo could not be read."))
                               preferredStyle:UIAlertControllerStyleAlert];
-                [ac addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
+                [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil) style:UIAlertActionStyleDefault handler:nil]];
                 [strongSelf presentViewController:ac animated:YES completion:nil];
                 return;
             }
@@ -16570,10 +16561,10 @@ didFinishPicking:(NSArray<PHPickerResult *> *)results
             BOOL ok = theme && settings_passcode_theme_set_digit_image(theme, digit, png, &err);
             if (!ok) {
                 UIAlertController *ac = [UIAlertController
-                    alertControllerWithTitle:@"Digit Not Saved"
+                    alertControllerWithTitle:NSLocalizedString(@"Digit Not Saved", nil)
                                      message:(err.localizedDescription ?: @"The digit image could not be saved.")
                               preferredStyle:UIAlertControllerStyleAlert];
-                [ac addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
+                [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil) style:UIAlertActionStyleDefault handler:nil]];
                 [strongSelf presentViewController:ac animated:YES completion:nil];
                 return;
             }
@@ -16585,10 +16576,10 @@ didFinishPicking:(NSArray<PHPickerResult *> *)results
             settings_notify_package_queue_changed_async();
 
             UIAlertController *ac = [UIAlertController
-                alertControllerWithTitle:[NSString stringWithFormat:@"Digit %@ Saved", digit]
-                                 message:@"Apply the style to write it over the keypad art."
+                alertControllerWithTitle:[NSString stringWithFormat:NSLocalizedString(@"Digit %@ Saved", nil), digit]
+                                 message:NSLocalizedString(@"Apply the style to write it over the keypad art.", nil)
                           preferredStyle:UIAlertControllerStyleAlert];
-            [ac addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
+            [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil) style:UIAlertActionStyleDefault handler:nil]];
             [strongSelf presentViewController:ac animated:YES completion:nil];
         });
     }];
@@ -16769,10 +16760,10 @@ didPickDocumentsAtURLs:(NSArray<NSURL *> *)urls
         if (scoped) [url stopAccessingSecurityScopedResource];
         log_user("[IMPORT] Cannot access selected file. Try a different location or file provider.\n");
         UIAlertController *ac = [UIAlertController
-            alertControllerWithTitle:@"Import Failed"
-                              message:@"The selected item could not be accessed. Try picking from a different location or file provider."
+            alertControllerWithTitle:NSLocalizedString(@"Import Failed", nil)
+                              message:NSLocalizedString(@"The selected item could not be accessed. Try picking from a different location or file provider.", nil)
                        preferredStyle:UIAlertControllerStyleAlert];
-        [ac addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
+        [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil) style:UIAlertActionStyleDefault handler:nil]];
         [self presentViewController:ac animated:YES completion:nil];
         return;
     }
@@ -16857,9 +16848,9 @@ didPickDocumentsAtURLs:(NSArray<NSURL *> *)urls
             successTitle = @"Video Selected";
             BOOL liveReady = settings_tweak_is_applied(kSettingsLiveWPEnabled) && g_springboard_rc_ready;
             successMessage = liveReady
-                ? [NSString stringWithFormat:@"%@ was imported and will swap into the running LiveWP session.",
+                ? [NSString stringWithFormat:NSLocalizedString(@"%@ was imported and will swap into the running LiveWP session.", nil),
                                              url.lastPathComponent ?: @"Video"]
-                : [NSString stringWithFormat:@"%@ is ready. Toggle LiveWP on and tap Run to apply.",
+                : [NSString stringWithFormat:NSLocalizedString(@"%@ is ready. Toggle LiveWP on and tap Run to apply.", nil),
                                              url.lastPathComponent ?: @"Video"];
         } else if ([mode isEqualToString:@"snowboardlite"]) {
             if (isDir) {
@@ -16879,7 +16870,7 @@ didPickDocumentsAtURLs:(NSArray<NSURL *> *)urls
             }
             successTitle = @"SnowBoard Theme Imported";
             NSString *name = settings_snowboardlite_selected_theme_display_name();
-            successMessage = [NSString stringWithFormat:@"\"%@\" is now selected. Toggle SnowBoard Lite on and tap Run to apply.", name];
+            successMessage = [NSString stringWithFormat:NSLocalizedString(@"\"%@\" is now selected. Toggle SnowBoard Lite on and tap Run to apply.", nil), name];
         } else if ([mode isEqualToString:@"passcode"]) {
             if (isDir) {
                 ok = settings_passcode_import_folder_named(url, url.lastPathComponent, &err);
@@ -16897,23 +16888,23 @@ didPickDocumentsAtURLs:(NSArray<NSURL *> *)urls
             }
             successTitle = @"Passcode Style Imported";
             successMessage = [NSString stringWithFormat:
-                @"\"%@\" is now selected. Use Apply Style Now below to write it to the keypad.",
+                NSLocalizedString(@"\"%@\" is now selected. Use Apply Style Now below to write it to the keypad.", nil),
                 settings_passcode_selected_theme_display_name()];
         } else {
             ok = isDir ? [self importThemerFolderAtURL:url error:&err]
                        : [self importThemerPlistAtURL:url error:&err];
             NSString *name = settings_themer_selected_theme_display_name();
-            successMessage = [NSString stringWithFormat:@"\"%@\" is now selected. Toggle SnowBoard Lite on and tap Run to apply.", name];
+            successMessage = [NSString stringWithFormat:NSLocalizedString(@"\"%@\" is now selected. Toggle SnowBoard Lite on and tap Run to apply.", nil), name];
         }
         if (scoped) [url stopAccessingSecurityScopedResource];
 
         dispatch_async(dispatch_get_main_queue(), ^{
             if (!ok) {
                 NSString *msg = err.localizedDescription ?: @"The selected item could not be imported.";
-                UIAlertController *ac = [UIAlertController alertControllerWithTitle:@"Import Failed"
+                UIAlertController *ac = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Import Failed", nil)
                                                                              message:msg
                                                                       preferredStyle:UIAlertControllerStyleAlert];
-                [ac addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
+                [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil) style:UIAlertActionStyleDefault handler:nil]];
                 [self presentViewController:ac animated:YES completion:nil];
                 return;
             }
@@ -16938,7 +16929,7 @@ didPickDocumentsAtURLs:(NSArray<NSURL *> *)urls
                 alertControllerWithTitle:successTitle
                                  message:successMessage
                           preferredStyle:UIAlertControllerStyleAlert];
-            [ac addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
+            [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil) style:UIAlertActionStyleDefault handler:nil]];
             [self presentViewController:ac animated:YES completion:nil];
         });
     });
@@ -17018,7 +17009,7 @@ didPickDocumentsAtURLs:(NSArray<NSURL *> *)urls
 
 - (void)presentNSBarPositionPicker
 {
-    UIAlertController *ac = [UIAlertController alertControllerWithTitle:@"NSBar Position"
+    UIAlertController *ac = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"NSBar Position", nil)
                                                                  message:nil
                                                           preferredStyle:UIAlertControllerStyleActionSheet];
     NSArray<NSNumber *> *positions = @[
@@ -17042,7 +17033,7 @@ didPickDocumentsAtURLs:(NSArray<NSURL *> *)urls
             [self reloadSectionOrAll:SectionNSBar];
         }]];
     }
-    [ac addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];
+    [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil) style:UIAlertActionStyleCancel handler:nil]];
     settings_present_controller(ac, self);
 }
 
@@ -17053,7 +17044,7 @@ didPickDocumentsAtURLs:(NSArray<NSURL *> *)urls
     switch ((NiceBarLiteContentKind)kind) {
         case NiceBarLiteContentCustomText: {
             NSString *text = [d stringForKey:settings_nicebar_key(kSettingsNiceBarLiteSlotTextPrefix, slot)] ?: @"";
-            return text.length ? text : @"Text";
+            return text.length ? text : NSLocalizedString(@"Text", nil);
         }
         case NiceBarLiteContentSystem: {
             NSInteger item = [d integerForKey:settings_nicebar_key(kSettingsNiceBarLiteSlotSystemPrefix, slot)];
@@ -17071,7 +17062,7 @@ didPickDocumentsAtURLs:(NSArray<NSURL *> *)urls
         }
         case NiceBarLiteContentWeather: {
             NSString *text = settings_nicebar_weather_text_for_slot(d, slot);
-            return text.length ? text : @"Weather --";
+            return text.length ? text : NSLocalizedString(@"Weather --", nil);
         }
         case NiceBarLiteContentOff:
             return @"Hidden";
@@ -17169,8 +17160,8 @@ didPickDocumentsAtURLs:(NSArray<NSURL *> *)urls
         field.text = [d stringForKey:key] ?: @"";
         field.clearButtonMode = UITextFieldViewModeWhileEditing;
     }];
-    [ac addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];
-    [ac addAction:[UIAlertAction actionWithTitle:@"Save" style:UIAlertActionStyleDefault handler:^(UIAlertAction *_) {
+    [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil) style:UIAlertActionStyleCancel handler:nil]];
+    [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Save", nil) style:UIAlertActionStyleDefault handler:^(UIAlertAction *_) {
         NSString *value = ac.textFields.firstObject.text ?: @"";
         [d setInteger:NiceBarLiteContentCustomText forKey:settings_nicebar_key(kSettingsNiceBarLiteSlotKindPrefix, slot)];
         [d setObject:value forKey:key];
@@ -17209,7 +17200,7 @@ didPickDocumentsAtURLs:(NSArray<NSURL *> *)urls
     NSString *selectedFormat = [d stringForKey:settings_nicebar_key(kSettingsNiceBarLiteSlotTimePrefix, slot)] ?: @"HH:mm";
     __weak typeof(self) weakSelf = self;
     CyanideNiceBarTimePresetPickerViewController *picker =
-        [[CyanideNiceBarTimePresetPickerViewController alloc] initWithSlotTitle:[NSString stringWithFormat:@"%@ Date / Time", settings_nicebar_slot_name(slot)]
+        [[CyanideNiceBarTimePresetPickerViewController alloc] initWithSlotTitle:[NSString stringWithFormat:NSLocalizedString(@"%@ Date / Time", nil), settings_nicebar_slot_name(slot)]
                                                                  selectedFormat:selectedFormat
                                                                       selection:^(NSString *format) {
         [weakSelf nicebarSetTimeFormat:format forSlot:slot];
@@ -17259,7 +17250,7 @@ didPickDocumentsAtURLs:(NSArray<NSURL *> *)urls
 {
     if (slot < 0 || slot >= NiceBarLiteSlotCount) return;
     UIAlertController *sheet = [UIAlertController alertControllerWithTitle:[NSString stringWithFormat:@"%@ Weather", settings_nicebar_slot_name(slot)]
-                                                                   message:@"Choose the weather display language."
+                                                                   message:NSLocalizedString(@"Choose the weather display language.", nil)
                                                             preferredStyle:UIAlertControllerStyleActionSheet];
     [sheet addAction:[UIAlertAction actionWithTitle:@"English" style:UIAlertActionStyleDefault handler:^(UIAlertAction *_) {
         [self nicebarSetWeatherLanguage:@"en" forSlot:slot];
@@ -17267,7 +17258,7 @@ didPickDocumentsAtURLs:(NSArray<NSURL *> *)urls
     [sheet addAction:[UIAlertAction actionWithTitle:@"中文" style:UIAlertActionStyleDefault handler:^(UIAlertAction *_) {
         [self nicebarSetWeatherLanguage:@"zh" forSlot:slot];
     }]];
-    [sheet addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];
+    [sheet addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil) style:UIAlertActionStyleCancel handler:nil]];
     settings_present_controller(sheet, self);
 }
 
@@ -17279,7 +17270,7 @@ didPickDocumentsAtURLs:(NSArray<NSURL *> *)urls
     NSString *selectedLanguage = [d stringForKey:settings_nicebar_key(kSettingsNiceBarLiteSlotSystemLanguagePrefix, slot)] ?: @"en";
     __weak typeof(self) weakSelf = self;
     CyanideNiceBarSystemItemPickerViewController *picker =
-        [[CyanideNiceBarSystemItemPickerViewController alloc] initWithSlotTitle:[NSString stringWithFormat:@"%@ System Item", settings_nicebar_slot_name(slot)]
+        [[CyanideNiceBarSystemItemPickerViewController alloc] initWithSlotTitle:[NSString stringWithFormat:NSLocalizedString(@"%@ System Item", nil), settings_nicebar_slot_name(slot)]
                                                                    selectedItem:selectedItem
                                                                selectedLanguage:selectedLanguage
                                                                       selection:^(NSInteger item, NSString *language) {
@@ -17305,25 +17296,25 @@ didPickDocumentsAtURLs:(NSArray<NSURL *> *)urls
     UIAlertController *ac = [UIAlertController alertControllerWithTitle:settings_nicebar_slot_name(slot)
                                                                  message:nil
                                                           preferredStyle:UIAlertControllerStyleActionSheet];
-    [ac addAction:[UIAlertAction actionWithTitle:@"Off" style:UIAlertActionStyleDefault handler:^(UIAlertAction *_) {
+    [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Off", nil) style:UIAlertActionStyleDefault handler:^(UIAlertAction *_) {
         [d setInteger:NiceBarLiteContentOff forKey:settings_nicebar_key(kSettingsNiceBarLiteSlotKindPrefix, slot)];
         [d synchronize];
         settings_schedule_live_apply_for_key(settings_nicebar_key(kSettingsNiceBarLiteSlotKindPrefix, slot));
         [self reloadSectionOrAll:SectionNiceBarLite];
     }]];
-    [ac addAction:[UIAlertAction actionWithTitle:@"Custom Text" style:UIAlertActionStyleDefault handler:^(UIAlertAction *_) {
+    [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Custom Text", nil) style:UIAlertActionStyleDefault handler:^(UIAlertAction *_) {
         [self presentNiceBarTextEditorForSlot:slot];
     }]];
-    [ac addAction:[UIAlertAction actionWithTitle:@"System Item" style:UIAlertActionStyleDefault handler:^(UIAlertAction *_) {
+    [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"System Item", nil) style:UIAlertActionStyleDefault handler:^(UIAlertAction *_) {
         [self presentNiceBarSystemPickerForSlot:slot];
     }]];
-    [ac addAction:[UIAlertAction actionWithTitle:@"Date / Time" style:UIAlertActionStyleDefault handler:^(UIAlertAction *_) {
+    [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Date / Time", nil) style:UIAlertActionStyleDefault handler:^(UIAlertAction *_) {
         [self presentNiceBarDateTimePickerForSlot:slot];
     }]];
-    [ac addAction:[UIAlertAction actionWithTitle:@"Weather" style:UIAlertActionStyleDefault handler:^(UIAlertAction *_) {
+    [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Weather", nil) style:UIAlertActionStyleDefault handler:^(UIAlertAction *_) {
         [self presentNiceBarWeatherLanguagePickerForSlot:slot];
     }]];
-    [ac addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];
+    [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil) style:UIAlertActionStyleCancel handler:nil]];
     settings_present_controller(ac, self);
 }
 
@@ -17418,11 +17409,11 @@ didPickDocumentsAtURLs:(NSArray<NSURL *> *)urls
     cell.imageView.image = [SettingsViewController appIconPreviewForStyle:style];
 
     if (row == 0) {
-        cell.textLabel.text = @"Modern";
-        cell.detailTextLabel.text = @"Default — refreshed v2 mark.";
+        cell.textLabel.text = NSLocalizedString(@"Modern", nil);
+        cell.detailTextLabel.text = NSLocalizedString(@"Default — refreshed v2 mark.", nil);
     } else {
-        cell.textLabel.text = @"Classic";
-        cell.detailTextLabel.text = @"Original release artwork.";
+        cell.textLabel.text = NSLocalizedString(@"Classic", nil);
+        cell.detailTextLabel.text = NSLocalizedString(@"Original release artwork.", nil);
     }
 
     BOOL selected = [[self currentAppIconStyle] isEqualToString:style];
@@ -17437,10 +17428,10 @@ didPickDocumentsAtURLs:(NSArray<NSURL *> *)urls
 
     if (![UIApplication sharedApplication].supportsAlternateIcons) {
         UIAlertController *ac = [UIAlertController
-            alertControllerWithTitle:@"Can't Change Icon"
-                             message:@"This iOS build doesn't expose alternate icon switching."
+            alertControllerWithTitle:NSLocalizedString(@"Can't Change Icon", nil)
+                             message:NSLocalizedString(@"This iOS build doesn't expose alternate icon switching.", nil)
                       preferredStyle:UIAlertControllerStyleAlert];
-        [ac addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleCancel handler:nil]];
+        [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil) style:UIAlertActionStyleCancel handler:nil]];
         [self presentViewController:ac animated:YES completion:nil];
         return;
     }
@@ -17465,16 +17456,16 @@ didPickDocumentsAtURLs:(NSArray<NSURL *> *)urls
 {
     if (![UIApplication sharedApplication].supportsAlternateIcons) {
         UIAlertController *ac = [UIAlertController
-            alertControllerWithTitle:@"Can't Change Icon"
-                             message:@"This iOS build doesn't expose alternate icon switching."
+            alertControllerWithTitle:NSLocalizedString(@"Can't Change Icon", nil)
+                             message:NSLocalizedString(@"This iOS build doesn't expose alternate icon switching.", nil)
                       preferredStyle:UIAlertControllerStyleAlert];
-        [ac addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleCancel handler:nil]];
+        [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil) style:UIAlertActionStyleCancel handler:nil]];
         [self presentViewController:ac animated:YES completion:nil];
         return;
     }
     NSString *current = [self currentAppIconStyle];
     UIAlertController *ac = [UIAlertController
-        alertControllerWithTitle:@"App Icon"
+        alertControllerWithTitle:NSLocalizedString(@"App Icon", nil)
                          message:nil
                   preferredStyle:UIAlertControllerStyleActionSheet];
     NSString *modernTitle = [current isEqualToString:@"modern"] ? @"Modern ✓" : @"Modern";
@@ -17485,7 +17476,7 @@ didPickDocumentsAtURLs:(NSArray<NSURL *> *)urls
     [ac addAction:[UIAlertAction actionWithTitle:classicTitle style:UIAlertActionStyleDefault handler:^(UIAlertAction *_) {
         [self selectAppIconAtRow:1 inTableView:self.tableView];
     }]];
-    [ac addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];
+    [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil) style:UIAlertActionStyleCancel handler:nil]];
     ac.popoverPresentationController.sourceView = self.view;
     ac.popoverPresentationController.sourceRect = CGRectMake(self.view.bounds.size.width / 2, self.view.bounds.size.height / 2, 0, 0);
     [self presentViewController:ac animated:YES completion:nil];
@@ -17508,11 +17499,11 @@ didPickDocumentsAtURLs:(NSArray<NSURL *> *)urls
     } else {
         NSError *err = nil;
         text = [NSString stringWithContentsOfFile:logPath encoding:NSUTF8StringEncoding error:&err];
-        if (!text) text = [NSString stringWithFormat:@"Failed to read log: %@", err.localizedDescription];
+        if (!text) text = [NSString stringWithFormat:NSLocalizedString(@"Failed to read log: %@", nil), err.localizedDescription];
     }
 
     UIViewController *vc = [[UIViewController alloc] init];
-    vc.title = @"Log";
+    vc.title = NSLocalizedString(@"Log", nil);
     vc.view.backgroundColor = UIColor.systemGroupedBackgroundColor;
 
     UITextView *tv = [[UITextView alloc] init];
@@ -17537,10 +17528,10 @@ didPickDocumentsAtURLs:(NSArray<NSURL *> *)urls
 {
     NSString *logPath = log_most_recent_session_path();
     if (!logPath.length) {
-        UIAlertController *ac = [UIAlertController alertControllerWithTitle:@"No Log Yet"
-                                                                     message:@"Run a chain once, then come back to share the latest diagnostic log."
+        UIAlertController *ac = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"No Log Yet", nil)
+                                                                     message:NSLocalizedString(@"Run a chain once, then come back to share the latest diagnostic log.", nil)
                                                               preferredStyle:UIAlertControllerStyleAlert];
-        [ac addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
+        [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil) style:UIAlertActionStyleDefault handler:nil]];
         [self presentViewController:ac animated:YES completion:nil];
         return;
     }
@@ -17550,7 +17541,7 @@ didPickDocumentsAtURLs:(NSArray<NSURL *> *)urls
     NSString *iosVersion = [UIDevice currentDevice].systemVersion ?: @"unknown";
     struct utsname info; uname(&info);
     NSString *machine = [NSString stringWithUTF8String:info.machine] ?: @"unknown";
-    NSString *summary = [NSString stringWithFormat:@"Cyanide diagnostic log\nCyanide %@ · iOS %@ · %@",
+    NSString *summary = [NSString stringWithFormat:NSLocalizedString(@"Cyanide diagnostic log\nCyanide %@ · iOS %@ · %@", nil),
                          appVersion, iosVersion, machine];
 
     UIActivityViewController *vc = [[UIActivityViewController alloc] initWithActivityItems:@[summary, logURL]
@@ -17632,10 +17623,10 @@ void cyanide_present_contact(UIViewController *host)
     }
 
     UIAlertController *ac = [UIAlertController
-        alertControllerWithTitle:@"Mail Not Available"
-                         message:@"Set up Mail in iOS Settings to send feedback, or DM @_kolbicz on Twitter. View Log in Settings to copy the latest diagnostic log."
+        alertControllerWithTitle:NSLocalizedString(@"Mail Not Available", nil)
+                         message:NSLocalizedString(@"Set up Mail in iOS Settings to send feedback, or DM @_kolbicz on Twitter. View Log in Settings to copy the latest diagnostic log.", nil)
                   preferredStyle:UIAlertControllerStyleAlert];
-    [ac addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
+    [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil) style:UIAlertActionStyleDefault handler:nil]];
     [host presentViewController:ac animated:YES completion:nil];
 }
 
@@ -17767,13 +17758,13 @@ void cyanide_present_contact(UIViewController *host)
             rowEnabled = anyInstalledOrQueued;
             symbol = @"trash.fill";
             color  = UIColor.systemRedColor;
-            cell.textLabel.text = @"Reset All Packages";
+            cell.textLabel.text = NSLocalizedString(@"Reset All Packages", nil);
             cell.detailTextLabel.text = anyInstalledOrQueued ? nil : @"Nothing active";
         } else {
             rowEnabled = YES;
             symbol = @"arrow.down.circle.fill";
             color  = UIColor.systemBlueColor;
-            cell.textLabel.text = @"Check for Updates";
+            cell.textLabel.text = NSLocalizedString(@"Check for Updates", nil);
         }
 
         UIColor *effectiveColor = rowEnabled ? color : UIColor.tertiaryLabelColor;
@@ -18127,11 +18118,7 @@ void cyanide_present_contact(UIViewController *host)
         note.numberOfLines = 0;
         note.font = [UIFont systemFontOfSize:12.0];
         note.textColor = a18shapeEnabled ? UIColor.secondaryLabelColor : UIColor.tertiaryLabelColor;
-        note.text = @"A18/M4 only. Pins physical memory so the page after each search mapping is more "
-                     "often ours and valid, lowering the aperture-panic rate. Off uses standard geometry "
-                     "(no pin). Dynamic sizes the pin to live jetsam headroom (75%), adapting per device "
-                     "to avoid the jetsam kill a fixed size can cause. 3 GB is the fixed 1.5.5 size. "
-                     "Effective on the next fresh chain run.";
+        note.text = NSLocalizedString(@"A18/M4 only. Pins physical memory so the page after each search mapping is more often ours and valid, lowering the aperture-panic rate. Off uses standard geometry (no pin). Dynamic sizes the pin to live jetsam headroom (75%), adapting per device to avoid the jetsam kill a fixed size can cause. 3 GB is the fixed 1.5.5 size. Effective on the next fresh chain run.", nil);
         note.translatesAutoresizingMaskIntoConstraints = NO;
 
         [cell.contentView addSubview:title];
@@ -18175,11 +18162,7 @@ void cyanide_present_contact(UIViewController *host)
         note.numberOfLines = 0;
         note.font = [UIFont systemFontOfSize:12.0];
         note.textColor = UIColor.secondaryLabelColor;
-        note.text = @"Cyanide waits after each remote call so SpringBoard can settle. Compatible "
-                     "waits 50 ms, Fast 5 ms, Fastest only after calls that leave work running. "
-                     "Most of a tweak's apply time is this wait — Double Tap to Lock spends about "
-                     "13 waits per Home Screen page. Drop to Fast first; if tweaks still apply "
-                     "correctly, try Fastest. Go back to Compatible if anything misbehaves.";
+        note.text = NSLocalizedString(@"Cyanide waits after each remote call so SpringBoard can settle. Compatible waits 50 ms, Fast 5 ms, Fastest only after calls that leave work running. Most of a tweak's apply time is this wait — Double Tap to Lock spends about 13 waits per Home Screen page. Drop to Fast first; if tweaks still apply correctly, try Fastest. Go back to Compatible if anything misbehaves.", nil);
         note.translatesAutoresizingMaskIntoConstraints = NO;
 
         [cell.contentView addSubview:title];
@@ -18255,7 +18238,7 @@ void cyanide_present_contact(UIViewController *host)
         config.imageProperties.reservedLayoutSize = CGSizeMake(36.0, 36.0);
         config.imageProperties.maximumSize = CGSizeMake(36.0, 36.0);
         config.imageToTextPadding = 14.0;
-        config.text = @"No tweak loaded";
+        config.text = NSLocalizedString(@"No tweak loaded", nil);
         config.textProperties.font = [UIFont systemFontOfSize:17.0 weight:UIFontWeightMedium];
         config.textProperties.color = UIColor.tertiaryLabelColor;
         config.secondaryText = repotweaks_sources_enabled() ? @"Select a .js file or install from Sources"
@@ -18503,8 +18486,7 @@ void cyanide_present_contact(UIViewController *host)
     if (darkPatchStillLive) {
         log_user("[DST] %s stays active until SpringBoard restarts.\n", key.UTF8String);
         [self presentRespringPromptWithTitle:@"Respring to Turn It Off?"
-                                     message:[NSString stringWithFormat:@"%@ is still active in SpringBoard. "
-                                              @"It stays on until a respring.", row[@"title"] ?: @"This tweak"]];
+                                     message:[NSString stringWithFormat:NSLocalizedString(@"%@ is still active in SpringBoard. It stays on until a respring.", nil), row[@"title"] ?: @"This tweak"]];
     }
     settings_note_package_configuration_changed(key);
     if ([key isEqualToString:kSettingsKeepAlive]) {
@@ -18625,7 +18607,7 @@ void cyanide_present_contact(UIViewController *host)
     double current = settings_number_row_current_value(row, d);
     NSString *minText = settings_number_row_value_string(row, [row[@"min"] doubleValue], YES);
     NSString *maxText = settings_number_row_value_string(row, [row[@"max"] doubleValue], YES);
-    NSString *message = [NSString stringWithFormat:@"Enter %@ to %@.%@%@",
+    NSString *message = [NSString stringWithFormat:NSLocalizedString(@"Enter %@ to %@.%@%@", nil),
                          minText,
                          maxText,
                          [row[@"subtitle"] length] > 0 ? @"\n\n" : @"",
@@ -18646,8 +18628,8 @@ void cyanide_present_contact(UIViewController *host)
     }];
 
     __weak typeof(self) weakSelf = self;
-    [ac addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];
-    [ac addAction:[UIAlertAction actionWithTitle:@"Save"
+    [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil) style:UIAlertActionStyleCancel handler:nil]];
+    [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Save", nil)
                                            style:UIAlertActionStyleDefault
                                          handler:^(__unused UIAlertAction *action) {
         __strong typeof(weakSelf) strongSelf = weakSelf;
@@ -18664,10 +18646,10 @@ void cyanide_present_contact(UIViewController *host)
         [scanner scanCharactersFromSet:NSCharacterSet.whitespaceAndNewlineCharacterSet intoString:NULL];
         if (!ok || ![scanner isAtEnd] || !isfinite(parsed)) {
             UIAlertController *err = [UIAlertController
-                alertControllerWithTitle:@"Invalid Number"
-                                 message:@"Enter a plain number, then try again."
+                alertControllerWithTitle:NSLocalizedString(@"Invalid Number", nil)
+                                 message:NSLocalizedString(@"Enter a plain number, then try again.", nil)
                           preferredStyle:UIAlertControllerStyleAlert];
-            [err addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
+            [err addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil) style:UIAlertActionStyleDefault handler:nil]];
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(250 * NSEC_PER_MSEC)),
                            dispatch_get_main_queue(), ^{
                 settings_present_controller(err, strongSelf);
@@ -18764,10 +18746,10 @@ void cyanide_present_contact(UIViewController *host)
                 else if (state == SupervisionStateOff) message = @"Not supervised (stock).";
                 else message = @"Could not read the supervision state — filesystem access was denied.";
             }
-            UIAlertController *ac = [UIAlertController alertControllerWithTitle:@"Supervision"
+            UIAlertController *ac = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Supervision", nil)
                                                                         message:message
                                                                  preferredStyle:UIAlertControllerStyleAlert];
-            [ac addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
+            [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil) style:UIAlertActionStyleDefault handler:nil]];
             settings_present_controller(ac, me);
         });
         return;
@@ -19116,7 +19098,7 @@ void cyanide_present_contact(UIViewController *host)
     BOOL wasActive = settings_location_sim_is_active(d);
     settings_location_sim_set_target(d, latitude, longitude);
     log_user("[LOCSIM] Target set to %s: %s\n",
-             (name.length > 0 ? name : @"custom").UTF8String,
+             (name.length > 0 ? name : NSLocalizedString(@"custom", nil)).UTF8String,
              settings_location_sim_target_summary(d).UTF8String);
     [self reloadLocationSimUI];
     if (applyIfActive && wasActive) {
@@ -19126,18 +19108,18 @@ void cyanide_present_contact(UIViewController *host)
 
 - (void)presentLocationSimInvalidCoordinateAlert
 {
-    UIAlertController *ac = [UIAlertController alertControllerWithTitle:@"Invalid Coordinates"
-                                                                message:@"Use decimal degrees. Latitude must be between -90 and 90. Longitude must be between -180 and 180. Chinese labels like 北纬/南纬/东经/西经 and full-width punctuation are supported."
+    UIAlertController *ac = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Invalid Coordinates", nil)
+                                                                message:NSLocalizedString(@"Use decimal degrees. Latitude must be between -90 and 90. Longitude must be between -180 and 180. Chinese labels like 北纬/南纬/东经/西经 and full-width punctuation are supported.", nil)
                                                          preferredStyle:UIAlertControllerStyleAlert];
-    [ac addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
+    [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil) style:UIAlertActionStyleDefault handler:nil]];
     settings_present_controller(ac, self);
 }
 
 - (void)presentLocationSimExactCoordinatePrompt
 {
     NSUserDefaults *d = NSUserDefaults.standardUserDefaults;
-    UIAlertController *ac = [UIAlertController alertControllerWithTitle:@"Exact Coordinates"
-                                                                message:@"Enter decimal degrees, or paste a pair like 40.7128, -74.0060 or 北纬39.9042，东经116.4074."
+    UIAlertController *ac = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Exact Coordinates", nil)
+                                                                message:NSLocalizedString(@"Enter decimal degrees, or paste a pair like 40.7128, -74.0060 or 北纬39.9042，东经116.4074.", nil)
                                                          preferredStyle:UIAlertControllerStyleAlert];
     [ac addTextFieldWithConfigurationHandler:^(UITextField *field) {
         field.placeholder = @"Latitude or lat, lon";
@@ -19168,20 +19150,20 @@ void cyanide_present_contact(UIViewController *host)
         }
         [strongSelf setLocationSimTargetLatitude:latitude
                                        longitude:longitude
-                                            name:@"Exact coordinates"
+                                            name:NSLocalizedString(@"Exact coordinates", nil)
                                    applyIfActive:!simulateNow];
         if (simulateNow) {
             [strongSelf runLocationSimApply:YES];
         }
     };
 
-    [ac addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];
-    [ac addAction:[UIAlertAction actionWithTitle:@"Set Target"
+    [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil) style:UIAlertActionStyleCancel handler:nil]];
+    [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Set Target", nil)
                                            style:UIAlertActionStyleDefault
                                          handler:^(__unused UIAlertAction *action) {
         commit(NO);
     }]];
-    [ac addAction:[UIAlertAction actionWithTitle:@"Set & Simulate"
+    [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Set & Simulate", nil)
                                            style:UIAlertActionStyleDefault
                                          handler:^(__unused UIAlertAction *action) {
         commit(YES);
@@ -19204,7 +19186,7 @@ void cyanide_present_contact(UIViewController *host)
         @{ @"name": @"Singapore", @"lat": @1.3521, @"lon": @103.8198 },
     ];
 
-    UIAlertController *ac = [UIAlertController alertControllerWithTitle:@"Major Cities"
+    UIAlertController *ac = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Major Cities", nil)
                                                                 message:nil
                                                          preferredStyle:UIAlertControllerStyleActionSheet];
     __weak typeof(self) weakSelf = self;
@@ -19221,7 +19203,7 @@ void cyanide_present_contact(UIViewController *host)
             [strongSelf runLocationSimApply:YES];
         }]];
     }
-    [ac addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];
+    [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil) style:UIAlertActionStyleCancel handler:nil]];
     ac.popoverPresentationController.sourceView = self.view;
     ac.popoverPresentationController.sourceRect = self.view.bounds;
     settings_present_controller(ac, self);
@@ -19439,13 +19421,13 @@ void cyanide_present_contact(UIViewController *host)
     if (indexPath.section == SectionActions) {
         if (indexPath.row == 0) {
             UIAlertController *ac = [UIAlertController
-                alertControllerWithTitle:@"Clean Up?"
-                                 message:@"Stops live SpringBoard sessions and closes local KRW state. The next Run will try recovery first."
+                alertControllerWithTitle:NSLocalizedString(@"Clean Up?", nil)
+                                 message:NSLocalizedString(@"Stops live SpringBoard sessions and closes local KRW state. The next Run will try recovery first.", nil)
                           preferredStyle:UIAlertControllerStyleAlert];
-            [ac addAction:[UIAlertAction actionWithTitle:@"Cancel"
+            [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil)
                                                    style:UIAlertActionStyleCancel
                                                  handler:nil]];
-            [ac addAction:[UIAlertAction actionWithTitle:@"Clean Up"
+            [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Clean Up", nil)
                                                    style:UIAlertActionStyleDestructive
                                                  handler:^(UIAlertAction *_) {
                 settings_queue_terminal_kexploit_cleanup("manual action");
@@ -19453,14 +19435,14 @@ void cyanide_present_contact(UIViewController *host)
             settings_present_controller(ac, self);
         } else if (indexPath.row == 1) {
             UIAlertController *ac = [UIAlertController
-                alertControllerWithTitle:@"Respring?"
-                                 message:@"Are you sure you want to respring? SpringBoard will restart."
+                alertControllerWithTitle:NSLocalizedString(@"Respring?", nil)
+                                 message:NSLocalizedString(@"Are you sure you want to respring? SpringBoard will restart.", nil)
                           preferredStyle:UIAlertControllerStyleAlert];
-            [ac addAction:[UIAlertAction actionWithTitle:@"Cancel"
+            [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil)
                                                    style:UIAlertActionStyleCancel
                                                  handler:nil]];
             __weak typeof(self) weakSelf = self;
-            [ac addAction:[UIAlertAction actionWithTitle:@"Respring"
+            [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Respring", nil)
                                                    style:UIAlertActionStyleDestructive
                                                  handler:^(UIAlertAction *_) {
                 dispatch_async(dispatch_get_global_queue(0, 0), ^{
@@ -19489,14 +19471,14 @@ void cyanide_present_contact(UIViewController *host)
             settings_present_controller(ac, self);
         } else if (indexPath.row == 2) {
             UIAlertController *ac = [UIAlertController
-                alertControllerWithTitle:@"Reboot?"
-                                 message:@"The device restarts. Live tweaks stop first; Run Cyanide again after the restart."
+                alertControllerWithTitle:NSLocalizedString(@"Reboot?", nil)
+                                 message:NSLocalizedString(@"The device restarts. Live tweaks stop first; Run Cyanide again after the restart.", nil)
                           preferredStyle:UIAlertControllerStyleAlert];
-            [ac addAction:[UIAlertAction actionWithTitle:@"Cancel"
+            [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil)
                                                    style:UIAlertActionStyleCancel
                                                  handler:nil]];
             __weak typeof(self) weakSelf = self;
-            [ac addAction:[UIAlertAction actionWithTitle:@"Reboot"
+            [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Reboot", nil)
                                                    style:UIAlertActionStyleDestructive
                                                  handler:^(UIAlertAction *_) {
                 dispatch_async(dispatch_get_global_queue(0, 0), ^{
@@ -19526,13 +19508,13 @@ void cyanide_present_contact(UIViewController *host)
             settings_present_controller(ac, self);
         } else if (indexPath.row == 3) {
             UIAlertController *ac = [UIAlertController
-                alertControllerWithTitle:@"Reset All Packages?"
-                                 message:@"Deactivates every package and clears pending changes. Already-applied patches stay until respring or reboot. Per-tweak settings are not affected."
+                alertControllerWithTitle:NSLocalizedString(@"Reset All Packages?", nil)
+                                 message:NSLocalizedString(@"Deactivates every package and clears pending changes. Already-applied patches stay until respring or reboot. Per-tweak settings are not affected.", nil)
                           preferredStyle:UIAlertControllerStyleAlert];
-            [ac addAction:[UIAlertAction actionWithTitle:@"Cancel"
+            [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil)
                                                    style:UIAlertActionStyleCancel
                                                  handler:nil]];
-            [ac addAction:[UIAlertAction actionWithTitle:@"Reset"
+            [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Reset", nil)
                                                    style:UIAlertActionStyleDestructive
                                                  handler:^(UIAlertAction *_) {
                 NSUInteger uninstalled = 0;
@@ -19643,11 +19625,11 @@ void cyanide_present_contact(UIViewController *host)
                           withRowAnimation:UITableViewRowAnimationNone];
         } else if ([action isEqualToString:@"nano-apply"]) {
             UIAlertController *ac = [UIAlertController
-                alertControllerWithTitle:@"Apply Pairing Override?"
-                                 message:@"Saves these watchOS pairing settings on this iPhone. Respring or reboot afterwards before trying to pair."
+                alertControllerWithTitle:NSLocalizedString(@"Apply Pairing Override?", nil)
+                                 message:NSLocalizedString(@"Saves these watchOS pairing settings on this iPhone. Respring or reboot afterwards before trying to pair.", nil)
                           preferredStyle:UIAlertControllerStyleAlert];
-            [ac addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];
-            [ac addAction:[UIAlertAction actionWithTitle:@"Apply" style:UIAlertActionStyleDefault handler:^(UIAlertAction *_) {
+            [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil) style:UIAlertActionStyleCancel handler:nil]];
+            [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Apply", nil) style:UIAlertActionStyleDefault handler:^(UIAlertAction *_) {
                 settings_run_nano_apply_action();
             }]];
             settings_present_controller(ac, self);
@@ -19657,21 +19639,21 @@ void cyanide_present_contact(UIViewController *host)
             settings_run_nano_steer_action();
         } else if ([action isEqualToString:@"nano-seed"]) {
             UIAlertController *ac = [UIAlertController
-                alertControllerWithTitle:@"Seed Compatibility Index?"
-                                 message:@"Adds this phone's product type to the local NanoRegistry compatibility-index MobileAsset and saves a .cyanide.bak backup beside the original file."
+                alertControllerWithTitle:NSLocalizedString(@"Seed Compatibility Index?", nil)
+                                 message:NSLocalizedString(@"Adds this phone's product type to the local NanoRegistry compatibility-index MobileAsset and saves a .cyanide.bak backup beside the original file.", nil)
                           preferredStyle:UIAlertControllerStyleAlert];
-            [ac addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];
-            [ac addAction:[UIAlertAction actionWithTitle:@"Seed" style:UIAlertActionStyleDefault handler:^(UIAlertAction *_) {
+            [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil) style:UIAlertActionStyleCancel handler:nil]];
+            [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Seed", nil) style:UIAlertActionStyleDefault handler:^(UIAlertAction *_) {
                 settings_run_nano_seed_action();
             }]];
             settings_present_controller(ac, self);
         } else if ([action isEqualToString:@"nano-clear"]) {
             UIAlertController *ac = [UIAlertController
-                alertControllerWithTitle:@"Remove Pairing Override?"
-                                 message:@"Removes the saved Watch Pairing Override without touching the rest of your watch data. Respring or reboot afterwards."
+                alertControllerWithTitle:NSLocalizedString(@"Remove Pairing Override?", nil)
+                                 message:NSLocalizedString(@"Removes the saved Watch Pairing Override without touching the rest of your watch data. Respring or reboot afterwards.", nil)
                           preferredStyle:UIAlertControllerStyleAlert];
-            [ac addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];
-            [ac addAction:[UIAlertAction actionWithTitle:@"Remove" style:UIAlertActionStyleDestructive handler:^(UIAlertAction *_) {
+            [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil) style:UIAlertActionStyleCancel handler:nil]];
+            [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Remove", nil) style:UIAlertActionStyleDestructive handler:^(UIAlertAction *_) {
                 settings_run_nano_clear_action();
             }]];
             settings_present_controller(ac, self);
@@ -20122,7 +20104,7 @@ void cyanide_present_contact(UIViewController *host)
 
 - (NSArray<NSDictionary *> *)repoTweaksRows {
     return @[
-        @{ @"kind": @"button", @"action": @"repotweaks-open-manager", @"title": @"📦 Open Sources Tab" }
+        @{ @"kind": @"button", @"action": @"repotweaks-open-manager", @"title": NSLocalizedString(@"📦 Open Sources Tab", nil) }
     ];
 }
 

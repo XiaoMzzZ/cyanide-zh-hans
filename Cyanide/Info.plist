@@ -32,6 +32,11 @@
 	<true/>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Cyanide uses your location to show local weather in NiceBar Lite.</string>
+	<key>CFBundleLocalizations</key>
+	<array>
+		<string>en</string>
+		<string>zh-Hans</string>
+	</array>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>

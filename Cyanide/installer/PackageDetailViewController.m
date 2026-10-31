@@ -96,14 +96,14 @@ typedef NS_ENUM(NSInteger, PackageDetailSection) {
     }
 
     UIAlertController *alert =
-        [UIAlertController alertControllerWithTitle:@"Call Recording Disclosure"
-                                            message:@"Silencing call-recording disclosure sounds may violate consent, notice, or privacy laws where you live or where the call participants are located. Only use this where you have permission and understand the rules that apply to you.\n\nCyanide modifies CallServices system files and keeps a backup when possible. You can restore the original sounds from this package."
+        [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Call Recording Disclosure", nil)
+                                            message:NSLocalizedString(@"Silencing call-recording disclosure sounds may violate consent, notice, or privacy laws where you live or where the call participants are located. Only use this where you have permission and understand the rules that apply to you.\n\nCyanide modifies CallServices system files and keeps a backup when possible. You can restore the original sounds from this package.", nil)
                                      preferredStyle:UIAlertControllerStyleAlert];
 
-    [alert addAction:[UIAlertAction actionWithTitle:@"Cancel"
+    [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil)
                                               style:UIAlertActionStyleCancel
                                             handler:nil]];
-    [alert addAction:[UIAlertAction actionWithTitle:@"I Understand, Silence"
+    [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"I Understand, Silence", nil)
                                               style:UIAlertActionStyleDestructive
                                             handler:^(UIAlertAction *_) {
         [d setBool:YES forKey:kCallRecordingDisclosureAcceptedDefault];
@@ -301,7 +301,7 @@ typedef NS_ENUM(NSInteger, PackageDetailSection) {
         [UIAlertController alertControllerWithTitle:(hideHomeBarReason ? @"Run Hide Home Bar Alone" : @"Cannot Queue Install")
                                             message:reason ?: @"This package cannot be queued yet."
                                      preferredStyle:UIAlertControllerStyleAlert];
-    [alert addAction:[UIAlertAction actionWithTitle:@"OK"
+    [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil)
                                               style:UIAlertActionStyleDefault
                                             handler:nil]];
     [self presentViewController:alert animated:YES completion:nil];
@@ -338,14 +338,14 @@ typedef NS_ENUM(NSInteger, PackageDetailSection) {
 - (UIMenu *)manualActionMenu
 {
     if (self.package.kind == PackageInstallKindNanoRegistry) {
-        UIAction *apply = [UIAction actionWithTitle:@"Apply Pairing Override"
+        UIAction *apply = [UIAction actionWithTitle:NSLocalizedString(@"Apply Pairing Override", nil)
                                               image:[UIImage systemImageNamed:@"applewatch.radiowaves.left.and.right"]
                                          identifier:nil
                                             handler:^(__kindof UIAction *_) {
             [self queueManualIntent:PackageQueueIntentInstall];
         }];
 
-        UIAction *remove = [UIAction actionWithTitle:@"Remove Pairing Override"
+        UIAction *remove = [UIAction actionWithTitle:NSLocalizedString(@"Remove Pairing Override", nil)
                                                image:[UIImage systemImageNamed:@"xmark.circle"]
                                           identifier:nil
                                              handler:^(__kindof UIAction *_) {
@@ -357,7 +357,7 @@ typedef NS_ENUM(NSInteger, PackageDetailSection) {
     }
 
     if (self.package.kind == PackageInstallKindCallRecordingSound) {
-        UIAction *silence = [UIAction actionWithTitle:@"Silence Disclosure Sounds"
+        UIAction *silence = [UIAction actionWithTitle:NSLocalizedString(@"Silence Disclosure Sounds", nil)
                                                 image:[UIImage systemImageNamed:@"speaker.slash.fill"]
                                            identifier:nil
                                               handler:^(__kindof UIAction *_) {
@@ -369,7 +369,7 @@ typedef NS_ENUM(NSInteger, PackageDetailSection) {
         }];
         silence.attributes = UIMenuElementAttributesDestructive;
 
-        UIAction *restore = [UIAction actionWithTitle:@"Restore Original Sounds"
+        UIAction *restore = [UIAction actionWithTitle:NSLocalizedString(@"Restore Original Sounds", nil)
                                                 image:[UIImage systemImageNamed:@"speaker.wave.2.fill"]
                                            identifier:nil
                                               handler:^(__kindof UIAction *_) {
@@ -380,7 +380,7 @@ typedef NS_ENUM(NSInteger, PackageDetailSection) {
     }
 
     if (self.package.kind == PackageInstallKindHideHomeBar) {
-        UIAction *hide = [UIAction actionWithTitle:@"Hide Home Bar"
+        UIAction *hide = [UIAction actionWithTitle:NSLocalizedString(@"Hide Home Bar", nil)
                                              image:[UIImage systemImageNamed:@"line.3.horizontal"]
                                         identifier:nil
                                            handler:^(__kindof UIAction *_) {
@@ -388,7 +388,7 @@ typedef NS_ENUM(NSInteger, PackageDetailSection) {
         }];
         hide.attributes = UIMenuElementAttributesDestructive;
 
-        UIAction *restore = [UIAction actionWithTitle:@"Restore Home Bar"
+        UIAction *restore = [UIAction actionWithTitle:NSLocalizedString(@"Restore Home Bar", nil)
                                                 image:[UIImage systemImageNamed:@"arrow.clockwise"]
                                            identifier:nil
                                               handler:^(__kindof UIAction *_) {
@@ -398,7 +398,7 @@ typedef NS_ENUM(NSInteger, PackageDetailSection) {
         return [UIMenu menuWithTitle:@"Home Bar" children:@[hide, restore]];
     }
 
-    UIAction *disable = [UIAction actionWithTitle:@"Disable OTA Updates"
+    UIAction *disable = [UIAction actionWithTitle:NSLocalizedString(@"Disable OTA Updates", nil)
                                             image:[UIImage systemImageNamed:@"icloud.slash"]
                                        identifier:nil
                                           handler:^(__kindof UIAction *_) {
@@ -406,7 +406,7 @@ typedef NS_ENUM(NSInteger, PackageDetailSection) {
     }];
     disable.attributes = UIMenuElementAttributesDestructive;
 
-    UIAction *enable = [UIAction actionWithTitle:@"Enable OTA Updates"
+    UIAction *enable = [UIAction actionWithTitle:NSLocalizedString(@"Enable OTA Updates", nil)
                                            image:[UIImage systemImageNamed:@"icloud"]
                                       identifier:nil
                                          handler:^(__kindof UIAction *_) {
@@ -814,15 +814,15 @@ typedef NS_ENUM(NSInteger, PackageDetailSection) {
     NSString *message = snowBoardLite
         ? @"SnowBoard Lite needs a selected theme before it can be activated. Choose iOS 6 Theme or import a SnowBoard/IconBundles theme first."
         : @"Icon themes need a selected theme before they can be activated. Choose iOS 6 Theme or import a custom theme first.";
-    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Select a Theme"
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Select a Theme", nil)
                                                                    message:message
                                                             preferredStyle:UIAlertControllerStyleAlert];
-    [alert addAction:[UIAlertAction actionWithTitle:@"Open Theme Settings"
+    [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Open Theme Settings", nil)
                                              style:UIAlertActionStyleDefault
                                            handler:^(UIAlertAction *_) {
         [self navigateToSettingsSection];
     }]];
-    [alert addAction:[UIAlertAction actionWithTitle:@"Cancel"
+    [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil)
                                              style:UIAlertActionStyleCancel
                                            handler:nil]];
     [self presentViewController:alert animated:YES completion:nil];
@@ -831,24 +831,24 @@ typedef NS_ENUM(NSInteger, PackageDetailSection) {
 - (void)promptConfigureBeforeInstall
 {
     NSString *msg = [NSString stringWithFormat:
-        @"%@ has configurable options. Set them up first so the tweak applies with your preferences on the first activation.",
+        NSLocalizedString(@"%@ has configurable options. Set them up first so the tweak applies with your preferences on the first activation.", nil),
         self.package.name];
-    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Customize Before Activating?"
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Customize Before Activating?", nil)
                                                                    message:msg
                                                             preferredStyle:UIAlertControllerStyleAlert];
-    [alert addAction:[UIAlertAction actionWithTitle:@"Configure First"
+    [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Configure First", nil)
                                              style:UIAlertActionStyleDefault
                                            handler:^(UIAlertAction *_) {
         [self navigateToSettingsSection];
     }]];
-    [alert addAction:[UIAlertAction actionWithTitle:@"Activate Anyway"
+    [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Activate Anyway", nil)
                                              style:UIAlertActionStyleDefault
                                            handler:^(UIAlertAction *_) {
         if ([self presentQueueConflictIfNeededForIntent:PackageQueueIntentInstall]) return;
         log_user("[INSTALLER] Pending activation: %s\n", self.package.name.UTF8String);
         [[PackageQueue sharedQueue] toggleForPackage:self.package];
     }]];
-    [alert addAction:[UIAlertAction actionWithTitle:@"Cancel"
+    [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil)
                                              style:UIAlertActionStyleCancel
                                            handler:nil]];
     [self presentViewController:alert animated:YES completion:nil];
@@ -1171,7 +1171,7 @@ typedef NS_ENUM(NSInteger, PackageDetailSection) {
                 UILabel *note = [[UILabel alloc] init];
                 note.translatesAutoresizingMaskIntoConstraints = NO;
                 note.numberOfLines = 0;
-                note.text = @"Only install scripts from sources you trust.";
+                note.text = NSLocalizedString(@"Only install scripts from sources you trust.", nil);
                 note.font = [UIFont systemFontOfSize:13.0 weight:UIFontWeightMedium];
                 note.textColor = [UIColor.labelColor colorWithAlphaComponent:0.35];
                 [cell.contentView addSubview:note];

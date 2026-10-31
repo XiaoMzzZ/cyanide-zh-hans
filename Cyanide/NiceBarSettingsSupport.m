@@ -180,7 +180,7 @@ typedef NS_ENUM(NSInteger, CyanideNiceBarTrafficRange) {
 {
     self = [super initWithStyle:UITableViewStyleInsetGrouped];
     if (self) {
-        self.title = @"Traffic History";
+        self.title = NSLocalizedString(@"Traffic History", nil);
         _selectedRange = CyanideNiceBarTrafficRangeWeek;
     }
     return self;
@@ -447,18 +447,18 @@ NSString *CyanideNiceBarPreviewForTimeFormat(NSString *format)
 static NSArray<NSDictionary<NSString *, NSString *> *> *CyanideNiceBarTimePresets(void)
 {
     return @[
-        @{ @"section": @"Time", @"title": @"24h time",       @"format": @"HH:mm" },
-        @{ @"section": @"Time", @"title": @"12h time",       @"format": @"h:mm a" },
-        @{ @"section": @"Time", @"title": @"Time + seconds", @"format": @"HH:mm:ss" },
-        @{ @"section": @"Time", @"title": @"Weekday + time", @"format": @"EEE HH:mm" },
-        @{ @"section": @"Date", @"title": @"Short date",     @"format": @"M/d" },
-        @{ @"section": @"Date", @"title": @"Date",           @"format": @"MM/dd" },
-        @{ @"section": @"Date", @"title": @"Date + weekday", @"format": @"M/d EEE" },
-        @{ @"section": @"Date", @"title": @"Date + time",    @"format": @"MM-dd HH:mm" },
+        @{ @"section": @"Time", @"title": NSLocalizedString(@"24h time", nil),       @"format": @"HH:mm" },
+        @{ @"section": @"Time", @"title": NSLocalizedString(@"12h time", nil),       @"format": @"h:mm a" },
+        @{ @"section": @"Time", @"title": NSLocalizedString(@"Time + seconds", nil), @"format": @"HH:mm:ss" },
+        @{ @"section": @"Time", @"title": NSLocalizedString(@"Weekday + time", nil), @"format": @"EEE HH:mm" },
+        @{ @"section": @"Date", @"title": NSLocalizedString(@"Short date", nil),     @"format": @"M/d" },
+        @{ @"section": @"Date", @"title": NSLocalizedString(@"Date", nil),           @"format": @"MM/dd" },
+        @{ @"section": @"Date", @"title": NSLocalizedString(@"Date + weekday", nil), @"format": @"M/d EEE" },
+        @{ @"section": @"Date", @"title": NSLocalizedString(@"Date + time", nil),    @"format": @"MM-dd HH:mm" },
         @{ @"section": @"中文", @"title": @"中文时间",        @"format": @"a h:mm" },
         @{ @"section": @"中文", @"title": @"中文日期",        @"format": @"M月d日" },
         @{ @"section": @"中文", @"title": @"中文日期+星期",    @"format": @"cyanide:cn-date-weekday" },
-        @{ @"section": @"农历", @"title": @"Lunar date",     @"format": @"cyanide:lunar" },
+        @{ @"section": @"农历", @"title": NSLocalizedString(@"Lunar date", nil),     @"format": @"cyanide:lunar" },
         @{ @"section": @"农历", @"title": @"农历",           @"format": @"cyanide:lunar-cn" },
         @{ @"section": @"农历", @"title": @"农历完整",        @"format": @"cyanide:lunar-cn-full" },
     ];
@@ -729,7 +729,7 @@ NSString *CyanideNiceBarWeatherSummary(NSInteger code, BOOL chinese)
                  useCelsius ? 1 : 0);
         if (!CLLocationManager.locationServicesEnabled) {
             log_user("[NICEBAR] Weather failed: location services disabled.\n");
-            [self finishWithOK:NO text:@"Weather --" temp:nil code:nil fetched:NO];
+            [self finishWithOK:NO text:NSLocalizedString(@"Weather --", nil) temp:nil code:nil fetched:NO];
             return;
         }
         if (!self.locationManager) {
@@ -752,7 +752,7 @@ NSString *CyanideNiceBarWeatherSummary(NSInteger code, BOOL chinese)
         }
         if (status == kCLAuthorizationStatusDenied || status == kCLAuthorizationStatusRestricted) {
             log_user("[NICEBAR] Weather failed: location authorization status=%d.\n", (int)status);
-            [self finishWithOK:NO text:@"Loc denied" temp:nil code:nil fetched:NO];
+            [self finishWithOK:NO text:NSLocalizedString(@"Loc denied", nil) temp:nil code:nil fetched:NO];
             return;
         }
 
@@ -789,7 +789,7 @@ NSString *CyanideNiceBarWeatherSummary(NSInteger code, BOOL chinese)
     printf("[NICEBAR] weather location failed: %s\n", error.localizedDescription.UTF8String ?: "unknown");
     log_user("[NICEBAR] Weather location failed: %s.\n", error.localizedDescription.UTF8String ?: "unknown");
     self.locationRequestInFlight = NO;
-    [self finishWithOK:NO text:@"Weather --" temp:nil code:nil fetched:NO];
+    [self finishWithOK:NO text:NSLocalizedString(@"Weather --", nil) temp:nil code:nil fetched:NO];
 }
 
 - (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray<CLLocation *> *)locations
@@ -798,7 +798,7 @@ NSString *CyanideNiceBarWeatherSummary(NSInteger code, BOOL chinese)
     self.locationRequestInFlight = NO;
     CLLocation *location = locations.lastObject;
     if (!location) {
-        [self finishWithOK:NO text:@"Weather --" temp:nil code:nil fetched:NO];
+        [self finishWithOK:NO text:NSLocalizedString(@"Weather --", nil) temp:nil code:nil fetched:NO];
         return;
     }
     [self fetchWeatherForLocation:location];
@@ -821,7 +821,7 @@ NSString *CyanideNiceBarWeatherSummary(NSInteger code, BOOL chinese)
     NSURL *url = [NSURL URLWithString:urlString];
     if (!url) {
         self.weatherFetchInFlight = NO;
-        [self finishWithOK:NO text:@"Weather --" temp:nil code:nil fetched:NO];
+        [self finishWithOK:NO text:NSLocalizedString(@"Weather --", nil) temp:nil code:nil fetched:NO];
         return;
     }
 
@@ -838,7 +838,7 @@ NSString *CyanideNiceBarWeatherSummary(NSInteger code, BOOL chinese)
             if (error || data.length == 0) {
                 printf("[NICEBAR] weather fetch failed: %s\n", error.localizedDescription.UTF8String ?: "no data");
                 log_user("[NICEBAR] Weather fetch failed: %s.\n", error.localizedDescription.UTF8String ?: "no data");
-                [self finishWithOK:NO text:@"Weather --" temp:nil code:nil fetched:NO];
+                [self finishWithOK:NO text:NSLocalizedString(@"Weather --", nil) temp:nil code:nil fetched:NO];
                 return;
             }
             NSDictionary *json = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
@@ -847,7 +847,7 @@ NSString *CyanideNiceBarWeatherSummary(NSInteger code, BOOL chinese)
             NSNumber *code = [current isKindOfClass:NSDictionary.class] ? current[@"weather_code"] : nil;
             if (![temp isKindOfClass:NSNumber.class] || ![code isKindOfClass:NSNumber.class]) {
                 log_user("[NICEBAR] Weather fetch returned invalid response.\n");
-                [self finishWithOK:NO text:@"Weather --" temp:nil code:nil fetched:NO];
+                [self finishWithOK:NO text:NSLocalizedString(@"Weather --", nil) temp:nil code:nil fetched:NO];
                 return;
             }
             NSString *summary = CyanideNiceBarWeatherSummary(code.integerValue, NO);
@@ -867,7 +867,7 @@ NSString *CyanideNiceBarWeatherSummary(NSInteger code, BOOL chinese)
                 code:(NSNumber *)code
              fetched:(BOOL)fetched
 {
-    NSString *resolved = text.length ? text : @"Weather --";
+    NSString *resolved = text.length ? text : NSLocalizedString(@"Weather --", nil);
     NSArray<CyanideNiceBarWeatherCompletion> *callbacks = [self.pendingCompletions copy];
     [self.pendingCompletions removeAllObjects];
     for (CyanideNiceBarWeatherCompletion callback in callbacks) {

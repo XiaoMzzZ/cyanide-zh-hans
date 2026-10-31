@@ -443,7 +443,7 @@ didReceiveResponse:(NSURLResponse *)response
     self.handler = nil;
     if (!handler) return;
     if (self.tooLarge) {
-        NSString *desc = [NSString stringWithFormat:@"Response is larger than the %lu KB limit.",
+        NSString *desc = [NSString stringWithFormat:NSLocalizedString(@"Response is larger than the %lu KB limit.", nil),
                           (unsigned long)(self.maxBytes / 1024)];
         handler(nil, self.response,
                 [NSError errorWithDomain:@"RepoTweaks" code:413
@@ -1184,7 +1184,7 @@ static void repotweaks_fetch_repo(NSString *repoURL, BOOL addIfMissing,
             NSHTTPURLResponse *http = (NSHTTPURLResponse *)response;
             NSInteger status = http.statusCode;
             if (status < 200 || status >= 300) {
-                finish(NO, [NSString stringWithFormat:@"Repository returned HTTP %ld.", (long)status]);
+                finish(NO, [NSString stringWithFormat:NSLocalizedString(@"Repository returned HTTP %ld.", nil), (long)status]);
                 return;
             }
             if (!repotweaks_content_type_matches(http, @[@"application/json", @"text/json", @"text/plain"])) {
@@ -1576,10 +1576,10 @@ NSString *repotweaks_compatibility_note(NSDictionary *tweak)
     NSString *minIOS = repotweaks_string_or_empty(tweak[@"minIOS"]);
     NSString *maxIOS = repotweaks_string_or_empty(tweak[@"maxIOS"]);
     if (minIOS.length > 0 && maxIOS.length > 0) {
-        return [NSString stringWithFormat:@"Tested on iOS %@–%@", minIOS, maxIOS];
+        return [NSString stringWithFormat:NSLocalizedString(@"Tested on iOS %@–%@", nil), minIOS, maxIOS];
     }
-    if (maxIOS.length > 0) return [NSString stringWithFormat:@"Tested on iOS %@ and below", maxIOS];
-    if (minIOS.length > 0) return [NSString stringWithFormat:@"Requires iOS %@ or newer", minIOS];
+    if (maxIOS.length > 0) return [NSString stringWithFormat:NSLocalizedString(@"Tested on iOS %@ and below", nil), maxIOS];
+    if (minIOS.length > 0) return [NSString stringWithFormat:NSLocalizedString(@"Requires iOS %@ or newer", nil), minIOS];
     return nil;
 }
 
@@ -1599,8 +1599,8 @@ NSString *repotweaks_unsupported_reason(NSDictionary *tweak)
     if (message.length > 0) return message;
     NSString *note = repotweaks_compatibility_note(tweak);
     if (note.length > 0) return note;
-    if (tooNew && maxIOS.length > 0) return [NSString stringWithFormat:@"Only tested on iOS %@ and below.", maxIOS];
-    if (tooOld && minIOS.length > 0) return [NSString stringWithFormat:@"Requires iOS %@ or newer.", minIOS];
+    if (tooNew && maxIOS.length > 0) return [NSString stringWithFormat:NSLocalizedString(@"Only tested on iOS %@ and below.", nil), maxIOS];
+    if (tooOld && minIOS.length > 0) return [NSString stringWithFormat:NSLocalizedString(@"Requires iOS %@ or newer.", nil), minIOS];
     return @"This repo tweak is not supported on this iOS version.";
 }
 

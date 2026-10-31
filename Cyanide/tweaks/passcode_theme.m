@@ -1569,7 +1569,7 @@ bool settings_passcode_apply_digits(NSDictionary<NSString *, NSData *> *digits)
         NSData *data = digits[digit];
         if (![data isKindOfClass:NSData.class] || data.length == 0) {
             failed++;
-            [details addObject:[NSString stringWithFormat:@"digit %@ has no art", digit]];
+            [details addObject:[NSString stringWithFormat:NSLocalizedString(@"digit %@ has no art", nil), digit]];
             log_user("[PASSCODE] Digit %s has no art to write.\n", digit.UTF8String);
             continue;
         }
@@ -1577,7 +1577,7 @@ bool settings_passcode_apply_digits(NSDictionary<NSString *, NSData *> *digits)
         NSArray<NSString *> *paths = targets[digit];
         if (paths.count == 0) {
             failed++;
-            [details addObject:[NSString stringWithFormat:@"no keypad file for digit %@", digit]];
+            [details addObject:[NSString stringWithFormat:NSLocalizedString(@"no keypad file for digit %@", nil), digit]];
             log_user("[PASSCODE] No keypad file matched digit %s.\n", digit.UTF8String);
             continue;
         }
@@ -1604,7 +1604,7 @@ bool settings_passcode_apply_digits(NSDictionary<NSString *, NSData *> *digits)
             NSUInteger stuck = pt_rollback_snapshots(snapshots, lockedDirs);
             rollbackNote = stuck == 0
                 ? @" The keypad was put back to its previous art."
-                : [NSString stringWithFormat:@" %lu file(s) could not be put back (use Restore to retry).",
+                : [NSString stringWithFormat:NSLocalizedString(@" %lu file(s) could not be put back (use Restore to retry).", nil),
                                              (unsigned long)stuck];
         } else {
             rollbackNote = @" The keypad may be partially themed.";
@@ -1618,29 +1618,29 @@ bool settings_passcode_apply_digits(NSDictionary<NSString *, NSData *> *digits)
     settings_passcode_invalidate_caches();
 
     NSString *backupNote = g_pt_backups_written > 0
-        ? [NSString stringWithFormat:@", %lu original(s) saved", (unsigned long)g_pt_backups_written]
+        ? [NSString stringWithFormat:NSLocalizedString(@", %lu original(s) saved", nil), (unsigned long)g_pt_backups_written]
         : @"";
 
     if (failed == 0 && modesRestored) {
         // Main clause first, detail second — same shape as the other actions'
         // logs ("[OK] Location Simulator applied.", "[NANO] Wrote pairing gates: …").
-        NSString *detail = [NSString stringWithFormat:@"%lu file(s) in %.1fs%@.",
+        NSString *detail = [NSString stringWithFormat:NSLocalizedString(@"%lu file(s) in %.1fs%@.", nil),
                             (unsigned long)applied,
                             CFAbsoluteTimeGetCurrent() - startedAt,
                             backupNote];
-        pt_set_summary([NSString stringWithFormat:@"Passcode style applied. %@", detail]);
+        pt_set_summary([NSString stringWithFormat:NSLocalizedString(@"Passcode style applied. %@", nil), detail]);
         log_user("[OK] Passcode style applied. %s\n", detail.UTF8String);
         return applied > 0;
     }
 
     NSString *detail = [NSString stringWithFormat:
-        @"%lu file(s) written, %lu failed in %.1fs%@.%@ Failures: %@.",
+        NSLocalizedString(@"%lu file(s) written, %lu failed in %.1fs%@.%@ Failures: %@.", nil),
         (unsigned long)applied, (unsigned long)failed,
         CFAbsoluteTimeGetCurrent() - startedAt,
         backupNote,
         rollbackNote,
         [details componentsJoinedByString:@", "]];
-    pt_set_summary([NSString stringWithFormat:@"Passcode style did not apply cleanly. %@", detail]);
+    pt_set_summary([NSString stringWithFormat:NSLocalizedString(@"Passcode style did not apply cleanly. %@", nil), detail]);
     log_user("[WARN] Passcode style did not apply cleanly. %s\n", detail.UTF8String);
     // A partial apply counts as a failure: this flag drives the completion
     // banner, and a banner reading "Complete" above a summary that lists failed
@@ -1715,7 +1715,7 @@ bool settings_passcode_restore_originals(NSString *basePath)
             NSData *original = pt_backup_data(path);
             if (original.length == 0) {
                 failed++;
-                [details addObject:[NSString stringWithFormat:@"%@ backup unreadable", file]];
+                [details addObject:[NSString stringWithFormat:NSLocalizedString(@"%@ backup unreadable", nil), file]];
                 log_user("[PASSCODE] Backup for %s is missing or unreadable.\n",
                          file.UTF8String);
                 continue;
@@ -1754,20 +1754,20 @@ bool settings_passcode_restore_originals(NSString *basePath)
     }
 
     if (failed == 0 && modesRestored) {
-        NSString *detail = [NSString stringWithFormat:@"%lu file(s) in %.1fs.",
+        NSString *detail = [NSString stringWithFormat:NSLocalizedString(@"%lu file(s) in %.1fs.", nil),
                             (unsigned long)restored,
                             CFAbsoluteTimeGetCurrent() - startedAt];
-        pt_set_summary([NSString stringWithFormat:@"Original digits restored. %@", detail]);
+        pt_set_summary([NSString stringWithFormat:NSLocalizedString(@"Original digits restored. %@", nil), detail]);
         log_user("[OK] Original digits restored. %s\n", detail.UTF8String);
         return true;
     }
 
     NSString *detail = [NSString stringWithFormat:
-        @"%lu file(s) restored, %lu failed in %.1fs: %@. Original backups are retained.",
+        NSLocalizedString(@"%lu file(s) restored, %lu failed in %.1fs: %@. Original backups are retained.", nil),
         (unsigned long)restored, (unsigned long)failed,
         CFAbsoluteTimeGetCurrent() - startedAt,
         [details componentsJoinedByString:@", "]];
-    pt_set_summary([NSString stringWithFormat:@"Originals did not restore cleanly. %@", detail]);
+    pt_set_summary([NSString stringWithFormat:NSLocalizedString(@"Originals did not restore cleanly. %@", nil), detail]);
     log_user("[WARN] Originals did not restore cleanly. %s\n", detail.UTF8String);
     // Same rule as apply: a partial restore is reported as a failure, with the
     // per-file detail carried in the summary.
@@ -1794,7 +1794,7 @@ static NSString *pt_style_dir(void)
 static NSString *pt_style_name(void)
 {
     NSString *name = [NSUserDefaults.standardUserDefaults stringForKey:kPTStyleNameKey];
-    return name.length > 0 ? name : @"Imported Style";
+    return name.length > 0 ? name : NSLocalizedString(@"Imported Style", nil);
 }
 
 static void pt_set_style_name(NSString *name)
@@ -1848,7 +1848,7 @@ NSString *settings_passcode_selected_theme_display_name(void)
     NSDictionary *theme = settings_passcode_selected_theme();
     if (!theme) return @"None selected";
     NSString *name = theme[@"name"];
-    return name.length > 0 ? name : @"Imported Style";
+    return name.length > 0 ? name : NSLocalizedString(@"Imported Style", nil);
 }
 
 void settings_passcode_clear_selected_theme(void)

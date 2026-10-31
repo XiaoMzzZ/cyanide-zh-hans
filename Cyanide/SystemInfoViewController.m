@@ -60,8 +60,8 @@ static NSString *si_duration(NSTimeInterval t)
 {
     long s = (long)t;
     long d = s / 86400, h = (s % 86400) / 3600, m = (s % 3600) / 60;
-    if (d > 0) return [NSString stringWithFormat:@"%ldd %ldh %ldm", d, h, m];
-    if (h > 0) return [NSString stringWithFormat:@"%ldh %ldm", h, m];
+    if (d > 0) return [NSString stringWithFormat:NSLocalizedString(@"%ldd %ldh %ldm", nil), d, h, m];
+    if (h > 0) return [NSString stringWithFormat:NSLocalizedString(@"%ldh %ldm", nil), h, m];
     return [NSString stringWithFormat:@"%ldm", m];
 }
 
@@ -230,7 +230,7 @@ static NSString * const kSIAppSortKey = @"SystemInfoAppSort";
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.title = @"System Info";
+    self.title = NSLocalizedString(@"System Info", nil);
     self.navigationItem.largeTitleDisplayMode = UINavigationItemLargeTitleDisplayModeAlways;
     self.refreshControl = [UIRefreshControl new];
     [self.refreshControl addTarget:self action:@selector(pullToRefresh) forControlEvents:UIControlEventValueChanged];
@@ -349,7 +349,7 @@ static NSString * const kSIAppSortKey = @"SystemInfoAppSort";
     if (applePct != nil) [rows addObject:@[ @"Maximum capacity", [NSString stringWithFormat:@"%@%%", applePct] ]];
     if (design.doubleValue > 0 && full != nil) {
         [rows addObject:@[ applePct != nil ? @"Measured capacity" : @"Maximum capacity",
-                           [NSString stringWithFormat:@"%.1f%% (%@ of %@ mAh)",
+                           [NSString stringWithFormat:NSLocalizedString(@"%.1f%% (%@ of %@ mAh)", nil),
                             100.0 * full.doubleValue / design.doubleValue, full, design] ]];
     }
     NSNumber *charge = num(@"CurrentCapacity");
@@ -364,7 +364,7 @@ static NSString * const kSIAppSortKey = @"SystemInfoAppSort";
     if (charging != nil || external != nil)
         [rows addObject:@[ @"Power", charging.boolValue ? @"Charging" : external.boolValue ? @"Connected, not charging" : @"On battery" ]];
     self.batteryRows = rows;
-    self.batteryStatus = rows.count ? [NSString stringWithFormat:@"Read from AppleSmartBattery in %@.", source]
+    self.batteryStatus = rows.count ? [NSString stringWithFormat:NSLocalizedString(@"Read from AppleSmartBattery in %@.", nil), source]
                                     : @"The battery driver returned no values.";
 }
 
@@ -457,7 +457,7 @@ static NSString * const kSIAppSortKey = @"SystemInfoAppSort";
         case SISectionKernel:  return @"Kernel Access";
         case SISectionBattery: return @"Battery";
         case SISectionStorage: return @"Storage";
-        case SISectionApps:    return self.apps.count ? [NSString stringWithFormat:@"%lu Apps", (unsigned long)self.apps.count] : @"Apps";
+        case SISectionApps:    return self.apps.count ? [NSString stringWithFormat:NSLocalizedString(@"%lu Apps", nil), (unsigned long)self.apps.count] : @"Apps";
         default: return nil;
     }
 }
@@ -546,7 +546,7 @@ static NSString * const kSIAppSortKey = @"SystemInfoAppSort";
             c.imageProperties.tintColor = UIColor.tertiaryLabelColor;
             c.text = app.name;
             c.textProperties.numberOfLines = 1;
-            c.secondaryText = [NSString stringWithFormat:@"App %@ · Data %@%@", si_bytes(app.appBytes), si_bytes(app.dataBytes),
+            c.secondaryText = [NSString stringWithFormat:NSLocalizedString(@"App %@ · Data %@%@", nil), si_bytes(app.appBytes), si_bytes(app.dataBytes),
                                app.incomplete ? @" · partly unreadable" : @""];
             c.secondaryTextProperties.color = UIColor.secondaryLabelColor;
             c.secondaryTextProperties.numberOfLines = 1;

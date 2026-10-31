@@ -176,11 +176,11 @@
     NSInteger installs   = (NSInteger)q.queuedInstalls.count;
     NSInteger uninstalls = (NSInteger)q.queuedUninstalls.count;
 
-    self.titleLabel.text = (count == 1) ? @"1 pending change" : [NSString stringWithFormat:@"%ld pending changes", (long)count];
+    self.titleLabel.text = (count == 1) ? @"1 pending change" : [NSString stringWithFormat:NSLocalizedString(@"%ld pending changes", nil), (long)count];
 
     NSMutableArray<NSString *> *parts = [NSMutableArray array];
-    if (installs > 0)   [parts addObject:[NSString stringWithFormat:@"%ld activate", (long)installs]];
-    if (uninstalls > 0) [parts addObject:[NSString stringWithFormat:@"%ld deactivate", (long)uninstalls]];
+    if (installs > 0)   [parts addObject:[NSString stringWithFormat:NSLocalizedString(@"%ld activate", nil), (long)installs]];
+    if (uninstalls > 0) [parts addObject:[NSString stringWithFormat:NSLocalizedString(@"%ld deactivate", nil), (long)uninstalls]];
     self.subtitleLabel.text = [parts componentsJoinedByString:@" · "];
 
     [self setVisible:YES animated:animated];

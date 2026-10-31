@@ -120,18 +120,18 @@ static NSString * const kSourcesLastRefreshKey = @"RepoTweaksLastRefreshTimestam
         }
     }
 
-    if (pkgRoot) { pkgRoot.title = @"Packages"; pkgRoot.navigationItem.title = @"Packages"; }
+    if (pkgRoot) { pkgRoot.title = NSLocalizedString(@"Packages", nil); pkgRoot.navigationItem.title = NSLocalizedString(@"Packages", nil); }
 
     HomeViewController *home = [[HomeViewController alloc] init];
     SourcesViewController *sources = [[SourcesViewController alloc] initWithStyle:UITableViewStyleInsetGrouped];
-    self.sourcesNav = [self cy_tabNavWithRoot:sources title:@"Sources" symbol:@"tray.and.arrow.down.fill"];
+    self.sourcesNav = [self cy_tabNavWithRoot:sources title:NSLocalizedString(@"Sources", nil) symbol:@"tray.and.arrow.down.fill"];
 
     NSMutableArray<UIViewController *> *tabs = [NSMutableArray array];
-    [tabs addObject:[self cy_tabNavWithRoot:home    title:@"Home"     symbol:@"house.fill"]];
-    if (pkgRoot) [tabs addObject:[self cy_tabNavWithRoot:pkgRoot title:@"Packages" symbol:@"shippingbox.fill"]];
+    [tabs addObject:[self cy_tabNavWithRoot:home    title:NSLocalizedString(@"Home", nil)     symbol:@"house.fill"]];
+    if (pkgRoot) [tabs addObject:[self cy_tabNavWithRoot:pkgRoot title:NSLocalizedString(@"Packages", nil) symbol:@"shippingbox.fill"]];
     if (repotweaks_sources_enabled()) [tabs addObject:self.sourcesNav];
-    if (logRoot) [tabs addObject:[self cy_tabNavWithRoot:logRoot title:@"Log"      symbol:@"terminal"]];
-    if (setRoot) [tabs addObject:[self cy_tabNavWithRoot:setRoot title:@"Settings" symbol:@"gear"]];
+    if (logRoot) [tabs addObject:[self cy_tabNavWithRoot:logRoot title:NSLocalizedString(@"Log", nil)      symbol:@"terminal"]];
+    if (setRoot) [tabs addObject:[self cy_tabNavWithRoot:setRoot title:NSLocalizedString(@"Settings", nil) symbol:@"gear"]];
 
     [self setViewControllers:tabs animated:NO];
     self.selectedIndex = 0;
@@ -336,7 +336,7 @@ static NSString * const kSourcesLastRefreshKey = @"RepoTweaksLastRefreshTimestam
 
     UILabel *label = [[UILabel alloc] init];
     label.translatesAutoresizingMaskIntoConstraints = NO;
-    label.text = @"Refreshing sources…";
+    label.text = NSLocalizedString(@"Refreshing sources…", nil);
     label.font = [UIFont systemFontOfSize:13.0 weight:UIFontWeightSemibold];
     label.textColor = UIColor.whiteColor;
     label.tag = 102;
@@ -380,7 +380,7 @@ static NSString * const kSourcesLastRefreshKey = @"RepoTweaksLastRefreshTimestam
     } completion:^(BOOL finished) {
         [spinner stopAnimating];
         checkmark.hidden = NO;
-        label.text = @"Sources up to date";
+        label.text = NSLocalizedString(@"Sources up to date", nil);
         [UIView animateWithDuration:0.2 animations:^{
             checkmark.alpha = 1.0;
         }];

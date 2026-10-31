@@ -388,7 +388,7 @@ static NSMutableDictionary<NSString *, NSData *> *fp_adapt_tables(NSDictionary<N
 {
     NSString *why = nil;
     for (NSString *tag in @[ @"head", @"hhea", @"hmtx", @"maxp", @"glyf", @"loca", @"cmap" ]) {
-        if (!s[tag]) { *errorOut = [NSString stringWithFormat:@"The font has no %@ table.", tag]; return nil; }
+        if (!s[tag]) { *errorOut = [NSString stringWithFormat:NSLocalizedString(@"The font has no %@ table.", nil), tag]; return nil; }
     }
     if (t[@"head"].length < 54 || s[@"head"].length < 54 || s[@"maxp"].length < 6) { *errorOut = @"Damaged font header."; return nil; }
 
@@ -452,7 +452,7 @@ static NSMutableDictionary<NSString *, NSData *> *fp_adapt_tables(NSDictionary<N
             [out removeObjectForKey:@"GPOS"];
             if (![notes containsObject:@"kerning dropped"]) [notes addObject:@"kerning dropped"];
         }
-        NSString *scaled = [NSString stringWithFormat:@"scaled from %u to %u units", sourceUPM, targetUPM];
+        NSString *scaled = [NSString stringWithFormat:NSLocalizedString(@"scaled from %u to %u units", nil), sourceUPM, targetUPM];
         if (![notes containsObject:scaled]) [notes addObject:scaled];
     }
     // maxp: no instructions any more.
@@ -532,7 +532,7 @@ NSData *fontpatch_adapt(NSData *target, NSData *source, NSString **errorOut, NSS
     if (count < 1) { *errorOut = @"System font: empty font collection."; return nil; }
     BOOL collection = memcmp(target.bytes, "ttcf", 4) == 0;
     NSMutableArray<NSString *> *notes = [NSMutableArray arrayWithObject:collection
-        ? [NSString stringWithFormat:@"adapted to all %u system fonts", count] : @"adapted to the system font"];
+        ? [NSString stringWithFormat:NSLocalizedString(@"adapted to all %u system fonts", nil), count] : @"adapted to the system font"];
     NSMutableArray<NSDictionary<NSString *, NSData *> *> *faces = [NSMutableArray array];
     for (uint32_t f = 0; f < count; f++) {
         NSDictionary<NSString *, NSData *> *t = fp_face_tables(target, f, &why);

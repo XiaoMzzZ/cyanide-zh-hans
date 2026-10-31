@@ -250,8 +250,8 @@ static NSString * const kFooterID      = @"DocsFooter";
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.title = @"Docs";
-    self.navigationItem.title = @"Docs";
+    self.title = NSLocalizedString(@"Docs", nil);
+    self.navigationItem.title = NSLocalizedString(@"Docs", nil);
 
     self.tableView.rowHeight = UITableViewAutomaticDimension;
     self.tableView.estimatedRowHeight = 80.0;
@@ -467,111 +467,77 @@ static NSString * const kFooterID      = @"DocsFooter";
         @"MSHookFunction(...)                  not available here";
 
     self.sections = @[
-        @{ @"title": @"How tweaks work",
+        @{ @"title": NSLocalizedString(@"How tweaks work", nil),
            @"symbol": @"book.closed.fill",
            @"tint": UIColor.systemPurpleColor,
-           @"footer": @"Read sbcustomizer.m, statbar.m, and axonlite.m in "
-                      @"Cyanide/tweaks/ for shipped patterns at increasing complexity.",
+           @"footer": NSLocalizedString(@"Read sbcustomizer.m, statbar.m, and axonlite.m in Cyanide/tweaks/ for shipped patterns at increasing complexity.", nil),
            @"rows": @[
                @{ @"kind": @"prose",
-                  @"text": @"Cyanide tweaks are app-side drivers. No SpringBoard dylibs, no "
-                           @"Substrate hooks, no swizzled methods. The app reaches into the "
-                           @"target from outside." },
+                  @"text": NSLocalizedString(@"Cyanide tweaks are app-side drivers. No SpringBoard dylibs, no Substrate hooks, no swizzled methods. The app reaches into the target from outside.", nil) },
                @{ @"kind": @"prose",
-                  @"text": @"A RemoteCall session is the bridge. From inside one you send "
-                           @"Objective-C messages, read and write memory, and call C symbols "
-                           @"in the target process." },
+                  @"text": NSLocalizedString(@"A RemoteCall session is the bridge. From inside one you send Objective-C messages, read and write memory, and call C symbols in the target process.", nil) },
                @{ @"kind": @"prose",
-                  @"text": @"Settings holds the SpringBoard channel during Apply Tweaks. Your "
-                           @"code runs inside it under settings_rc_lock(), via three "
-                           @"entrypoints: apply_in_session, optional stop_in_session, and "
-                           @"forget_remote_state." },
+                  @"text": NSLocalizedString(@"Settings holds the SpringBoard channel during Apply Tweaks. Your code runs inside it under settings_rc_lock(), via three entrypoints: apply_in_session, optional stop_in_session, and forget_remote_state.", nil) },
            ]},
 
-        @{ @"title": @"The remote_objc API",
+        @{ @"title": NSLocalizedString(@"The remote_objc API", nil),
            @"symbol": @"chevron.left.forwardslash.chevron.right",
            @"tint": UIColor.systemBlueColor,
-           @"footer": @"_main variants dispatch to the target main thread (use them for "
-                      @"UIKit). _raw passes non-pointer arguments by value. "
-                      @"r_msg2_main_struct_ret copies struct returns such as CGRect.",
+           @"footer": NSLocalizedString(@"_main variants dispatch to the target main thread (use them for UIKit). _raw passes non-pointer arguments by value. r_msg2_main_struct_ret copies struct returns such as CGRect.", nil),
            @"rows": @[
                @{ @"kind": @"prose",
-                  @"text": @"Import remote_objc.h and ../TaskRop/RemoteCall.h. Helpers assume "
-                           @"an active session — don't call init_remote_call yourself unless "
-                           @"you need a private channel." },
+                  @"text": NSLocalizedString(@"Import remote_objc.h and ../TaskRop/RemoteCall.h. Helpers assume an active session — don't call init_remote_call yourself unless you need a private channel.", nil) },
                @{ @"kind": @"code", @"filename": @"remote_objc.h", @"text": apiCheat },
            ]},
 
-        @{ @"title": @"A minimal tweak",
+        @{ @"title": NSLocalizedString(@"A minimal tweak", nil),
            @"symbol": @"doc.text.fill",
            @"tint": UIColor.systemOrangeColor,
-           @"footer": @"Drop both files in Cyanide/tweaks/. The Xcode project uses "
-                      @"PBXFileSystemSynchronizedRootGroup, so new files are picked up "
-                      @"automatically — no pbxproj edits needed.",
+           @"footer": NSLocalizedString(@"Drop both files in Cyanide/tweaks/. The Xcode project uses PBXFileSystemSynchronizedRootGroup, so new files are picked up automatically — no pbxproj edits needed.", nil),
            @"rows": @[
                @{ @"kind": @"prose",
-                  @"text": @"A complete RemoteCall-only tweak: paints an 80×80 red square on "
-                           @"a SpringBoard window." },
+                  @"text": NSLocalizedString(@"A complete RemoteCall-only tweak: paints an 80×80 red square on a SpringBoard window.", nil) },
                @{ @"kind": @"prose",
-                  @"text": @"Idempotent on reapply, undoes itself on stop, drops cached "
-                           @"pointers on respawn." },
+                  @"text": NSLocalizedString(@"Idempotent on reapply, undoes itself on stop, drops cached pointers on respawn.", nil) },
                @{ @"kind": @"code", @"filename": @"hello_tweak.h", @"text": helloHeader },
                @{ @"kind": @"code", @"filename": @"hello_tweak.m", @"text": helloImpl },
            ]},
 
-        @{ @"title": @"Wiring into Settings",
+        @{ @"title": NSLocalizedString(@"Wiring into Settings", nil),
            @"symbol": @"gearshape.2.fill",
            @"tint": UIColor.systemGreenColor,
-           @"footer": @"Mirror an existing kSettings…Enabled path — search "
-                      @"kSettingsStatBarEnabled or kSettingsAxonLiteEnabled for a complete "
-                      @"template covering defaults, rows, package state, Run, live apply, "
-                      @"stop, and cleanup.",
+           @"footer": NSLocalizedString(@"Mirror an existing kSettings…Enabled path — search kSettingsStatBarEnabled or kSettingsAxonLiteEnabled for a complete template covering defaults, rows, package state, Run, live apply, stop, and cleanup.", nil),
            @"rows": @[
                @{ @"kind": @"prose",
-                  @"text": @"SettingsViewController.m is the orchestrator. Add five things: a "
-                           @"defaults key, a switch row, a Run-path apply, a live-apply "
-                           @"branch, and forget_remote_state in cleanup." },
+                  @"text": NSLocalizedString(@"SettingsViewController.m is the orchestrator. Add five things: a defaults key, a switch row, a Run-path apply, a live-apply branch, and forget_remote_state in cleanup.", nil) },
                @{ @"kind": @"prose",
-                  @"text": @"Every apply checks g_springboard_rc_ready inside "
-                           @"@synchronized(settings_rc_lock()). settings_mark_tweak_applied() "
-                           @"keeps package state honest. forget_remote_state() runs on "
-                           @"respring and abandon." },
+                  @"text": NSLocalizedString(@"Every apply checks g_springboard_rc_ready inside @synchronized(settings_rc_lock()). settings_mark_tweak_applied() keeps package state honest. forget_remote_state() runs on respring and abandon.", nil) },
                @{ @"kind": @"code", @"filename": @"SettingsViewController.m", @"text": wiring },
            ]},
 
-        @{ @"title": @"Porting from Theos / Substrate",
+        @{ @"title": NSLocalizedString(@"Porting from Theos / Substrate", nil),
            @"symbol": @"arrow.triangle.2.circlepath",
            @"tint": UIColor.systemPinkColor,
-           @"footer": @"Shipped templates: sbcustomizer (dock layout), darksword_tweaks "
-                      @"(SpringBoard state toggles), powercuff (thermalmonitord one-shot), "
-                      @"statbar (overlay window), "
-                      @"axonlite (cached NC state).",
+           @"footer": NSLocalizedString(@"Shipped templates: sbcustomizer (dock layout), darksword_tweaks (SpringBoard state toggles), powercuff (thermalmonitord one-shot), statbar (overlay window), axonlite (cached NC state).", nil),
            @"rows": @[
                @{ @"kind": @"prose",
-                  @"text": @"RemoteCall isn't a hook framework. You can't intercept a method "
-                           @"or replace a C function in place." },
+                  @"text": NSLocalizedString(@"RemoteCall isn't a hook framework. You can't intercept a method or replace a C function in place.", nil) },
                @{ @"kind": @"prose",
-                  @"text": @"Ports work when the effect is a finite mutation — set this "
-                           @"property, call this controller method, add this view, hold this "
-                           @"assertion, or refresh on a timer." },
+                  @"text": NSLocalizedString(@"Ports work when the effect is a finite mutation — set this property, call this controller method, add this view, hold this assertion, or refresh on a timer.", nil) },
                @{ @"kind": @"code", @"filename": @"Theos → RemoteCall", @"text": portingNotes },
                @{ @"kind": @"prose",
-                  @"text": @"Targeting another process? Open a separate session with "
-                           @"init_remote_call(name, false), do the work, destroy_remote_call "
-                           @"before switching back. Powercuff does this for thermalmonitord." },
+                  @"text": NSLocalizedString(@"Targeting another process? Open a separate session with init_remote_call(name, false), do the work, destroy_remote_call before switching back. Powercuff does this for thermalmonitord.", nil) },
            ]},
 
-        @{ @"title": @"Contribute",
+        @{ @"title": NSLocalizedString(@"Contribute", nil),
            @"symbol": @"arrow.up.right.square.fill",
            @"tint": UIColor.systemRedColor,
            @"footer": @"",
            @"rows": @[
                @{ @"kind": @"prose",
-                  @"text": @"Build with ./scripts/build.sh — the IPA is packaged under "
-                           @"build/. Sideload, test on device, attach Log-tab output to your "
-                           @"PR." },
+                  @"text": NSLocalizedString(@"Build with ./scripts/build.sh — the IPA is packaged under build/. Sideload, test on device, attach Log-tab output to your PR.", nil) },
                @{ @"kind": @"prose",
-                  @"text": @"Source and issues: https://github.com/kolbicz/cyanide" },
+                  @"text": NSLocalizedString(@"Source and issues: https://github.com/kolbicz/cyanide", nil) },
            ]},
     ];
 }

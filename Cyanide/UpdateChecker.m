@@ -73,7 +73,7 @@ static NSString *update_http_failure(NSURLResponse *response)
 {
     if (![response isKindOfClass:NSHTTPURLResponse.class]) return @"Unexpected response from GitHub.";
     NSInteger status = ((NSHTTPURLResponse *)response).statusCode;
-    if (status != 200) return [NSString stringWithFormat:@"GitHub returned HTTP %ld.", (long)status];
+    if (status != 200) return [NSString stringWithFormat:NSLocalizedString(@"GitHub returned HTTP %ld.", nil), (long)status];
     return nil;
 }
 
@@ -225,7 +225,7 @@ static NSString *update_http_failure(NSURLResponse *response)
            self.currentVersion.UTF8String);
 
     UIAlertController *checking = [UIAlertController
-        alertControllerWithTitle:@"Checking for Updates…"
+        alertControllerWithTitle:NSLocalizedString(@"Checking for Updates…", nil)
                          message:@"\n\n"
                   preferredStyle:UIAlertControllerStyleAlert];
     UIActivityIndicatorView *spin =
@@ -291,11 +291,11 @@ static NSString *update_http_failure(NSURLResponse *response)
                 if (failureReason) {
                     printf("[UPDATE] manual check failed: %s\n", failureReason.UTF8String);
                     UIAlertController *ac = [UIAlertController
-                        alertControllerWithTitle:@"Check Failed"
+                        alertControllerWithTitle:NSLocalizedString(@"Check Failed", nil)
                                          message:[NSString stringWithFormat:
-                                                  @"Couldn't reach GitHub.\n\n%@", failureReason]
+                                                  NSLocalizedString(@"Couldn't reach GitHub.\n\n%@", nil), failureReason]
                                   preferredStyle:UIAlertControllerStyleAlert];
-                    [ac addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleCancel handler:nil]];
+                    [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil) style:UIAlertActionStyleCancel handler:nil]];
                     UIViewController *top2 = presenter;
                     while (top2.presentedViewController) top2 = top2.presentedViewController;
                     [top2 presentViewController:ac animated:YES completion:nil];
@@ -306,12 +306,12 @@ static NSString *update_http_failure(NSURLResponse *response)
                     printf("[UPDATE] manual check: up to date (current=%s latest=%s)\n",
                            current.UTF8String, latest.UTF8String);
                     UIAlertController *ac = [UIAlertController
-                        alertControllerWithTitle:@"Up to Date"
+                        alertControllerWithTitle:NSLocalizedString(@"Up to Date", nil)
                                          message:[NSString stringWithFormat:
-                                                  @"You're on the latest release.\n\nInstalled: %@\nLatest: %@",
+                                                  NSLocalizedString(@"You're on the latest release.\n\nInstalled: %@\nLatest: %@", nil),
                                                   current, latest]
                                   preferredStyle:UIAlertControllerStyleAlert];
-                    [ac addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleCancel handler:nil]];
+                    [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil) style:UIAlertActionStyleCancel handler:nil]];
                     UIViewController *top2 = presenter;
                     while (top2.presentedViewController) top2 = top2.presentedViewController;
                     [top2 presentViewController:ac animated:YES completion:nil];
@@ -369,11 +369,11 @@ static NSString *update_http_failure(NSURLResponse *response)
         [message appendString:@"\n\nUpdates ship as sideloadable IPAs on GitHub Releases."];
     }
 
-    UIAlertController *ac = [UIAlertController alertControllerWithTitle:@"Update Available"
+    UIAlertController *ac = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Update Available", nil)
                                                                 message:message
                                                          preferredStyle:UIAlertControllerStyleAlert];
 
-    [ac addAction:[UIAlertAction actionWithTitle:@"View Release"
+    [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"View Release", nil)
                                            style:UIAlertActionStyleDefault
                                          handler:^(UIAlertAction *_) {
         // Only follow the feed's link to an https github.com page; anything
@@ -388,14 +388,14 @@ static NSString *update_http_failure(NSURLResponse *response)
         [[UIApplication sharedApplication] openURL:u options:@{} completionHandler:nil];
     }]];
 
-    [ac addAction:[UIAlertAction actionWithTitle:@"Remind Me Later"
+    [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Remind Me Later", nil)
                                            style:UIAlertActionStyleDefault
                                          handler:^(UIAlertAction *_) {
         NSDate *until = [[NSDate date] dateByAddingTimeInterval:kSnoozeDuration];
         [[NSUserDefaults standardUserDefaults] setObject:until forKey:kUpdateSnoozeUntilKey];
     }]];
 
-    [ac addAction:[UIAlertAction actionWithTitle:@"Skip This Version"
+    [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Skip This Version", nil)
                                            style:UIAlertActionStyleDestructive
                                          handler:^(UIAlertAction *_) {
         [[NSUserDefaults standardUserDefaults] setObject:latest forKey:kUpdateSkippedVersionKey];

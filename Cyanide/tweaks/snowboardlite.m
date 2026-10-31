@@ -263,7 +263,7 @@ NSString *settings_snowboardlite_selected_theme_display_name(void)
     if (settings_sbl_selected_builtin_ios6()) return @"iOS 6 Theme";
     NSDictionary *theme = settings_sbl_selected_theme();
     NSString *name = theme[@"name"];
-    return name.length > 0 ? name : @"None";
+    return name.length > 0 ? name : NSLocalizedString(@"None", nil);
 }
 
 static NSArray<NSURL *> *settings_sbl_iconbundles_dirs_in_folder(NSURL *rootURL)
@@ -357,7 +357,7 @@ BOOL settings_sbl_import_folder_theme_named(NSURL *url,
             if (!SBLImageFilePassesPreflight(fileURL.path, THEMER_MAX_ICON_BYTES, &fileBytes)) {
                 skipped++;
                 if (skippedSamples.count < 8) {
-                    [skippedSamples addObject:[NSString stringWithFormat:@"%@ (over %u bytes or unreadable)",
+                    [skippedSamples addObject:[NSString stringWithFormat:NSLocalizedString(@"%@ (over %u bytes or unreadable)", nil),
                                                fileURL.lastPathComponent ?: @"unknown.png",
                                                (unsigned)THEMER_MAX_ICON_BYTES]];
                 }
@@ -403,7 +403,7 @@ BOOL settings_sbl_import_folder_theme_named(NSURL *url,
                 } else {
                     skipped++;
                     if (skippedSamples.count < 8) {
-                        [skippedSamples addObject:[NSString stringWithFormat:@"%@ (copy failed)",
+                        [skippedSamples addObject:[NSString stringWithFormat:NSLocalizedString(@"%@ (copy failed)", nil),
                                                    fileURL.lastPathComponent ?: @"unknown.png"]];
                     }
                 }

@@ -31,7 +31,7 @@
     self.overrideUserInterfaceStyle = UIUserInterfaceStyleDark;
     UIColor *bg = [UIColor colorWithRed:0.04 green:0.05 blue:0.07 alpha:1.0];
     self.view.backgroundColor = bg;
-    self.title = @"Activity";
+    self.title = NSLocalizedString(@"Activity", nil);
     self.modalInPresentation = NO;
 
     self.bannerLabel = [[UILabel alloc] init];
@@ -74,7 +74,7 @@
 
     self.statusLabel = [[UILabel alloc] init];
     self.statusLabel.translatesAutoresizingMaskIntoConstraints = NO;
-    self.statusLabel.text = @"Running — stay here until complete.";
+    self.statusLabel.text = NSLocalizedString(@"Running — stay here until complete.", nil);
     self.statusLabel.font = [UIFont systemFontOfSize:13.5 weight:UIFontWeightRegular];
     self.statusLabel.textColor = [UIColor colorWithWhite:0.55 alpha:1.0];
     self.statusLabel.numberOfLines = 1;
@@ -88,7 +88,7 @@
     // both states without activating/deactivating constraints.
     self.retryButton = [UIButton buttonWithType:UIButtonTypeSystem];
     self.retryButton.translatesAutoresizingMaskIntoConstraints = NO;
-    [self.retryButton setTitle:@"Run Again" forState:UIControlStateNormal];
+    [self.retryButton setTitle:NSLocalizedString(@"Run Again", nil) forState:UIControlStateNormal];
     self.retryButton.titleLabel.font = [UIFont systemFontOfSize:13.5 weight:UIFontWeightSemibold];
     [self.retryButton setTitleColor:[UIColor colorWithRed:0.40 green:0.78 blue:1.0 alpha:1.0]
                            forState:UIControlStateNormal];
@@ -137,7 +137,7 @@
         [self.retryButton.centerYAnchor  constraintEqualToAnchor:self.spinner.centerYAnchor],
     ]];
 
-    self.hideOrDoneButton = [[UIBarButtonItem alloc] initWithTitle:@"Hide"
+    self.hideOrDoneButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Hide", nil)
                                                              style:UIBarButtonItemStylePlain
                                                             target:self
                                                             action:@selector(didTapDone)];
@@ -162,7 +162,7 @@
 {
     if (self.completed) return;
     NSString *text = note.userInfo[kSettingsApplyStatusTextKey];
-    self.statusLabel.text = text.length ? text : @"Running — stay here until complete.";
+    self.statusLabel.text = text.length ? text : NSLocalizedString(@"Running — stay here until complete.", nil);
 }
 
 - (void)didReceiveCompleteNotification:(NSNotification *)note
@@ -185,7 +185,7 @@
         ? [UIColor colorWithRed:0.38 green:0.90 blue:0.55 alpha:1.0]
         : [UIColor colorWithRed:1.0 green:0.38 blue:0.32 alpha:1.0];
     self.title = partial ? @"Done with Warnings" : (success ? @"Complete" : @"Failed");
-    self.hideOrDoneButton.title = @"Done";
+    self.hideOrDoneButton.title = NSLocalizedString(@"Done", nil);
     // Offer a one-tap retry only for the main chain run's KRW-acquire
     // failure — a clean miss that is fully re-entrant in the same boot
     // (the actions lock is already released by the time this notification
@@ -211,9 +211,9 @@
     self.retryButton.hidden = YES;
     self.retryButtonWidth.constant = 0.0;
     self.completed = NO;
-    self.title = @"Activity";
-    self.hideOrDoneButton.title = @"Hide";
-    self.statusLabel.text = @"Running — stay here until complete.";
+    self.title = NSLocalizedString(@"Activity", nil);
+    self.hideOrDoneButton.title = NSLocalizedString(@"Hide", nil);
+    self.statusLabel.text = NSLocalizedString(@"Running — stay here until complete.", nil);
     self.statusLabel.font = [UIFont systemFontOfSize:13.5 weight:UIFontWeightRegular];
     self.statusLabel.textColor = [UIColor colorWithWhite:0.55 alpha:1.0];
     self.spinner.hidden = NO;

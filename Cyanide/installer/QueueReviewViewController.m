@@ -37,7 +37,7 @@ static BOOL QueuePackageIsHideHomeBar(Package *pkg)
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.title = @"Queue";
+    self.title = NSLocalizedString(@"Queue", nil);
     self.view.backgroundColor = UIColor.systemGroupedBackgroundColor;
 
     self.tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleInsetGrouped];
@@ -52,7 +52,7 @@ static BOOL QueuePackageIsHideHomeBar(Package *pkg)
 
     self.emptyLabel = [[UILabel alloc] init];
     self.emptyLabel.translatesAutoresizingMaskIntoConstraints = NO;
-    self.emptyLabel.text = @"No pending changes\nQueue packages from the Packages tab";
+    self.emptyLabel.text = NSLocalizedString(@"No pending changes\nQueue packages from the Packages tab", nil);
     self.emptyLabel.font = [UIFont systemFontOfSize:16.0 weight:UIFontWeightMedium];
     self.emptyLabel.textColor = UIColor.tertiaryLabelColor;
     self.emptyLabel.textAlignment = NSTextAlignmentCenter;
@@ -98,7 +98,7 @@ static BOOL QueuePackageIsHideHomeBar(Package *pkg)
     container.backgroundColor = UIColor.systemGroupedBackgroundColor;
 
     UIButtonConfiguration *confirmCfg = [UIButtonConfiguration filledButtonConfiguration];
-    confirmCfg.title = @"Confirm";
+    confirmCfg.title = NSLocalizedString(@"Confirm", nil);
     confirmCfg.cornerStyle = UIButtonConfigurationCornerStyleLarge;
     confirmCfg.titleTextAttributesTransformer = ^NSDictionary<NSAttributedStringKey,id> *(NSDictionary<NSAttributedStringKey,id> *incoming) {
         NSMutableDictionary *attrs = [incoming mutableCopy];
@@ -112,7 +112,7 @@ static BOOL QueuePackageIsHideHomeBar(Package *pkg)
     [container addSubview:self.confirmButton];
 
     UIButtonConfiguration *clearCfg = [UIButtonConfiguration plainButtonConfiguration];
-    clearCfg.title = @"Clear Queue";
+    clearCfg.title = NSLocalizedString(@"Clear Queue", nil);
     clearCfg.baseForegroundColor = UIColor.systemRedColor;
     clearCfg.titleTextAttributesTransformer = ^NSDictionary<NSAttributedStringKey,id> *(NSDictionary<NSAttributedStringKey,id> *incoming) {
         NSMutableDictionary *attrs = [incoming mutableCopy];
@@ -156,7 +156,7 @@ static BOOL QueuePackageIsHideHomeBar(Package *pkg)
     if (count == 1) {
         confirmTitle = @"Confirm 1 Change";
     } else if (count > 1) {
-        confirmTitle = [NSString stringWithFormat:@"Confirm %ld Changes", (long)count];
+        confirmTitle = [NSString stringWithFormat:NSLocalizedString(@"Confirm %ld Changes", nil), (long)count];
     } else {
         confirmTitle = @"Confirm";
     }
@@ -190,14 +190,14 @@ static BOOL QueuePackageIsHideHomeBar(Package *pkg)
 
     UILabel *title = [[UILabel alloc] init];
     title.translatesAutoresizingMaskIntoConstraints = NO;
-    title.text = @"Hide Home Bar must run alone";
+    title.text = NSLocalizedString(@"Hide Home Bar must run alone", nil);
     title.font = [UIFont systemFontOfSize:16.0 weight:UIFontWeightBold];
     title.textColor = UIColor.labelColor;
     [card addSubview:title];
 
     UILabel *body = [[UILabel alloc] init];
     body.translatesAutoresizingMaskIntoConstraints = NO;
-    body.text = @"It edits the system home-indicator asset and then needs a respring. Confirm only Hide Home Bar, respring, then queue your other tweaks.";
+    body.text = NSLocalizedString(@"It edits the system home-indicator asset and then needs a respring. Confirm only Hide Home Bar, respring, then queue your other tweaks.", nil);
     body.font = [UIFont systemFontOfSize:13.0 weight:UIFontWeightRegular];
     body.textColor = UIColor.secondaryLabelColor;
     body.numberOfLines = 0;
@@ -382,9 +382,9 @@ static BOOL QueuePackageIsHideHomeBar(Package *pkg)
     }
     NSArray<Package *> *packages = [self packagesForSection:indexPath.section];
     if (indexPath.row >= (NSInteger)packages.count) {
-        cell.textLabel.text = @"No longer pending";
+        cell.textLabel.text = NSLocalizedString(@"No longer pending", nil);
         cell.textLabel.font = [UIFont systemFontOfSize:17.0 weight:UIFontWeightRegular];
-        cell.detailTextLabel.text = @"This queue row was already applied or cleared.";
+        cell.detailTextLabel.text = NSLocalizedString(@"This queue row was already applied or cleared.", nil);
         cell.detailTextLabel.textColor = UIColor.secondaryLabelColor;
         cell.detailTextLabel.font = [UIFont systemFontOfSize:12.0];
         cell.imageView.image = [UIImage systemImageNamed:@"checkmark.circle"];
@@ -411,23 +411,23 @@ static BOOL QueuePackageIsHideHomeBar(Package *pkg)
         case QueueReviewSectionInstall:
             switch (pkg.kind) {
                 case PackageInstallKindNanoRegistry:
-                    cell.detailTextLabel.text = @"Pending override apply";
+                    cell.detailTextLabel.text = NSLocalizedString(@"Pending override apply", nil);
                     cell.detailTextLabel.textColor = self.view.tintColor;
                     break;
                 case PackageInstallKindCallRecordingSound:
-                    cell.detailTextLabel.text = @"Pending sound silence";
+                    cell.detailTextLabel.text = NSLocalizedString(@"Pending sound silence", nil);
                     cell.detailTextLabel.textColor = UIColor.systemOrangeColor;
                     break;
                 case PackageInstallKindHideHomeBar:
-                    cell.detailTextLabel.text = @"Runs alone; respring required";
+                    cell.detailTextLabel.text = NSLocalizedString(@"Runs alone; respring required", nil);
                     cell.detailTextLabel.textColor = UIColor.systemOrangeColor;
                     break;
                 case PackageInstallKindRepoTweak:
-                    cell.detailTextLabel.text = @"Install pending";
+                    cell.detailTextLabel.text = NSLocalizedString(@"Install pending", nil);
                     cell.detailTextLabel.textColor = UIColor.systemGreenColor;
                     break;
                 default:
-                    cell.detailTextLabel.text = @"Activation pending";
+                    cell.detailTextLabel.text = NSLocalizedString(@"Activation pending", nil);
                     cell.detailTextLabel.textColor = UIColor.systemGreenColor;
                     break;
             }
@@ -435,23 +435,23 @@ static BOOL QueuePackageIsHideHomeBar(Package *pkg)
         case QueueReviewSectionUninstall:
             switch (pkg.kind) {
                 case PackageInstallKindNanoRegistry:
-                    cell.detailTextLabel.text = @"Pending override remove";
+                    cell.detailTextLabel.text = NSLocalizedString(@"Pending override remove", nil);
                     cell.detailTextLabel.textColor = UIColor.systemRedColor;
                     break;
                 case PackageInstallKindCallRecordingSound:
-                    cell.detailTextLabel.text = @"Pending sound restore";
+                    cell.detailTextLabel.text = NSLocalizedString(@"Pending sound restore", nil);
                     cell.detailTextLabel.textColor = UIColor.systemGreenColor;
                     break;
                 case PackageInstallKindHideHomeBar:
-                    cell.detailTextLabel.text = @"Pending respring restore";
+                    cell.detailTextLabel.text = NSLocalizedString(@"Pending respring restore", nil);
                     cell.detailTextLabel.textColor = UIColor.systemGreenColor;
                     break;
                 case PackageInstallKindRepoTweak:
-                    cell.detailTextLabel.text = @"Removal pending";
+                    cell.detailTextLabel.text = NSLocalizedString(@"Removal pending", nil);
                     cell.detailTextLabel.textColor = UIColor.systemRedColor;
                     break;
                 default:
-                    cell.detailTextLabel.text = @"Deactivation pending";
+                    cell.detailTextLabel.text = NSLocalizedString(@"Deactivation pending", nil);
                     cell.detailTextLabel.textColor = UIColor.systemRedColor;
                     break;
             }
@@ -490,7 +490,7 @@ static BOOL QueuePackageIsHideHomeBar(Package *pkg)
 
     Package *pkg = packages[indexPath.row];
     UIContextualAction *remove = [UIContextualAction contextualActionWithStyle:UIContextualActionStyleDestructive
-                                                                         title:@"Remove"
+                                                                         title:NSLocalizedString(@"Remove", nil)
                                                                        handler:^(UIContextualAction * _Nonnull action, __kindof UIView * _Nonnull sourceView, void (^ _Nonnull completionHandler)(BOOL)) {
         [[PackageQueue sharedQueue] removePackage:pkg];
         completionHandler(YES);
@@ -521,10 +521,10 @@ static BOOL QueuePackageIsHideHomeBar(Package *pkg)
     }
     if (includesHideHomeBar && count > 1) {
         UIAlertController *ac = [UIAlertController
-            alertControllerWithTitle:@"Run Hide Home Bar Alone"
-                             message:@"Hide Home Bar edits the system home-indicator asset and needs a respring after it applies. Remove the other pending changes, run Hide Home Bar by itself, then apply other tweaks after the respring."
+            alertControllerWithTitle:NSLocalizedString(@"Run Hide Home Bar Alone", nil)
+                             message:NSLocalizedString(@"Hide Home Bar edits the system home-indicator asset and needs a respring after it applies. Remove the other pending changes, run Hide Home Bar by itself, then apply other tweaks after the respring.", nil)
                       preferredStyle:UIAlertControllerStyleAlert];
-        [ac addAction:[UIAlertAction actionWithTitle:@"OK"
+        [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil)
                                                style:UIAlertActionStyleDefault
                                              handler:nil]];
         [self presentViewController:ac animated:YES completion:nil];
@@ -556,21 +556,21 @@ static BOOL QueuePackageIsHideHomeBar(Package *pkg)
 
 - (void)presentInstallStillRunningAlert
 {
-    UIAlertController *ac = [UIAlertController alertControllerWithTitle:@"Install Running"
-                                                                message:@"An install is still running."
+    UIAlertController *ac = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Install Running", nil)
+                                                                message:NSLocalizedString(@"An install is still running.", nil)
                                                          preferredStyle:UIAlertControllerStyleAlert];
-    [ac addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
+    [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil) style:UIAlertActionStyleDefault handler:nil]];
     [self presentViewController:ac animated:YES completion:nil];
 }
 
 - (void)didTapClear
 {
     if ([PackageQueue sharedQueue].pendingCount == 0) return;
-        UIAlertController *ac = [UIAlertController alertControllerWithTitle:@"Clear Queue?"
-                                                                message:@"Discard all pending activation / deactivation changes."
+        UIAlertController *ac = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Clear Queue?", nil)
+                                                                message:NSLocalizedString(@"Discard all pending activation / deactivation changes.", nil)
                                                          preferredStyle:UIAlertControllerStyleAlert];
-    [ac addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];
-    [ac addAction:[UIAlertAction actionWithTitle:@"Clear" style:UIAlertActionStyleDestructive handler:^(UIAlertAction *_) {
+    [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil) style:UIAlertActionStyleCancel handler:nil]];
+    [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Clear", nil) style:UIAlertActionStyleDestructive handler:^(UIAlertAction *_) {
         [[PackageQueue sharedQueue] clear];
     }]];
     [self presentViewController:ac animated:YES completion:nil];

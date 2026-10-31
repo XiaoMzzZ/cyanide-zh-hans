@@ -71,7 +71,7 @@ static void daemons_invalidate_snapshot(NSDictionary * __strong *disabled,
     *disabled = nil;
     *running = nil;
     [staged removeAllObjects];
-    *status = message.length ? message : @"The list of disabled daemons could not be read. Check the log.";
+    *status = message.length ? message : NSLocalizedString(@"The list of disabled daemons could not be read. Check the log.", nil);
 }
 
 @class DaemonGroupViewController;
@@ -180,7 +180,7 @@ static void daemons_invalidate_snapshot(NSDictionary * __strong *disabled,
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.title = @"Daemon Manager";
+    self.title = NSLocalizedString(@"Daemon Manager", nil);
     self.navigationItem.largeTitleDisplayMode = UINavigationItemLargeTitleDisplayModeAlways;
     self.staged = [NSMutableDictionary dictionary];
     self.navigationItem.rightBarButtonItem =
@@ -233,19 +233,14 @@ static void daemons_invalidate_snapshot(NSDictionary * __strong *disabled,
     if (self.warningAccepted) return;
     if (self.presentedViewController) return;
     UIAlertController *ac = [UIAlertController
-        alertControllerWithTitle:@"Disabling Daemons Can Brick Your Device"
-                         message:@"Turning off system daemons changes how iOS starts, at every boot. The services listed here are "
-                                 @"widely disabled without problems, but that isn't guaranteed for every iOS version and device.\n\n"
-                                 @"If iOS can't finish starting, Cyanide can't undo the change. Only a restore fixes it: it "
-                                 @"erases the device unless you have a backup, and it installs the newest iOS, which Cyanide "
-                                 @"most likely doesn't support.\n\n"
-                                 @"Back up first, change one thing at a time and restart to check it before the next."
+        alertControllerWithTitle:NSLocalizedString(@"Disabling Daemons Can Brick Your Device", nil)
+                         message:NSLocalizedString(@"Turning off system daemons changes how iOS starts, at every boot. The services listed here are widely disabled without problems, but that isn't guaranteed for every iOS version and device.\n\nIf iOS can't finish starting, Cyanide can't undo the change. Only a restore fixes it: it erases the device unless you have a backup, and it installs the newest iOS, which Cyanide most likely doesn't support.\n\nBack up first, change one thing at a time and restart to check it before the next.", nil)
                   preferredStyle:UIAlertControllerStyleAlert];
     __weak typeof(self) weakSelf = self;
-    [ac addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction *a) {
+    [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil) style:UIAlertActionStyleCancel handler:^(UIAlertAction *a) {
         [weakSelf.navigationController popViewControllerAnimated:YES];
     }]];
-    [ac addAction:[UIAlertAction actionWithTitle:@"I Understand" style:UIAlertActionStyleDestructive handler:^(UIAlertAction *a) {
+    [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"I Understand", nil) style:UIAlertActionStyleDestructive handler:^(UIAlertAction *a) {
         [NSUserDefaults.standardUserDefaults setInteger:kDaemonsWarningVersion forKey:kDaemonsWarningAcceptedKey];
         [weakSelf refreshUI];
     }]];
@@ -306,16 +301,16 @@ static void daemons_invalidate_snapshot(NSDictionary * __strong *disabled,
     BOOL off = [self isLabelDisabled:label];
     // One process for several jobs: which job runs it is unknown.
     if (shared != nil)
-        return pid != nil ? [NSString stringWithFormat:@"%@ · Running · PID %@ · shared by %@ jobs", name, pid, shared]
-                          : [NSString stringWithFormat:@"%@ · Not running · shared by %@ jobs", name, shared];
+        return pid != nil ? [NSString stringWithFormat:NSLocalizedString(@"%@ · Running · PID %@ · shared by %@ jobs", nil), name, pid, shared]
+                          : [NSString stringWithFormat:NSLocalizedString(@"%@ · Not running · shared by %@ jobs", nil), name, shared];
     BOOL changed = [daemons_changed_this_boot() containsObject:label];
     if (pid != nil && off && changed)
-        return [NSString stringWithFormat:@"%@ · Running · PID %@ · stops after restart", name, pid];
+        return [NSString stringWithFormat:NSLocalizedString(@"%@ · Running · PID %@ · stops after restart", nil), name, pid];
     if (pid != nil && off) {
         *warning = YES;
-        return [NSString stringWithFormat:@"%@ · Running · PID %@ · still running although disabled", name, pid];
+        return [NSString stringWithFormat:NSLocalizedString(@"%@ · Running · PID %@ · still running although disabled", nil), name, pid];
     }
-    if (pid != nil) return [NSString stringWithFormat:@"%@ · Running · PID %@", name, pid];
+    if (pid != nil) return [NSString stringWithFormat:NSLocalizedString(@"%@ · Running · PID %@", nil), name, pid];
     if (off) return [name stringByAppendingString:@" · Not running"];
     if (changed) return [name stringByAppendingString:@" · Not running · can start again after restart"];
     return [name stringByAppendingString:@" · Not running (starts when needed)"];
@@ -328,7 +323,7 @@ static void daemons_invalidate_snapshot(NSDictionary * __strong *disabled,
     // Unsaved changes: Discard replaces Back, so they aren't lost by accident.
     self.navigationItem.hidesBackButton = dirty;
     self.navigationItem.leftBarButtonItem = dirty
-        ? [[UIBarButtonItem alloc] initWithTitle:@"Discard" style:UIBarButtonItemStylePlain
+        ? [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Discard", nil) style:UIBarButtonItemStylePlain
                                           target:self action:@selector(discardChanges)]
         : nil;
     self.navigationItem.leftBarButtonItem.enabled = !self.busy;
@@ -406,14 +401,14 @@ static void daemons_invalidate_snapshot(NSDictionary * __strong *disabled,
         }
     }
     NSMutableArray *parts = [NSMutableArray array];
-    if (off) [parts addObject:[NSString stringWithFormat:@"%lu daemon%@ will be disabled", (unsigned long)off, off == 1 ? @"" : @"s"]];
-    if (on) [parts addObject:[NSString stringWithFormat:@"%lu will be enabled", (unsigned long)on]];
+    if (off) [parts addObject:[NSString stringWithFormat:NSLocalizedString(@"%lu daemon%@ will be disabled", nil), (unsigned long)off, off == 1 ? @"" : @"s"]];
+    if (on) [parts addObject:[NSString stringWithFormat:NSLocalizedString(@"%lu will be enabled", nil), (unsigned long)on]];
     NSString *message = [[parts componentsJoinedByString:@", "] stringByAppendingString:@" after the next restart."];
     if (cautions.count) message = [message stringByAppendingFormat:@"\n\n⚠️ %@", [cautions componentsJoinedByString:@"\n\n⚠️ "]];
-    UIAlertController *ac = [UIAlertController alertControllerWithTitle:@"Save Changes?" message:message
+    UIAlertController *ac = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Save Changes?", nil) message:message
                                                          preferredStyle:UIAlertControllerStyleAlert];
-    [ac addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];
-    [ac addAction:[UIAlertAction actionWithTitle:@"Save" style:off ? UIAlertActionStyleDestructive : UIAlertActionStyleDefault
+    [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil) style:UIAlertActionStyleCancel handler:nil]];
+    [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Save", nil) style:off ? UIAlertActionStyleDestructive : UIAlertActionStyleDefault
                                          handler:^(UIAlertAction *a) { [self saveAllowingFullExploit:NO]; }]];
     [self presentViewController:ac animated:YES completion:nil];
 }
@@ -458,9 +453,9 @@ static void daemons_invalidate_snapshot(NSDictionary * __strong *disabled,
         // lost): say why nothing happened instead of failing silently.
         if (settings_tool_exploit_was_offered(self)) {
             if (!presenter.view.window || presenter.presentedViewController) return;
-            UIAlertController *ac = [UIAlertController alertControllerWithTitle:@"Daemon Manager"
+            UIAlertController *ac = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Daemon Manager", nil)
                 message:kSettingsNoKernelAccessHint preferredStyle:UIAlertControllerStyleAlert];
-            [ac addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
+            [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil) style:UIAlertActionStyleDefault handler:nil]];
             [presenter presentViewController:ac animated:YES completion:nil];
             return;
         }
@@ -468,9 +463,9 @@ static void daemons_invalidate_snapshot(NSDictionary * __strong *disabled,
         return;
     }
     if (!presenter.view.window || presenter.presentedViewController) return;
-    UIAlertController *ac = [UIAlertController alertControllerWithTitle:@"Daemon Manager" message:message ?: @"Something went wrong."
+    UIAlertController *ac = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Daemon Manager", nil) message:message ?: @"Something went wrong."
                                                          preferredStyle:UIAlertControllerStyleAlert];
-    [ac addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
+    [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil) style:UIAlertActionStyleDefault handler:nil]];
     [presenter presentViewController:ac animated:YES completion:nil];
 }
 
@@ -532,7 +527,7 @@ static void daemons_invalidate_snapshot(NSDictionary * __strong *disabled,
     if (section == 1) return @"Advanced";
     if (self.status) return self.status;
     if (self.staged.count)
-        return [NSString stringWithFormat:@"%lu unsaved change%@ — tap Save to apply", (unsigned long)self.staged.count,
+        return [NSString stringWithFormat:NSLocalizedString(@"%lu unsaved change%@ — tap Save to apply", nil), (unsigned long)self.staged.count,
                 self.staged.count == 1 ? @"" : @"s"];
     return daemons_restart_pending() ? @"Restart the device to apply your changes" : nil;
 }
@@ -554,7 +549,7 @@ static void daemons_invalidate_snapshot(NSDictionary * __strong *disabled,
     UITableViewCell *cell = [self.tableView dequeueReusableCellWithIdentifier:@"advanced"];
     if (!cell) cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"advanced"];
     UIListContentConfiguration *c = cell.defaultContentConfiguration;
-    c.text = @"Show Advanced";
+    c.text = NSLocalizedString(@"Show Advanced", nil);
     cell.contentConfiguration = c;
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     UISwitch *sw = [UISwitch new];
@@ -575,15 +570,13 @@ static void daemons_invalidate_snapshot(NSDictionary * __strong *disabled,
         return;
     }
     UIAlertController *ac = [UIAlertController
-        alertControllerWithTitle:@"Show Advanced Daemons?"
-                         message:@"These services are used by other parts of iOS. Disabling them is more likely to break "
-                                 @"things or, in the worst case, stop the device from starting. A restore would then "
-                                 @"install the newest iOS, which Cyanide most likely doesn't support."
+        alertControllerWithTitle:NSLocalizedString(@"Show Advanced Daemons?", nil)
+                         message:NSLocalizedString(@"These services are used by other parts of iOS. Disabling them is more likely to break things or, in the worst case, stop the device from starting. A restore would then install the newest iOS, which Cyanide most likely doesn't support.", nil)
                   preferredStyle:UIAlertControllerStyleAlert];
-    [ac addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction *a) {
+    [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil) style:UIAlertActionStyleCancel handler:^(UIAlertAction *a) {
         [self refreshUI];
     }]];
-    [ac addAction:[UIAlertAction actionWithTitle:@"Show" style:UIAlertActionStyleDestructive handler:^(UIAlertAction *a) {
+    [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Show", nil) style:UIAlertActionStyleDestructive handler:^(UIAlertAction *a) {
         [NSUserDefaults.standardUserDefaults setBool:YES forKey:kDaemonsShowAdvancedKey];
         [self refreshUI];
     }]];
@@ -616,7 +609,7 @@ static void daemons_invalidate_snapshot(NSDictionary * __strong *disabled,
     }
     NSMutableArray *facts = [NSMutableArray array];
     if (off > 0 && off < g.labels.count)
-        [facts addObject:[NSString stringWithFormat:@"%lu of %lu disabled", (unsigned long)off, (unsigned long)g.labels.count]];
+        [facts addObject:[NSString stringWithFormat:NSLocalizedString(@"%lu of %lu disabled", nil), (unsigned long)off, (unsigned long)g.labels.count]];
     BOOL hasLegacy = NO;
     for (NSString *label in g.labels) hasLegacy |= daemon_catalog_is_legacy_label(label);
     if (hasLegacy) {
@@ -627,7 +620,7 @@ static void daemons_invalidate_snapshot(NSDictionary * __strong *disabled,
         if (allMissing)
             [facts addObject:@"not a job on this iOS version"];
         else if (self.running && ![self.running[g.labels.firstObject][@"unknown"] boolValue])
-            [facts addObject:running ? [NSString stringWithFormat:@"%lu running", (unsigned long)running] : @"not running"];
+            [facts addObject:running ? [NSString stringWithFormat:NSLocalizedString(@"%lu running", nil), (unsigned long)running] : @"not running"];
     }
     if (anyWarning) [facts addObject:@"still running although disabled"];
     if (unsaved) [facts insertObject:@"unsaved" atIndex:0];

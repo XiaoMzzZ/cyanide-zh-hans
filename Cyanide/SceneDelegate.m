@@ -274,9 +274,7 @@ static CYLocationRequestCompletion g_scene_intent_completion = nil;
     if (!self.blockedLinkNotice) return;
     self.blockedLinkNotice = NO;
     [self showAlertTitle:@"Location Services Link"
-                 message:@"A link asked Cyanide to change Location Services. Links are off, so nothing was changed. "
-                         @"Use the Control Center toggle or the Shortcuts action instead, or turn on "
-                         @"Settings → Launch Options → Location Services links."];
+                 message:NSLocalizedString(@"A link asked Cyanide to change Location Services. Links are off, so nothing was changed. Use the Control Center toggle or the Shortcuts action instead, or turn on Settings → Launch Options → Location Services links.", nil)];
 }
 
 // A request waiting for activation. A newer one replaces it; the replaced
@@ -358,7 +356,7 @@ static BOOL scene_parse_location_url(NSURL *url, int *desiredOut, BOOL *keepCard
     NSDictionary<NSString *, NSNumber *> *actions = @{ @"/toggle": @-1, @"/on": @1, @"/off": @0 };
     NSNumber *action = actions[path.lowercaseString];
     if (action == nil) {
-        *error = [NSString stringWithFormat:@"Unknown action \"%@\". Use /toggle, /on or /off.", path];
+        *error = [NSString stringWithFormat:NSLocalizedString(@"Unknown action \"%@\". Use /toggle, /on or /off.", nil), path];
         return NO;
     }
     BOOL keep = NO, showLog = NO;
@@ -366,19 +364,19 @@ static BOOL scene_parse_location_url(NSURL *url, int *desiredOut, BOOL *keepCard
     for (NSURLQueryItem *item in c.queryItems) {
         // An option given twice has no clear meaning: refuse it.
         if ([seen containsObject:item.name]) {
-            *error = [NSString stringWithFormat:@"Option \"%@\" is given more than once.", item.name];
+            *error = [NSString stringWithFormat:NSLocalizedString(@"Option \"%@\" is given more than once.", nil), item.name];
             return NO;
         }
         [seen addObject:item.name ?: @""];
         BOOL value;
         if (!scene_parse_bool(item.value, &value)) {
-            *error = [NSString stringWithFormat:@"%@ must be 1 or 0, not \"%@\".", item.name, item.value ?: @""];
+            *error = [NSString stringWithFormat:NSLocalizedString(@"%@ must be 1 or 0, not \"%@\".", nil), item.name, item.value ?: @""];
             return NO;
         }
         if ([item.name isEqualToString:@"keepInSwitcher"]) keep = value;
         else if ([item.name isEqualToString:@"log"]) showLog = value;
         else {
-            *error = [NSString stringWithFormat:@"Unknown option \"%@\".", item.name];
+            *error = [NSString stringWithFormat:NSLocalizedString(@"Unknown option \"%@\".", nil), item.name];
             return NO;
         }
     }
@@ -441,7 +439,7 @@ static BOOL scene_open_app(NSString *bundleID)
 - (void)showAlertTitle:(NSString *)title message:(NSString *)message {
     UIAlertController *ac = [UIAlertController alertControllerWithTitle:title message:message
                                                          preferredStyle:UIAlertControllerStyleAlert];
-    [ac addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
+    [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil) style:UIAlertActionStyleDefault handler:nil]];
     [[self topViewController] presentViewController:ac animated:YES completion:nil];
 }
 
@@ -462,10 +460,10 @@ static void scene_announce(NSString *text)
 // checkmark) once the state is confirmed.
 - (void)applyQuietTarget:(int)target done:(BOOL)done {
     self.quietTarget = target;
-    if (target < 0) { self.quietTitle.text = @"Location Services"; return; }
-    NSString *state = target ? @"On" : @"Off";
-    self.quietTitle.text = done ? [NSString stringWithFormat:@"Location Services %@", state]
-                                : [NSString stringWithFormat:@"Turning %@ Location Services", state];
+    if (target < 0) { self.quietTitle.text = NSLocalizedString(@"Location Services", nil); return; }
+    NSString *state = target ? NSLocalizedString(@"On", nil) : NSLocalizedString(@"Off", nil);
+    self.quietTitle.text = done ? [NSString stringWithFormat:NSLocalizedString(@"Location Services %@", nil), state]
+                                : [NSString stringWithFormat:NSLocalizedString(@"Turning %@ Location Services", nil), state];
     if (done) {
         if (@available(iOS 17.0, *)) [self.quietIcon removeAllSymbolEffects];
         self.quietIcon.image = [UIImage systemImageNamed:@"checkmark.circle.fill" withConfiguration:scene_quiet_symbol_config()];
@@ -550,7 +548,7 @@ static void scene_announce(NSString *text)
     self.quietPhaseShownNs = 0;
     [self.quietProgress.layer removeAllAnimations];
     [self.quietProgress setProgress:0.05f animated:NO];
-    self.quietStatus.text = @"Starting…";
+    self.quietStatus.text = NSLocalizedString(@"Starting…", nil);
     if (@available(iOS 17.0, *)) [self.quietIcon removeAllSymbolEffects];
     [self applyQuietTarget:target done:NO];
     // A gentle pulse while it works (not with Reduce Motion).

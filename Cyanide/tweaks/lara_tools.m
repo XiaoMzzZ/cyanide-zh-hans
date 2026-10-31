@@ -475,7 +475,7 @@ BOOL lara_wallet_card_set_image(NSDictionary *card, NSData *png, NSString **erro
     NSError *error = nil;
     // Back up the original once; never overwrite an existing backup.
     if (![fm fileExistsAtPath:backup] && ![fm copyItemAtPath:image toPath:backup error:&error]) {
-        if (errorOut) *errorOut = [NSString stringWithFormat:@"Backup failed: %@", error.localizedDescription];
+        if (errorOut) *errorOut = [NSString stringWithFormat:NSLocalizedString(@"Backup failed: %@", nil), error.localizedDescription];
         return NO;
     }
     if (![png writeToFile:image options:NSDataWritingAtomic error:&error]) {

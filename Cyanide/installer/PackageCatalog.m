@@ -152,8 +152,8 @@ static const NSInteger kSecOTA              = SectionOTA;
         NSString *version = @"1.0";
         Package *statBar = [[Package alloc] initWithIdentifier:@"com.darksword.statbar"
                                            name:@"StatBar"
-                               shortDescription:@"Battery temperature + free RAM overlay"
-                                longDescription:@"Installs an overlay window in SpringBoard that shows live battery temperature and free RAM next to the system status bar. Refresh timing is adjustable so you can trade live updates for battery life.\n\nConfigure units, visible metrics, and refresh speed in the Settings tab."
+                               shortDescription:NSLocalizedString(@"Battery temperature + free RAM overlay", nil)
+                                longDescription:NSLocalizedString(@"Installs an overlay window in SpringBoard that shows live battery temperature and free RAM next to the system status bar. Refresh timing is adjustable so you can trade live updates for battery life.\n\nConfigure units, visible metrics, and refresh speed in the Settings tab.", nil)
                                         version:version
                                          author:@"zeroxjf"
                                        category:@"Status Bar"
@@ -165,8 +165,8 @@ static const NSInteger kSecOTA              = SectionOTA;
 
         Package *nsBar = [[Package alloc] initWithIdentifier:@"com.darksword.nsbar"
                                            name:@"NSBar"
-                               shortDescription:@"Network speed overlay in the status bar"
-                                longDescription:@"Displays real-time download and upload speed in a compact SpringBoard status-bar overlay. Pick its corner or center position in Settings.\n\nPorted from d1y/cyanide-ios."
+                               shortDescription:NSLocalizedString(@"Network speed overlay in the status bar", nil)
+                                longDescription:NSLocalizedString(@"Displays real-time download and upload speed in a compact SpringBoard status-bar overlay. Pick its corner or center position in Settings.\n\nPorted from d1y/cyanide-ios.", nil)
                                         version:version
                                          author:@"d1y"
                                        category:@"Status Bar"
@@ -178,8 +178,8 @@ static const NSInteger kSecOTA              = SectionOTA;
 
         Package *niceBarLite = [[Package alloc] initWithIdentifier:@"com.darksword.nicebarlite"
                                            name:@"NiceBar Lite"
-                               shortDescription:@"NiceBar-style status labels"
-                                longDescription:@"Adds configurable text labels around the status bar. Slots can show custom text, date/time formats, and system values such as battery, memory, network speed, uptime, IP address, disk space, thermal state, and traffic counters.\n\nPorted from d1y/cyanide-ios."
+                               shortDescription:NSLocalizedString(@"NiceBar-style status labels", nil)
+                                longDescription:NSLocalizedString(@"Adds configurable text labels around the status bar. Slots can show custom text, date/time formats, and system values such as battery, memory, network speed, uptime, IP address, disk space, thermal state, and traffic counters.\n\nPorted from d1y/cyanide-ios.", nil)
                                         version:version
                                          author:@"d1y"
                                        category:@"Status Bar"
@@ -194,8 +194,8 @@ static const NSInteger kSecOTA              = SectionOTA;
 
         Package *sbc = [[Package alloc] initWithIdentifier:@"com.darksword.sbcustomizer"
                                            name:@"SBCustomizer"
-                               shortDescription:@"Custom dock, grid, app placement, and page counts"
-                                longDescription:@"Customizes the dock icon count and the home screen icon grid (columns and rows). It can move a selected app into a newly available Dock slot, optionally hide icon labels, and apply separate icon capacities to the first and remaining Home Screen pages.\n\nThe Watusi WhatsApp duplicate is selected by default for the optional Dock move; enter another app's bundle identifier in Settings to change it."
+                               shortDescription:NSLocalizedString(@"Custom dock, grid, app placement, and page counts", nil)
+                                longDescription:NSLocalizedString(@"Customizes the dock icon count and the home screen icon grid (columns and rows). It can move a selected app into a newly available Dock slot, optionally hide icon labels, and apply separate icon capacities to the first and remaining Home Screen pages.\n\nThe Watusi WhatsApp duplicate is selected by default for the optional Dock move; enter another app's bundle identifier in Settings to change it.", nil)
                                         version:@"1.1"
                                          author:@"zeroxjf / Kolbicz"
                                        category:@"Home Screen"
@@ -207,8 +207,8 @@ static const NSInteger kSecOTA              = SectionOTA;
 
         Package *powercuff = [[Package alloc] initWithIdentifier:@"com.darksword.powercuff"
                                            name:@"Powercuff"
-                               shortDescription:@"Underclock the CPU/GPU thermal pressure"
-                                longDescription:@"Drives thermalmonitord with synthetic thermal pressure to underclock the CPU and GPU. Useful for cooling-sensitive workloads or extending runtime under load. Effects persist until reboot.\n\nNominal is the daily-use default. Light, Moderate, and Heavy intentionally underclock the CPU more, so lag and slower app launches mean it is working as intended. Those levels can be too slow for comfortable day-to-day use, especially on older devices.\n\nPick a level in the Settings tab."
+                               shortDescription:NSLocalizedString(@"Underclock the CPU/GPU thermal pressure", nil)
+                                longDescription:NSLocalizedString(@"Drives thermalmonitord with synthetic thermal pressure to underclock the CPU and GPU. Useful for cooling-sensitive workloads or extending runtime under load. Effects persist until reboot.\n\nNominal is the daily-use default. Light, Moderate, and Heavy intentionally underclock the CPU more, so lag and slower app launches mean it is working as intended. Those levels can be too slow for comfortable day-to-day use, especially on older devices.\n\nPick a level in the Settings tab.", nil)
                                         version:version
                                          author:@"rpetrich"
                                        category:@"System"
@@ -220,8 +220,8 @@ static const NSInteger kSecOTA              = SectionOTA;
 
         Package *axon = [[Package alloc] initWithIdentifier:@"com.darksword.axonlite"
                                            name:@"Axon Lite"
-                               shortDescription:@"Group Notification Center requests by app"
-                                longDescription:@"Groups visible Notification Center requests by app in a SpringBoard overlay and filters duplicates while Cyanide keeps the RemoteCall session alive.\n\nNo extra configuration."
+                               shortDescription:NSLocalizedString(@"Group Notification Center requests by app", nil)
+                                longDescription:NSLocalizedString(@"Groups visible Notification Center requests by app in a SpringBoard overlay and filters duplicates while Cyanide keeps the RemoteCall session alive.\n\nNo extra configuration.", nil)
                                         version:version
                                          author:@"zeroxjf"
                                        category:@"SpringBoard"
@@ -236,22 +236,10 @@ static const NSInteger kSecOTA              = SectionOTA;
 
 
         Package *stageStrip = [[Package alloc] initWithIdentifier:@"com.darksword.stagestrip"
-                                           name:@"Dynamic Stage Lite"
-                               shortDescription:@"Two floating app windows, iPad-style"
+                                           name:NSLocalizedString(@"Dynamic Stage Lite", nil)
+                               shortDescription:NSLocalizedString(@"Two floating app windows, iPad-style", nil)
                                 longDescription:
-            @"Run two apps as floating, resizable windows on top of SpringBoard.\n\n"
-            @"Based on Dynamic Stage by tomt000 — the original Stage Manager-for-iPhone tweak. Dynamic Stage Lite is an independent, RemoteCall-only re-implementation of the split-view + scene-hosting design; no original tweak code or assets are reused. Go check out tomt000's full version on Havoc.\n\n"
-            @"How to use:\n"
-            @"• Tap the dot in the bottom-right corner of the screen to open the picker.\n"
-            @"• Tap two apps to launch them side-by-side.\n"
-            @"• Drag the top bar to move; drag any corner to resize.\n"
-            @"• X in the top-left of a window closes it.\n"
-            @"• Gear in the picker tray jumps back to Cyanide settings.\n\n"
-            @"First Run is slow. The picker has to enumerate every installed app over RemoteCall and build a tile per app — expect 1-2 minutes on a fresh install. Re-Runs reuse the cache and are fast.\n\n"
-            @"Rough edges:\n"
-            @"• Touch routing into hosted apps isn't wired — windows are for viewing/switching, not scrolling or typing.\n"
-            @"• Auto-close on full-screen launch is not yet hooked up; close manually with the X.\n"
-            @"• Gestures may stutter while the App Library is still filling in."
+            NSLocalizedString(@"Run two apps as floating, resizable windows on top of SpringBoard.\n\nBased on Dynamic Stage by tomt000 — the original Stage Manager-for-iPhone tweak. Dynamic Stage Lite is an independent, RemoteCall-only re-implementation of the split-view + scene-hosting design; no original tweak code or assets are reused. Go check out tomt000's full version on Havoc.\n\nHow to use:\n• Tap the dot in the bottom-right corner of the screen to open the picker.\n• Tap two apps to launch them side-by-side.\n• Drag the top bar to move; drag any corner to resize.\n• X in the top-left of a window closes it.\n• Gear in the picker tray jumps back to Cyanide settings.\n\nFirst Run is slow. The picker has to enumerate every installed app over RemoteCall and build a tile per app — expect 1-2 minutes on a fresh install. Re-Runs reuse the cache and are fast.\n\nRough edges:\n• Touch routing into hosted apps isn't wired — windows are for viewing/switching, not scrolling or typing.\n• Auto-close on full-screen launch is not yet hooked up; close manually with the X.\n• Gestures may stutter while the App Library is still filling in.", nil)
                                         version:version
                                          author:@"zeroxjf"
                                        category:@"Beta"
@@ -263,9 +251,9 @@ static const NSInteger kSecOTA              = SectionOTA;
 #endif
 
         Package *locationSim = [[Package alloc] initWithIdentifier:@"com.darksword.locationsim"
-                                           name:@"Location Simulator"
-                               shortDescription:@"CoreLocation static point simulation"
-                                longDescription:@"Spoofs the device's GPS location via Apple's CLSimulationManager. Requires Apple Maps installed and set up — Maps is the RemoteCall host process that drives the simulation.\n\nThis is a manual tool, not an installable package. Open Controls, choose a target, then use Simulate Current Target or Restore Real Location. Each run opens the activity log and marks completion when the request returns. Reset may take a few minutes and may require a reboot plus extra wait time.\n\nSettings exposes the current target plus altitude and accuracy. v1 is static-point only; route playback and alternate daemon hosts are next.\n\nNot all apps respect the simulated location. Apps that use their own location validation or additional signals may ignore it.\n\nCredits: kolbicz provided the GPS spoofer RemoteCall/CLSimulationManager prototype this is based on. ezzuldinSt's LSpoof provided the app-side CLLocationManager spoofing, picker, bookmarks, and route-simulation reference.\n\nSystem-behavior warning: simulated locations can affect more than maps. Features tied to location, including time zone, date/time behavior, weather, automation, reminders, and service checks, may behave unexpectedly. Only use this if you know what you're doing.\n\nLegal and service-use note: simulated locations may violate app terms, platform rules, game rules, ride-share or delivery policies, or local law depending on how they are used. Use only where you have permission. You are responsible for your use and apply or restore this tweak at your own risk."
+                                           name:NSLocalizedString(@"Location Simulator", nil)
+                               shortDescription:NSLocalizedString(@"CoreLocation static point simulation", nil)
+                                longDescription:NSLocalizedString(@"Spoofs the device's GPS location via Apple's CLSimulationManager. Requires Apple Maps installed and set up — Maps is the RemoteCall host process that drives the simulation.\n\nThis is a manual tool, not an installable package. Open Controls, choose a target, then use Simulate Current Target or Restore Real Location. Each run opens the activity log and marks completion when the request returns. Reset may take a few minutes and may require a reboot plus extra wait time.\n\nSettings exposes the current target plus altitude and accuracy. v1 is static-point only; route playback and alternate daemon hosts are next.\n\nNot all apps respect the simulated location. Apps that use their own location validation or additional signals may ignore it.\n\nCredits: kolbicz provided the GPS spoofer RemoteCall/CLSimulationManager prototype this is based on. ezzuldinSt's LSpoof provided the app-side CLLocationManager spoofing, picker, bookmarks, and route-simulation reference.\n\nSystem-behavior warning: simulated locations can affect more than maps. Features tied to location, including time zone, date/time behavior, weather, automation, reminders, and service checks, may behave unexpectedly. Only use this if you know what you're doing.\n\nLegal and service-use note: simulated locations may violate app terms, platform rules, game rules, ride-share or delivery policies, or local law depending on how they are used. Use only where you have permission. You are responsible for your use and apply or restore this tweak at your own risk.", nil)
                                         version:version
                                          author:@"zeroxjf, kolbicz, ezzuldinSt"
                                        category:@"System"
@@ -279,8 +267,8 @@ static const NSInteger kSecOTA              = SectionOTA;
 
         Package *snowboardLite = [[Package alloc] initWithIdentifier:@"com.darksword.snowboardlite"
                                            name:@"SnowBoard Lite"
-                               shortDescription:@"Local SnowBoard-style icon themes"
-                                longDescription:@"Imports SnowBoard/IconBundles themes into a local library and applies the selected theme through Cyanide's icon replacement pipeline. Supports the bundled iOS 6 theme and local folder imports.\n\nSnowBoard Lite is the main icon-theme entry point in Cyanide.\n\nPorted from d1y/cyanide-ios."
+                               shortDescription:NSLocalizedString(@"Local SnowBoard-style icon themes", nil)
+                                longDescription:NSLocalizedString(@"Imports SnowBoard/IconBundles themes into a local library and applies the selected theme through Cyanide's icon replacement pipeline. Supports the bundled iOS 6 theme and local folder imports.\n\nSnowBoard Lite is the main icon-theme entry point in Cyanide.\n\nPorted from d1y/cyanide-ios.", nil)
                                         version:version
                                          author:@"d1y"
                                        category:@"Theming"
@@ -293,8 +281,8 @@ static const NSInteger kSecOTA              = SectionOTA;
 
         Package *liveWP = [[Package alloc] initWithIdentifier:@"com.darksword.livewp"
                                            name:@"LiveWP"
-                               shortDescription:@"Video wallpaper for Home and Lock Screen"
-                                longDescription:@"Plays a selected MP4/MOV/M4V video behind SpringBoard's home and lock screen windows while Cyanide keeps the RemoteCall session alive.\n\nPorted from d1y/cyanide-ios."
+                               shortDescription:NSLocalizedString(@"Video wallpaper for Home and Lock Screen", nil)
+                                longDescription:NSLocalizedString(@"Plays a selected MP4/MOV/M4V video behind SpringBoard's home and lock screen windows while Cyanide keeps the RemoteCall session alive.\n\nPorted from d1y/cyanide-ios.", nil)
                                         version:version
                                          author:@"d1y"
                                        category:@"Theming"
@@ -305,9 +293,9 @@ static const NSInteger kSecOTA              = SectionOTA;
         liveWP.settingsSection = kSecLiveWP;
 
         Package *layoutExtras = [[Package alloc] initWithIdentifier:@"com.darksword.layoutextras"
-                                           name:@"Home Layout Extras"
-                               shortDescription:@"Extra home/dock padding and per-icon scaling"
-                                longDescription:@"Adds extra padding around the home grid and the dock, and scales icons up or down. Stacks on top of SBCustomizer.\n\nDial in left/right/top/bottom padding for the home screen, horizontal padding for the dock, and home/dock icon scale in the Settings tab. Defaults match stock (zero padding, 100% scale).\n\nApplied at Run; not persisted across respring.\n\niOS 18: mutates the SBIconController layout configuration directly (upstream kolbicz path).\niOS 26: walks the live SBIconListView/SBIconView hierarchy and adjusts frames + iconImageInfo per icon (the iOS 26 layout class is read-only). One-shot at Run on iOS 26 — rotation/page swipe may force iOS 26's auto-layout to re-fit, so re-Run if that happens."
+                                           name:NSLocalizedString(@"Home Layout Extras", nil)
+                               shortDescription:NSLocalizedString(@"Extra home/dock padding and per-icon scaling", nil)
+                                longDescription:NSLocalizedString(@"Adds extra padding around the home grid and the dock, and scales icons up or down. Stacks on top of SBCustomizer.\n\nDial in left/right/top/bottom padding for the home screen, horizontal padding for the dock, and home/dock icon scale in the Settings tab. Defaults match stock (zero padding, 100% scale).\n\nApplied at Run; not persisted across respring.\n\niOS 18: mutates the SBIconController layout configuration directly (upstream kolbicz path).\niOS 26: walks the live SBIconListView/SBIconView hierarchy and adjusts frames + iconImageInfo per icon (the iOS 26 layout class is read-only). One-shot at Run on iOS 26 — rotation/page swipe may force iOS 26's auto-layout to re-fit, so re-Run if that happens.", nil)
                                         version:version
                                          author:@"kolbicz"
                                       category:@"Home Screen"
@@ -329,9 +317,9 @@ static const NSInteger kSecOTA              = SectionOTA;
         // write the SBMinimumLockscreenIdleTime floor and offer a respring. Like
         // OTA Updates it is not part of the Run queue.
         Package *lockScreenDuration = [[Package alloc] initWithIdentifier:@"com.darksword.lockscreen-duration"
-                                           name:@"Lock Screen Duration"
-                               shortDescription:@"Keep the lock screen awake longer"
-                                longDescription:@"Extends the lock screen's own dim-then-sleep timer — the short countdown that turns the screen off while you read notifications, separate from Settings > Auto-Lock.\n\nThis is a manual tool, not a queued package. Open Controls, set the number of seconds, then tap Apply Lock Screen Duration. It writes the SpringBoard preference SBMinimumLockscreenIdleTime (a global floor applied to every lock-screen idle state, including after Face ID) and offers a respring to apply it. The value persists across respring and reboot. Use Remove to restore stock timing, or Read Current Value to see what is configured.\n\nMechanism: -[SBIdleTimerDescriptorFactory sanitizeDescriptorForLockscreenDefaults:] floors every lock-screen interval with max(interval, minimumLockscreenIdleTime). Face ID gaze (Attention Aware) can keep the screen on even longer.\n\nRun the chain at least once first so kernel access is active. Takes effect on the next respring."
+                                           name:NSLocalizedString(@"Lock Screen Duration", nil)
+                               shortDescription:NSLocalizedString(@"Keep the lock screen awake longer", nil)
+                                longDescription:NSLocalizedString(@"Extends the lock screen's own dim-then-sleep timer — the short countdown that turns the screen off while you read notifications, separate from Settings > Auto-Lock.\n\nThis is a manual tool, not a queued package. Open Controls, set the number of seconds, then tap Apply Lock Screen Duration. It writes the SpringBoard preference SBMinimumLockscreenIdleTime (a global floor applied to every lock-screen idle state, including after Face ID) and offers a respring to apply it. The value persists across respring and reboot. Use Remove to restore stock timing, or Read Current Value to see what is configured.\n\nMechanism: -[SBIdleTimerDescriptorFactory sanitizeDescriptorForLockscreenDefaults:] floors every lock-screen interval with max(interval, minimumLockscreenIdleTime). Face ID gaze (Attention Aware) can keep the screen on even longer.\n\nRun the chain at least once first so kernel access is active. Takes effect on the next respring.", nil)
                                         version:@"1.0"
                                          author:@"kolbicz"
                                        category:@"SpringBoard"
@@ -342,9 +330,9 @@ static const NSInteger kSecOTA              = SectionOTA;
         lockScreenDuration.settingsSection = kSecLockScreenDuration;
 
         Package *appSwitcherGrid = [[Package alloc] initWithIdentifier:@"com.darksword.appswitchergrid"
-                                           name:@"App Switcher Grid"
-                               shortDescription:@"Grid-style app switcher"
-                                longDescription:@"Applies a runtime SpringBoard method patch that makes the app switcher use grid/deck style.\n\nThis does not write system files. A respring restores the stock app switcher. If you respring after Hide Home Bar, run App Switcher Grid again because respring resets this live SpringBoard patch.\n\nPorted from d1y/cyanide-ios."
+                                           name:NSLocalizedString(@"App Switcher Grid", nil)
+                               shortDescription:NSLocalizedString(@"Grid-style app switcher", nil)
+                                longDescription:NSLocalizedString(@"Applies a runtime SpringBoard method patch that makes the app switcher use grid/deck style.\n\nThis does not write system files. A respring restores the stock app switcher. If you respring after Hide Home Bar, run App Switcher Grid again because respring resets this live SpringBoard patch.\n\nPorted from d1y/cyanide-ios.", nil)
                                         version:version
                                          author:@"rooootdev"
                                        category:@"SpringBoard"
@@ -356,9 +344,9 @@ static const NSInteger kSecOTA              = SectionOTA;
         appSwitcherGrid.unstableWarning = @"Beta: patches SpringBoard runtime methods in memory. Respring restores stock, but unsupported builds may glitch the app switcher or crash SpringBoard. Re-run after any respring.";
 
         Package *floatingDock = [[Package alloc] initWithIdentifier:@"com.darksword.floatingdock"
-                                           name:@"iPad Dock"
-                               shortDescription:@"iPad-style Dock with App Library"
-                                longDescription:@"Turns the Dock into SpringBoard's own iPad-style Dock, including the App Library button, for the current SpringBoard session.\n\nWrites no system files. Turning it off brings the stock Dock back; so does a respring. Works together with Disable App Library: the App Library is then only in the Dock.\n\nPorted from hxhlb/cyanide."
+                                           name:NSLocalizedString(@"iPad Dock", nil)
+                               shortDescription:NSLocalizedString(@"iPad-style Dock with App Library", nil)
+                                longDescription:NSLocalizedString(@"Turns the Dock into SpringBoard's own iPad-style Dock, including the App Library button, for the current SpringBoard session.\n\nWrites no system files. Turning it off brings the stock Dock back; so does a respring. Works together with Disable App Library: the App Library is then only in the Dock.\n\nPorted from hxhlb/cyanide.", nil)
                                         version:version
                                          author:@"Banana"
                                        category:@"SpringBoard"
@@ -371,8 +359,8 @@ static const NSInteger kSecOTA              = SectionOTA;
 
         Package *quickLoader = [[Package alloc] initWithIdentifier:@"com.darksword.quickloader"
                                            name:@"QuickLoader"
-                               shortDescription:@"Executes custom .js code"
-                                longDescription:@"Select a local JavaScript file from Files, configure any declared parameters, and run it through Cyanide's SpringBoard RemoteCall bridge.\n\nOnly run scripts you trust. JavaScript tweaks can send private SpringBoard messages and destabilize the device if the script is buggy."
+                               shortDescription:NSLocalizedString(@"Executes custom .js code", nil)
+                                longDescription:NSLocalizedString(@"Select a local JavaScript file from Files, configure any declared parameters, and run it through Cyanide's SpringBoard RemoteCall bridge.\n\nOnly run scripts you trust. JavaScript tweaks can send private SpringBoard messages and destabilize the device if the script is buggy.", nil)
                                         version:@"1.0"
                                          author:@"Iggy05"
                                        category:@"SpringBoard"
@@ -386,8 +374,8 @@ static const NSInteger kSecOTA              = SectionOTA;
 #if CYANIDE_EXPERIMENTAL_TWEAKS_AVAILABLE
         Package *fastLockXLite = [[Package alloc] initWithIdentifier:@"com.darksword.fastlockx-lite"
                                            name:@"FastLockX Lite"
-                               shortDescription:@"Face ID retry + unlock controls"
-                                longDescription:@"RemoteCall-only port of the usable FastLockX primitives recovered from the iOS 15 tweak by Artem Kasper.\n\nCredits: original FastLockX by Artem Kasper; Cyanide FastLockX Lite port by zeroxjf.\n\nIt can pulse SpringBoard's biometric retry path, ask the iOS 26 biometric coordinator to start a Mesa/Face ID unlock, and send the original Lock Screen unlock request as a fallback. Installing it through Apply Tweaks keeps those retry/unlock requests armed with SpringBoard timers so pickup-to-unlock can work after Cyanide closes. The pulse loop pauses again after unlock.\n\nUse Disable, Clean Up, or a respring to stop the timers."
+                               shortDescription:NSLocalizedString(@"Face ID retry + unlock controls", nil)
+                                longDescription:NSLocalizedString(@"RemoteCall-only port of the usable FastLockX primitives recovered from the iOS 15 tweak by Artem Kasper.\n\nCredits: original FastLockX by Artem Kasper; Cyanide FastLockX Lite port by zeroxjf.\n\nIt can pulse SpringBoard's biometric retry path, ask the iOS 26 biometric coordinator to start a Mesa/Face ID unlock, and send the original Lock Screen unlock request as a fallback. Installing it through Apply Tweaks keeps those retry/unlock requests armed with SpringBoard timers so pickup-to-unlock can work after Cyanide closes. The pulse loop pauses again after unlock.\n\nUse Disable, Clean Up, or a respring to stop the timers.", nil)
                                         version:version
                                          author:@"Artem Kasper / zeroxjf"
                                        category:@"Beta"
@@ -400,9 +388,9 @@ static const NSInteger kSecOTA              = SectionOTA;
 #endif
 
         Package *nanoRegistry = [[Package alloc] initWithIdentifier:@"com.darksword.nanoregistry"
-                                           name:@"Watch Pairing Override"
-                               shortDescription:@"Pair a newer watch or revive an older one"
-                                longDescription:@"Changes the watchOS pairing range saved on this iPhone.\n\nMost people should use watchOS Range 99/23/10/6 in Settings, then apply the override. These are pairing protocol generations, not Apple Watch model numbers. 99 raises the watchOS pairing ceiling. 23 keeps the generation-23 setup protocol accepted. 10 and 6 leave the legacy chip and multi-watch floors at their normal values.\n\nApple Watch Ultra 3 cannot pair on iOS versions below 26 at this time.\n\nSystem-file warning: this modifies the local NanoRegistry compatibility-index MobileAsset and saves a .cyanide.bak backup beside the original file. Pairing-asset edits can fail, partially apply, require a respring or reboot to settle, or leave pairing state inconsistent. You apply or remove this override at your own risk.\n\nRespring or reboot after installing or removing the override before trying to pair."
+                                           name:NSLocalizedString(@"Watch Pairing Override", nil)
+                               shortDescription:NSLocalizedString(@"Pair a newer watch or revive an older one", nil)
+                                longDescription:NSLocalizedString(@"Changes the watchOS pairing range saved on this iPhone.\n\nMost people should use watchOS Range 99/23/10/6 in Settings, then apply the override. These are pairing protocol generations, not Apple Watch model numbers. 99 raises the watchOS pairing ceiling. 23 keeps the generation-23 setup protocol accepted. 10 and 6 leave the legacy chip and multi-watch floors at their normal values.\n\nApple Watch Ultra 3 cannot pair on iOS versions below 26 at this time.\n\nSystem-file warning: this modifies the local NanoRegistry compatibility-index MobileAsset and saves a .cyanide.bak backup beside the original file. Pairing-asset edits can fail, partially apply, require a respring or reboot to settle, or leave pairing state inconsistent. You apply or remove this override at your own risk.\n\nRespring or reboot after installing or removing the override before trying to pair.", nil)
                                         version:version
                                          author:@"zeroxjf"
                                        category:@"System"
@@ -414,9 +402,9 @@ static const NSInteger kSecOTA              = SectionOTA;
         nanoRegistry.unstableWarning = @"Warning: modifies a local NanoRegistry MobileAsset. Cyanide saves a .cyanide.bak backup beside the original, but system-file edits can fail or require a respring/reboot. Apply or remove this override at your own risk.";
 
         Package *callRecordingSound = [[Package alloc] initWithIdentifier:@"com.darksword.callrecording-sound"
-                                           name:@"Call Recording Sound"
-                               shortDescription:@"Silence disclosure start/stop sounds"
-                                longDescription:@"Replaces the CallServices StartDisclosureWithTone and StopDisclosure audio files with Cyanide's bundled silent payloads.\n\nCredits: YangJiiii (@duongduong0908) for the EnsWilde and Disable Call Recording BookRestore reference tools. @Little_34306 is credited by the original projects for the Disable Call Recording concept. Cyanide port, KRW-backed implementation, and generated replacement silent audio assets by zeroxjf.\n\nSystem-file warning: this modifies files under /var/mobile/Library/CallServices/Greetings/default. Cyanide backs up the first originals into its app container, but system file replacement can fail, partially apply, or require a respring/reboot to settle.\n\nLegal note: call-recording disclosure sounds may exist to satisfy consent, notification, or privacy-law requirements in some places. You are responsible for understanding and following the laws that apply to you.\n\nThis port does not use the old Books/BookRestore/sparserestore path. Cyanide runs KRW, unlocks local /private/var write access, then writes directly to the CallServices files.\n\nUse Restore Original Sounds to write Cyanide's backups back when present. You apply or restore this tweak at your own risk."
+                                           name:NSLocalizedString(@"Call Recording Sound", nil)
+                               shortDescription:NSLocalizedString(@"Silence disclosure start/stop sounds", nil)
+                                longDescription:NSLocalizedString(@"Replaces the CallServices StartDisclosureWithTone and StopDisclosure audio files with Cyanide's bundled silent payloads.\n\nCredits: YangJiiii (@duongduong0908) for the EnsWilde and Disable Call Recording BookRestore reference tools. @Little_34306 is credited by the original projects for the Disable Call Recording concept. Cyanide port, KRW-backed implementation, and generated replacement silent audio assets by zeroxjf.\n\nSystem-file warning: this modifies files under /var/mobile/Library/CallServices/Greetings/default. Cyanide backs up the first originals into its app container, but system file replacement can fail, partially apply, or require a respring/reboot to settle.\n\nLegal note: call-recording disclosure sounds may exist to satisfy consent, notification, or privacy-law requirements in some places. You are responsible for understanding and following the laws that apply to you.\n\nThis port does not use the old Books/BookRestore/sparserestore path. Cyanide runs KRW, unlocks local /private/var write access, then writes directly to the CallServices files.\n\nUse Restore Original Sounds to write Cyanide's backups back when present. You apply or restore this tweak at your own risk.", nil)
                                         version:version
                                          author:@"YangJiiii (@duongduong0908) / zeroxjf"
                                        category:@"System"
@@ -428,9 +416,9 @@ static const NSInteger kSecOTA              = SectionOTA;
         callRecordingSound.unstableWarning = @"Beta: persistent CallServices system-file replacement. Disclosure sounds may be legally required where you live; you are responsible for your use and apply this at your own risk. Use Restore Original Sounds before removing Cyanide if you want Cyanide's backups written back.";
 
         Package *passcodeTheme = [[Package alloc] initWithIdentifier:@"com.darksword.passcode-theme"
-                                           name:@"Passcode Style"
-                               shortDescription:@"Custom Lock Screen passcode artwork"
-                                longDescription:@"Replaces the Lock Screen keypad artwork under /var/mobile/Library/Caches/TelephonyUI-* with a style you import or build in the Passcode Style panel. A style may cover only some digits; the rest stay stock.\n\nOpen Controls to apply it or restore the saved originals. Lock and unlock (or respring) to see the change.\n\nSystem-file warning: the originals Cyanide saves live in Cyanide's own app container, so reinstalling Cyanide deletes them — export them from the Passcode Style panel first if you plan to reinstall.\n\nCredits: ported from the Passcode implementation created for Lara by ruter and neonmodder123, inherited and extended by leonardob8777-bit in Eagle (https://github.com/leonardob8777-bit/Eagle, AGPL-3.0). Cyanide port by FleetingDreamso."
+                                           name:NSLocalizedString(@"Passcode Style", nil)
+                               shortDescription:NSLocalizedString(@"Custom Lock Screen passcode artwork", nil)
+                                longDescription:NSLocalizedString(@"Replaces the Lock Screen keypad artwork under /var/mobile/Library/Caches/TelephonyUI-* with a style you import or build in the Passcode Style panel. A style may cover only some digits; the rest stay stock.\n\nOpen Controls to apply it or restore the saved originals. Lock and unlock (or respring) to see the change.\n\nSystem-file warning: the originals Cyanide saves live in Cyanide's own app container, so reinstalling Cyanide deletes them — export them from the Passcode Style panel first if you plan to reinstall.\n\nCredits: ported from the Passcode implementation created for Lara by ruter and neonmodder123, inherited and extended by leonardob8777-bit in Eagle (https://github.com/leonardob8777-bit/Eagle, AGPL-3.0). Cyanide port by FleetingDreamso.", nil)
                                         version:version
                                          author:@"ruter / neonmodder123 / leonardob8777-bit / FleetingDreamso"
                                        category:@"Theming"
@@ -442,9 +430,9 @@ static const NSInteger kSecOTA              = SectionOTA;
         passcodeTheme.unstableWarning = @"Warning: rewrites the system keypad artwork the Lock Screen uses. Cyanide verifies every write, but edits can still fail or partially apply. Restore Original Digits puts the saved originals back.";
 
         Package *hideHomeBar = [[Package alloc] initWithIdentifier:@"com.darksword.hide-home-bar"
-                                           name:@"Hide Home Bar"
-                               shortDescription:@"Hide the bottom home indicator"
-                                longDescription:@"Zeros the first page of /System/Library/PrivateFrameworks/MaterialKit.framework/Assets.car using Cyanide's stable file-page zero path, which hides the bottom home indicator after SpringBoard reloads assets.\n\nRun Hide Home Bar by itself, then respring so SpringBoard refreshes the asset cache. To bring the home indicator back, choose Restore Home Bar and respring again. Other live SpringBoard tweaks, such as App Switcher Grid, should be applied in a separate run after the respring.\n\nCredits: C4ndyF1sh/ZeroCalories for the Home Bar target and jailbreakdotparty/dirtyZero for the original page-zeroing idea. Cyanide port by zeroxjf."
+                                           name:NSLocalizedString(@"Hide Home Bar", nil)
+                               shortDescription:NSLocalizedString(@"Hide the bottom home indicator", nil)
+                                longDescription:NSLocalizedString(@"Zeros the first page of /System/Library/PrivateFrameworks/MaterialKit.framework/Assets.car using Cyanide's stable file-page zero path, which hides the bottom home indicator after SpringBoard reloads assets.\n\nRun Hide Home Bar by itself, then respring so SpringBoard refreshes the asset cache. To bring the home indicator back, choose Restore Home Bar and respring again. Other live SpringBoard tweaks, such as App Switcher Grid, should be applied in a separate run after the respring.\n\nCredits: C4ndyF1sh/ZeroCalories for the Home Bar target and jailbreakdotparty/dirtyZero for the original page-zeroing idea. Cyanide port by zeroxjf.", nil)
                                         version:version
                                          author:@"C4ndyF1sh / jailbreakdotparty / zeroxjf"
                                        category:@"Home Screen"
@@ -461,9 +449,9 @@ static const NSInteger kSecOTA              = SectionOTA;
         // routed a one-tap system-file edit through the install queue for no
         // benefit and split the read button off into Settings on its own.
         Package *otaBlock = [[Package alloc] initWithIdentifier:@"com.darksword.ota-block"
-                                           name:@"OTA Updates"
-                               shortDescription:@"Enable or disable over-the-air system updates"
-                                longDescription:@"Disables or enables the launchd jobs responsible for over-the-air system updates by editing disabled.plist. State persists across reboots.\n\nSystem-file warning: this edits /private/var/db/com.apple.xpc.launchd/disabled.plist. Incorrect or partial writes can affect launchd job state across boot. You disable or re-enable OTA updates at your own risk.\n\nThis is a manual tool, not a queued package. Open Controls, then tap Disable OTA Updates to block them or Enable OTA Updates to restore them; the change is written immediately, with no Run or Apply step. Read Current Status reports whether the update daemons are currently blocked.\n\nRun the chain at least once first so kernel access is active — Read Current Status will not start it on its own.\n\nVersion 1.2 moves the controls into Settings; 1.1 added Read Current Status."
+                                           name:NSLocalizedString(@"OTA Updates", nil)
+                               shortDescription:NSLocalizedString(@"Enable or disable over-the-air system updates", nil)
+                                longDescription:NSLocalizedString(@"Disables or enables the launchd jobs responsible for over-the-air system updates by editing disabled.plist. State persists across reboots.\n\nSystem-file warning: this edits /private/var/db/com.apple.xpc.launchd/disabled.plist. Incorrect or partial writes can affect launchd job state across boot. You disable or re-enable OTA updates at your own risk.\n\nThis is a manual tool, not a queued package. Open Controls, then tap Disable OTA Updates to block them or Enable OTA Updates to restore them; the change is written immediately, with no Run or Apply step. Read Current Status reports whether the update daemons are currently blocked.\n\nRun the chain at least once first so kernel access is active — Read Current Status will not start it on its own.\n\nVersion 1.2 moves the controls into Settings; 1.1 added Read Current Status.", nil)
                                         version:@"1.2"
                                          author:@"kolbicz"
                                        category:@"System"
@@ -475,9 +463,9 @@ static const NSInteger kSecOTA              = SectionOTA;
         otaBlock.unstableWarning = @"Warning: persistent system-file edit. This package modifies launchd disabled.plist to change OTA job state across reboot. Disable or re-enable OTA updates at your own risk.";
 
         Package *disableAppLibrary = [[Package alloc] initWithIdentifier:@"com.darksword.disable-app-library"
-                                           name:@"Disable App Library"
-                               shortDescription:@"Remove the App Library page"
-                                longDescription:@"Removes the App Library page that sits past your last home-screen page. Swiping past the last page becomes a no-op.\n\nWorks on iOS 17 and later."
+                                           name:NSLocalizedString(@"Disable App Library", nil)
+                               shortDescription:NSLocalizedString(@"Remove the App Library page", nil)
+                                longDescription:NSLocalizedString(@"Removes the App Library page that sits past your last home-screen page. Swiping past the last page becomes a no-op.\n\nWorks on iOS 17 and later.", nil)
                                         version:@"1.1"
                                          author:@"kolbicz"
                                        category:@"SpringBoard"
@@ -497,9 +485,9 @@ static const NSInteger kSecOTA              = SectionOTA;
             disableAppLibrary,
 
             [[Package alloc] initWithIdentifier:@"com.darksword.disable-icon-flyin"
-                                           name:@"Disable Icon Fly-In"
-                               shortDescription:@"Skip the icon spring animation"
-                                longDescription:@"Skips the spring animation that plays when home screen icons appear after unlock or app switch. Icons just appear in their final position."
+                                           name:NSLocalizedString(@"Disable Icon Fly-In", nil)
+                               shortDescription:NSLocalizedString(@"Skip the icon spring animation", nil)
+                                longDescription:NSLocalizedString(@"Skips the spring animation that plays when home screen icons appear after unlock or app switch. Icons just appear in their final position.", nil)
                                         version:version
                                          author:@"kolbicz"
                                        category:@"SpringBoard"
@@ -509,9 +497,9 @@ static const NSInteger kSecOTA              = SectionOTA;
                                           isNew:NO],
 
             [[Package alloc] initWithIdentifier:@"com.lara.springboard-tools"
-                                           name:@"SpringBoard Tools"
-                               shortDescription:@"Your dock, folder and Control Center look"
-                                longDescription:@"Applies the look set in Settings → Lara → SpringBoard Tools (dock, folders, Control Center, notifications, app switcher) together with the other tweaks, so it comes back with Apply Tweaks after a respring."
+                                           name:NSLocalizedString(@"SpringBoard Tools", nil)
+                               shortDescription:NSLocalizedString(@"Your dock, folder and Control Center look", nil)
+                                longDescription:NSLocalizedString(@"Applies the look set in Settings → Lara → SpringBoard Tools (dock, folders, Control Center, notifications, app switcher) together with the other tweaks, so it comes back with Apply Tweaks after a respring.", nil)
                                         version:version
                                          author:@"kolbicz"
                                        category:@"SpringBoard"
@@ -521,9 +509,9 @@ static const NSInteger kSecOTA              = SectionOTA;
                                           isNew:YES],
 
             [[Package alloc] initWithIdentifier:@"com.darksword.hide-new-app-dots"
-                                           name:@"Hide New App Dots"
-                               shortDescription:@"No blue dot next to new or updated apps"
-                                longDescription:@"Removes the blue dot iOS shows next to the names of newly installed and recently updated apps, and keeps new ones from appearing until the next respring."
+                                           name:NSLocalizedString(@"Hide New App Dots", nil)
+                               shortDescription:NSLocalizedString(@"No blue dot next to new or updated apps", nil)
+                                longDescription:NSLocalizedString(@"Removes the blue dot iOS shows next to the names of newly installed and recently updated apps, and keeps new ones from appearing until the next respring.", nil)
                                         version:version
                                          author:@"kolbicz"
                                        category:@"SpringBoard"
@@ -533,9 +521,9 @@ static const NSInteger kSecOTA              = SectionOTA;
                                           isNew:YES],
 
             [[Package alloc] initWithIdentifier:@"com.darksword.zero-wake-animation"
-                                           name:@"Zero Wake Animation"
-                               shortDescription:@"Snap on instantly when waking"
-                                longDescription:@"Removes the fade-in animation when waking the display. The screen pops on at full brightness immediately."
+                                           name:NSLocalizedString(@"Zero Wake Animation", nil)
+                               shortDescription:NSLocalizedString(@"Snap on instantly when waking", nil)
+                                longDescription:NSLocalizedString(@"Removes the fade-in animation when waking the display. The screen pops on at full brightness immediately.", nil)
                                         version:version
                                          author:@"kolbicz"
                                        category:@"SpringBoard"
@@ -545,9 +533,9 @@ static const NSInteger kSecOTA              = SectionOTA;
                                           isNew:NO],
 
             [[Package alloc] initWithIdentifier:@"com.darksword.zero-backlight-fade"
-                                           name:@"Zero Backlight Fade"
-                               shortDescription:@"Instant lock/unlock backlight"
-                                longDescription:@"Cuts the backlight fade duration to zero so the display switches on or off instantly on lock and unlock."
+                                           name:NSLocalizedString(@"Zero Backlight Fade", nil)
+                               shortDescription:NSLocalizedString(@"Instant lock/unlock backlight", nil)
+                                longDescription:NSLocalizedString(@"Cuts the backlight fade duration to zero so the display switches on or off instantly on lock and unlock.", nil)
                                         version:version
                                          author:@"kolbicz"
                                        category:@"SpringBoard"
@@ -557,9 +545,9 @@ static const NSInteger kSecOTA              = SectionOTA;
                                           isNew:NO],
 
             [[Package alloc] initWithIdentifier:@"com.darksword.double-tap-to-lock"
-                                           name:@"Double-Tap to Lock"
-                               shortDescription:@"Lock with a wallpaper double-tap"
-                                longDescription:@"Double-tap an empty area of the Home Screen or Lock Screen background to lock the device. Version 1.1 excludes icons and the passcode screen, fixing accidental locks while opening apps or entering a passcode."
+                                           name:NSLocalizedString(@"Double-Tap to Lock", nil)
+                               shortDescription:NSLocalizedString(@"Lock with a wallpaper double-tap", nil)
+                                longDescription:NSLocalizedString(@"Double-tap an empty area of the Home Screen or Lock Screen background to lock the device. Version 1.1 excludes icons and the passcode screen, fixing accidental locks while opening apps or entering a passcode.", nil)
                                         version:@"1.1"
                                          author:@"kolbicz"
                                        category:@"SpringBoard"
@@ -570,9 +558,9 @@ static const NSInteger kSecOTA              = SectionOTA;
 
             ({
                 Package *drag = [[Package alloc] initWithIdentifier:@"com.darksword.drag-coefficient"
-                                                               name:@"Drag Coefficient"
-                                                   shortDescription:@"Custom SpringBoard animation speed multiplier"
-                                                    longDescription:@"Overrides _UIAnimationDragCoefficient in SpringBoard to make all UIKit spring animations faster or slower.\n\nSet the coefficient in the Drag Coefficient settings panel. 50% = 0.50× (2× faster), 25% = 0.25× (4× faster), 100% = stock.\n\nImported from kolbicz/DarkSword-Tweaks."
+                                                               name:NSLocalizedString(@"Drag Coefficient", nil)
+                                                   shortDescription:NSLocalizedString(@"Custom SpringBoard animation speed multiplier", nil)
+                                                    longDescription:NSLocalizedString(@"Overrides _UIAnimationDragCoefficient in SpringBoard to make all UIKit spring animations faster or slower.\n\nSet the coefficient in the Drag Coefficient settings panel. 50% = 0.50× (2× faster), 25% = 0.25× (4× faster), 100% = stock.\n\nImported from kolbicz/DarkSword-Tweaks.", nil)
                                                             version:@"1.1"
                                                              author:@"kolbicz"
                                                            category:@"SpringBoard"

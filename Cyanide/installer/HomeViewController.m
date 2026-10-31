@@ -28,7 +28,7 @@ static const CGFloat kMargin = 20.0;
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.title = @"Home";
+    self.title = NSLocalizedString(@"Home", nil);
     self.view.backgroundColor = UIColor.systemGroupedBackgroundColor;
     self.navigationItem.largeTitleDisplayMode = UINavigationItemLargeTitleDisplayModeAlways;
     self.navigationController.navigationBar.prefersLargeTitles = YES;
@@ -134,16 +134,16 @@ static const CGFloat kMargin = 20.0;
     [d setBool:YES forKey:kAskedKey];
 
     UIAlertController *ac = [UIAlertController
-        alertControllerWithTitle:@"Faster tweak apply"
-                         message:@"Cyanide now defaults to the Fastest apply speed, which cuts the wait between remote calls. Switch to Fastest? You can change this any time in Settings → Launch Options."
+        alertControllerWithTitle:NSLocalizedString(@"Faster tweak apply", nil)
+                         message:NSLocalizedString(@"Cyanide now defaults to the Fastest apply speed, which cuts the wait between remote calls. Switch to Fastest? You can change this any time in Settings → Launch Options.", nil)
                   preferredStyle:UIAlertControllerStyleAlert];
     __weak typeof(self) weakSelf = self;
-    [ac addAction:[UIAlertAction actionWithTitle:@"Not Now"
+    [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Not Now", nil)
                                            style:UIAlertActionStyleCancel
                                          handler:^(UIAlertAction *_) {
         [weakSelf offerPeV3AfterDismissal];
     }]];
-    [ac addAction:[UIAlertAction actionWithTitle:@"Switch to Fastest"
+    [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Switch to Fastest", nil)
                                            style:UIAlertActionStyleDefault
                                          handler:^(UIAlertAction *_) {
         [d setInteger:2 forKey:kSettingsRemoteSettleMode];
@@ -179,11 +179,11 @@ static const CGFloat kMargin = 20.0;
     [d setBool:YES forKey:kAskedKey];
 
     UIAlertController *ac = [UIAlertController
-        alertControllerWithTitle:@"Try the pe_v3 exploit path?"
-                         message:@"This version adds pe_v3, a newer exploit method for A18 / M4 devices. It probably causes fewer reboots: it stops early instead of reading memory that is likely to panic the device, and retries cleanly instead.\n\nSwitch to pe_v3? You can change this any time in Settings → Launch Options → A18 exploit path."
+        alertControllerWithTitle:NSLocalizedString(@"Try the pe_v3 exploit path?", nil)
+                         message:NSLocalizedString(@"This version adds pe_v3, a newer exploit method for A18 / M4 devices. It probably causes fewer reboots: it stops early instead of reading memory that is likely to panic the device, and retries cleanly instead.\n\nSwitch to pe_v3? You can change this any time in Settings → Launch Options → A18 exploit path.", nil)
                   preferredStyle:UIAlertControllerStyleAlert];
-    [ac addAction:[UIAlertAction actionWithTitle:@"Keep Current" style:UIAlertActionStyleCancel handler:nil]];
-    [ac addAction:[UIAlertAction actionWithTitle:@"Switch to pe_v3"
+    [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Keep Current", nil) style:UIAlertActionStyleCancel handler:nil]];
+    [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Switch to pe_v3", nil)
                                            style:UIAlertActionStyleDefault
                                          handler:^(UIAlertAction *_) {
         [d setInteger:2 forKey:kSettingsA18ExploitPath];
@@ -232,7 +232,7 @@ static const CGFloat kMargin = 20.0;
 
     UILabel *tagline = [[UILabel alloc] init];
     tagline.translatesAutoresizingMaskIntoConstraints = NO;
-    tagline.text = @"SpringBoard tweaks for stock iOS";
+    tagline.text = NSLocalizedString(@"SpringBoard tweaks for stock iOS", nil);
     tagline.font = [UIFont systemFontOfSize:17.0 weight:UIFontWeightBold];
     tagline.textColor = UIColor.whiteColor;
     tagline.textAlignment = NSTextAlignmentCenter;
@@ -240,7 +240,7 @@ static const CGFloat kMargin = 20.0;
 
     UILabel *sub = [[UILabel alloc] init];
     sub.translatesAutoresizingMaskIntoConstraints = NO;
-    sub.text = [NSString stringWithFormat:@"No jailbreak required · v%@", ver];
+    sub.text = [NSString stringWithFormat:NSLocalizedString(@"No jailbreak required · v%@", nil), ver];
     sub.font = [UIFont systemFontOfSize:13.0 weight:UIFontWeightMedium];
     sub.textColor = [UIColor colorWithWhite:1.0 alpha:0.65];
     sub.textAlignment = NSTextAlignmentCenter;
@@ -384,7 +384,7 @@ static const CGFloat kMargin = 20.0;
     NSArray *changes = [latest[@"changes"] isKindOfClass:NSArray.class] ? latest[@"changes"] : nil;
 
     UILabel *header = [self sectionHeader:version.length
-        ? [NSString stringWithFormat:@"What's New in %@", [version hasPrefix:@"v"] ? [version substringFromIndex:1] : version]
+        ? [NSString stringWithFormat:NSLocalizedString(@"What's New in %@", nil), [version hasPrefix:@"v"] ? [version substringFromIndex:1] : version]
         : @"What's New"];
     [s addArrangedSubview:header];
     [s setCustomSpacing:18.0 afterView:header];
@@ -809,10 +809,10 @@ static const CGFloat kMargin = 20.0;
         typeof(self) me = weakSelf;
         [me updateKernelAccessRow];
         if (!ready || !me || me.presentedViewController) return;
-        UIAlertController *ac = [UIAlertController alertControllerWithTitle:@"Kernel Access Ready"
-            message:@"Process Viewer, File Browser, Daemon Manager, Cache Cleaner and System Info can use it now."
+        UIAlertController *ac = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Kernel Access Ready", nil)
+            message:NSLocalizedString(@"Process Viewer, File Browser, Daemon Manager, Cache Cleaner and System Info can use it now.", nil)
             preferredStyle:UIAlertControllerStyleAlert];
-        [ac addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
+        [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil) style:UIAlertActionStyleDefault handler:nil]];
         [me presentViewController:ac animated:YES completion:nil];
     });
 }

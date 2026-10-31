@@ -60,11 +60,11 @@
 - (void)buildTweakDocsInStack:(UIStackView *)stack
 {
     [stack addArrangedSubview:[self introCard:@"Build JavaScript Tweaks"
-                                        body:@"Write .js scripts that run inside SpringBoard through Cyanide's RemoteCall bridge. Publish them as a source repo or load them locally with QuickLoader."
+                                        body:NSLocalizedString(@"Write .js scripts that run inside SpringBoard through Cyanide's RemoteCall bridge. Publish them as a source repo or load them locally with QuickLoader.", nil)
                                       credit:@"JavaScript engine contributed by @MinePlayer16"]];
 
     [stack addArrangedSubview:[self docCard:@"Writing a Tweak"
-        body:@"A tweak is a plain .js file that runs inside JavaScriptCore. 64-bit pointers are passed as hex strings (e.g. \"0x105f2a000\"). Wrap your code in an IIFE:\n\n"
+        body:NSLocalizedString(@"A tweak is a plain .js file that runs inside JavaScriptCore. 64-bit pointers are passed as hex strings (e.g. \"0x105f2a000\"). Wrap your code in an IIFE:\n\n", nil)
               "(() => {\n"
               "  log(\"Hello from my tweak!\");\n"
               "  var app = r_msg2(\n"
@@ -76,7 +76,7 @@
               "Use log() to print to Cyanide's Log tab. Use r_msg2_main() instead of r_msg2() for anything that touches UIKit views."]];
 
     [stack addArrangedSubview:[self docCard:@"Parameter Declaration"
-        body:@"Add @param comments at the top of your script. Cyanide parses them and generates native UI controls in Settings.\n\n"
+        body:NSLocalizedString(@"Add @param comments at the top of your script. Cyanide parses them and generates native UI controls in Settings.\n\n", nil)
               "Syntax:\n"
               "// @param: type | varName | Label | default | range\n\n"
               "Types:\n\n"
@@ -91,7 +91,7 @@
               "Default values auto-populate on first install. The slider shows a \"(Def)\" indicator when at the declared default."]];
 
     [stack addArrangedSubview:[self docCard:@"RemoteCall API"
-        body:@"These functions are injected into every JS context:\n\n"
+        body:NSLocalizedString(@"These functions are injected into every JS context:\n\n", nil)
               "log(message)\n"
               "  Print to Cyanide's log console.\n\n"
               "r_class(name) → pointer\n"
@@ -111,14 +111,14 @@
               "  Check if an object responds to a selector."]];
 
     [stack addArrangedSubview:[self docCard:@"Reading Parameters (QuickLoader)"
-        body:@"QuickLoader scripts can read their @param values at runtime:\n\n"
+        body:NSLocalizedString(@"QuickLoader scripts can read their @param values at runtime:\n\n", nil)
               "r_pref_num(\"blurRadius\")   → float\n"
               "r_pref_bool(\"enableBlur\")  → boolean\n"
               "r_pref_str(\"tintColor\")    → string\n\n"
               "RepoTweaks scripts receive their parameters as pre-injected global variables instead."]];
 
     [stack addArrangedSubview:[self docCard:@"Timers"
-        body:@"Standard timer functions are mapped to GCD background queues so they never block the UI:\n\n"
+        body:NSLocalizedString(@"Standard timer functions are mapped to GCD background queues so they never block the UI:\n\n", nil)
               "setInterval(fn, ms) → id\n"
               "clearInterval(id)\n"
               "setTimeout(fn, ms) → id\n"
@@ -126,7 +126,7 @@
               "All active timers are automatically cancelled when the tweak is disabled or Cyanide cleans up."]];
 
     [stack addArrangedSubview:[self docCard:@"Color Allocation Example"
-        body:@"64-bit IPC can't pass CGFloat arrays directly. Allocate colors through CIColor:\n\n"
+        body:NSLocalizedString(@"64-bit IPC can't pass CGFloat arrays directly. Allocate colors through CIColor:\n\n", nil)
               "var hex = \"#00FFCC\".replace('#','');\n"
               "var r = parseInt(hex.substring(0,2),16)/255;\n"
               "var g = parseInt(hex.substring(2,4),16)/255;\n"
@@ -142,7 +142,7 @@
               "r_msg2(str, \"release\");"]];
 
     [stack addArrangedSubview:[self docCard:@"Tips"
-        body:@"• Always use r_msg2_main for view manipulation — r_msg2 on a background thread can crash SpringBoard.\n"
+        body:NSLocalizedString(@"• Always use r_msg2_main for view manipulation — r_msg2 on a background thread can crash SpringBoard.\n", nil)
               "• Release r_nsstr allocations to avoid leaking memory in the SpringBoard process.\n"
               "• Use r_responds to check selectors before calling them — iOS versions differ.\n"
               "• Test locally with QuickLoader before publishing to a repo.\n"
@@ -154,11 +154,11 @@
 - (void)buildRepoDocsInStack:(UIStackView *)stack
 {
     [stack addArrangedSubview:[self introCard:@"Set Up a Tweak Repository"
-                                        body:@"Host your JavaScript tweaks as an HTTPS JSON feed that Cyanide users can add in the Sources tab. No server-side code needed — a GitHub Pages repo or any static file host works."
+                                        body:NSLocalizedString(@"Host your JavaScript tweaks as an HTTPS JSON feed that Cyanide users can add in the Sources tab. No server-side code needed — a GitHub Pages repo or any static file host works.", nil)
                                       credit:nil]];
 
     [stack addArrangedSubview:[self docCard:@"Repository JSON Format"
-        body:@"Create a JSON file with this structure:\n\n"
+        body:NSLocalizedString(@"Create a JSON file with this structure:\n\n", nil)
               "{\n"
               "  \"repoName\": \"My Repo\",\n"
               "  \"author\": \"yourname\",\n"
@@ -209,7 +209,7 @@
               "but are planned for a future update."]];
 
     [stack addArrangedSubview:[self docCard:@"Hosting with GitHub Pages"
-        body:@"1. Create a public GitHub repo\n"
+        body:NSLocalizedString(@"1. Create a public GitHub repo\n", nil)
               "2. Add your .js tweak files\n"
               "3. Add a JSON file (e.g. tweaks.json)\n"
               "   pointing scriptURLs to the raw files:\n\n"
@@ -221,14 +221,14 @@
               "   https://yourname.github.io/repo/tweaks.json"]];
 
     [stack addArrangedSubview:[self docCard:@"Updating Tweaks"
-        body:@"To push an update:\n\n"
+        body:NSLocalizedString(@"To push an update:\n\n", nil)
               "1. Update the .js file at the same URL\n"
               "2. Bump the version string in the JSON\n"
               "3. Commit and push\n\n"
               "Cyanide checks for updates every few hours. When the repo version is newer than the installed version, the Sources tab shows an update badge. Users tap the tweak to reinstall the latest version."]];
 
     [stack addArrangedSubview:[self docCard:@"Multiple Tweaks"
-        body:@"Add more entries to the tweaks array:\n\n"
+        body:NSLocalizedString(@"Add more entries to the tweaks array:\n\n", nil)
               "\"tweaks\": [\n"
               "  { \"id\": \"me.hidedock\", … },\n"
               "  { \"id\": \"me.colordock\", … },\n"
@@ -237,7 +237,7 @@
               "Each tweak needs its own unique id and scriptURL. They all share the repo's author and repoName."]];
 
     [stack addArrangedSubview:[self docCard:@"Tips"
-        body:@"• Use descriptive ids like \"yourname.tweakname\" to avoid collisions with other repos.\n"
+        body:NSLocalizedString(@"• Use descriptive ids like \"yourname.tweakname\" to avoid collisions with other repos.\n", nil)
               "• Keep descriptions short — they show as one or two lines in the package list.\n"
               "• Bump the version on every change so users get the update badge.\n"
               "• Test scripts locally with QuickLoader before adding them to your repo.\n"
@@ -255,7 +255,7 @@
 {
     [UIPasteboard generalPasteboard].string = [self markdownString];
     UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil
-                                                                   message:@"Copied to clipboard"
+                                                                   message:NSLocalizedString(@"Copied to clipboard", nil)
                                                             preferredStyle:UIAlertControllerStyleAlert];
     [self presentViewController:alert animated:YES completion:nil];
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{

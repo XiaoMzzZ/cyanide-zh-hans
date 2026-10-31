@@ -83,7 +83,7 @@ static NSString *pl_summary(id v)
         case PLTypeDictionary:
         case PLTypeArray: {
             NSUInteger n = [(NSArray *)v count];
-            return [NSString stringWithFormat:@"%lu item%@", (unsigned long)n, n == 1 ? @"" : @"s"];
+            return [NSString stringWithFormat:NSLocalizedString(@"%lu item%@", nil), (unsigned long)n, n == 1 ? @"" : @"s"];
         }
         case PLTypeString: {
             NSString *s = [(NSString *)v stringByReplacingOccurrencesOfString:@"\n" withString:@" "];
@@ -95,7 +95,7 @@ static NSString *pl_summary(id v)
         case PLTypeDate:    return [pl_date_formatter() stringFromDate:v];
         case PLTypeData: {
             NSData *d = v;
-            return [NSString stringWithFormat:@"%lu bytes  %@", (unsigned long)d.length, pl_hex(d, 12)];
+            return [NSString stringWithFormat:NSLocalizedString(@"%lu bytes  %@", nil), (unsigned long)d.length, pl_hex(d, 12)];
         }
     }
     return @"";
@@ -194,7 +194,7 @@ static const NSUInteger kPLMaxDataEditBytes = 64 * 1024;
     NSData *data = filebrowser_read_fd(fd, kPLMaxBytes, &tooBig, &rerr);
     close(fd);
     if (!data) {
-        if (message) *message = [NSString stringWithFormat:@"Reading the file failed: %s.", strerror(rerr)];
+        if (message) *message = [NSString stringWithFormat:NSLocalizedString(@"Reading the file failed: %s.", nil), strerror(rerr)];
         return NO;
     }
     if (tooBig) { if (message) *message = @"The plist is larger than 10 MB."; return NO; }
@@ -266,7 +266,7 @@ static const NSUInteger kPLMaxDataEditBytes = 64 * 1024;
         self.textView.smartDashesType = UITextSmartDashesTypeNo;
         if (t == PLTypeInteger || t == PLTypeReal) self.textView.keyboardType = UIKeyboardTypeNumbersAndPunctuation;
         self.textView.text = t == PLTypeData
-                           ? (bigData ? [NSString stringWithFormat:@"%@\n\n… first %lu of %lu bytes shown; too large to edit here.",
+                           ? (bigData ? [NSString stringWithFormat:NSLocalizedString(@"%@\n\n… first %lu of %lu bytes shown; too large to edit here.", nil),
                                          pl_hex(self.value, kPLMaxDataEditBytes),
                                          (unsigned long)kPLMaxDataEditBytes, (unsigned long)[(NSData *)self.value length]]
                                       : pl_hex(self.value, NSUIntegerMax))
@@ -319,10 +319,10 @@ static const NSUInteger kPLMaxDataEditBytes = 64 * 1024;
         default: break;
     }
     if (error) {
-        UIAlertController *ac = [UIAlertController alertControllerWithTitle:@"Invalid Value"
+        UIAlertController *ac = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Invalid Value", nil)
                                                                     message:error
                                                              preferredStyle:UIAlertControllerStyleAlert];
-        [ac addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
+        [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil) style:UIAlertActionStyleDefault handler:nil]];
         [self presentViewController:ac animated:YES completion:nil];
         return;
     }
@@ -468,7 +468,7 @@ static const NSUInteger kPLMaxDataEditBytes = 64 * 1024;
 {
     if (self.writable && !self.saving) return YES;
     [self showMessage:@"Changes are locked. Unlock them in the File Browser to edit."
-                title:@"Not Changed"];
+                title:NSLocalizedString(@"Not Changed", nil)];
     [self reloadRows];   // e.g. flip a switch back
     return NO;
 }
@@ -539,7 +539,7 @@ static const NSUInteger kPLMaxDataEditBytes = 64 * 1024;
             // without that lock could otherwise observe a torn version.
             NSData *snapshot = [me.doc.original copy];
             if (!snapshot) {
-                [me showMessage:@"The loaded plist has no shareable snapshot." title:@"Couldn't Share"];
+                [me showMessage:@"The loaded plist has no shareable snapshot." title:NSLocalizedString(@"Couldn't Share", nil)];
                 return;
             }
             weakShare.enabled = NO;
@@ -555,7 +555,7 @@ static const NSUInteger kPLMaxDataEditBytes = 64 * 1024;
     if (self.isRoot) {
         self.navigationItem.hidesBackButton = self.doc.dirty;
         self.navigationItem.leftBarButtonItem = self.doc.dirty
-            ? [[UIBarButtonItem alloc] initWithTitle:@"Revert" style:UIBarButtonItemStylePlain
+            ? [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Revert", nil) style:UIBarButtonItemStylePlain
                                               target:self action:@selector(confirmRevert)]
             : nil;
     }
@@ -569,12 +569,12 @@ static const NSUInteger kPLMaxDataEditBytes = 64 * 1024;
 {
     if (self.saving) return;
     if (self.doc.readOnly || !filebrowser_write_enabled()) {
-        [self showMessage:@"Changes are locked." title:@"Not Saved"];
+        [self showMessage:@"Changes are locked." title:NSLocalizedString(@"Not Saved", nil)];
         return;
     }
     NSString *message = nil;
     NSData *data = [self.doc serializedDataWithError:&message];
-    if (!data) { [self showMessage:message title:@"Not Saved"]; return; }
+    if (!data) { [self showMessage:message title:NSLocalizedString(@"Not Saved", nil)]; return; }
     PLDocument *doc = self.doc;
     NSString *path = doc.path;
     FBFileIdentity expected = doc.identity;
@@ -594,15 +594,14 @@ static const NSUInteger kPLMaxDataEditBytes = 64 * 1024;
                 return;
             }
             if (r == FBSaveConflict) {
-                UIAlertController *ac = [UIAlertController alertControllerWithTitle:@"File Changed"
-                                                                            message:@"The file was changed or replaced since you opened it. "
-                                                                                    @"Overwrite it with your version, or Revert to load the current one?"
+                UIAlertController *ac = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"File Changed", nil)
+                                                                            message:NSLocalizedString(@"The file was changed or replaced since you opened it. Overwrite it with your version, or Revert to load the current one?", nil)
                                                                      preferredStyle:UIAlertControllerStyleAlert];
-                [ac addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];
-                [ac addAction:[UIAlertAction actionWithTitle:@"Revert" style:UIAlertActionStyleDefault handler:^(UIAlertAction *a) {
+                [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil) style:UIAlertActionStyleCancel handler:nil]];
+                [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Revert", nil) style:UIAlertActionStyleDefault handler:^(UIAlertAction *a) {
                     [self confirmRevert];
                 }]];
-                [ac addAction:[UIAlertAction actionWithTitle:@"Overwrite" style:UIAlertActionStyleDestructive handler:^(UIAlertAction *a) {
+                [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Overwrite", nil) style:UIAlertActionStyleDestructive handler:^(UIAlertAction *a) {
                     [self saveForcing:YES];
                 }]];
                 [self presentViewController:ac animated:YES completion:nil];
@@ -612,10 +611,10 @@ static const NSUInteger kPLMaxDataEditBytes = 64 * 1024;
                 // Written but unverified: keep the document dirty with its old
                 // identity, so a later plain save reports a conflict.
                 [self showMessage:msg ?: @"The file was written, but the result couldn't be verified."
-                            title:@"Save Not Verified"];
+                            title:NSLocalizedString(@"Save Not Verified", nil)];
                 return;
             }
-            [self showMessage:msg ?: @"The file could not be written." title:@"Not Saved"];
+            [self showMessage:msg ?: @"The file could not be written." title:NSLocalizedString(@"Not Saved", nil)];
         });
     });
 }
@@ -624,7 +623,7 @@ static const NSUInteger kPLMaxDataEditBytes = 64 * 1024;
 {
     UIAlertController *ac = [UIAlertController alertControllerWithTitle:title message:message
                                                          preferredStyle:UIAlertControllerStyleAlert];
-    [ac addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
+    [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil) style:UIAlertActionStyleDefault handler:nil]];
     [self presentViewController:ac animated:YES completion:nil];
 }
 
@@ -641,11 +640,11 @@ static const NSUInteger kPLMaxDataEditBytes = 64 * 1024;
 
 - (void)confirmRevert
 {
-    UIAlertController *ac = [UIAlertController alertControllerWithTitle:@"Discard Changes?"
-                                                                message:@"The file is reloaded as it is on disk."
+    UIAlertController *ac = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Discard Changes?", nil)
+                                                                message:NSLocalizedString(@"The file is reloaded as it is on disk.", nil)
                                                          preferredStyle:UIAlertControllerStyleAlert];
-    [ac addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];
-    [ac addAction:[UIAlertAction actionWithTitle:@"Discard" style:UIAlertActionStyleDestructive handler:^(UIAlertAction *a) {
+    [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil) style:UIAlertActionStyleCancel handler:nil]];
+    [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Discard", nil) style:UIAlertActionStyleDestructive handler:^(UIAlertAction *a) {
         // Reload into a fresh document off-main; swap it in only if it worked.
         PLDocument *doc = self.doc;
         PLDocument *fresh = [PLDocument new];
@@ -660,8 +659,8 @@ static const NSUInteger kPLMaxDataEditBytes = 64 * 1024;
                 [self setBusy:NO];
                 if (!ok) {
                     // Keep the edits rather than pretend they were discarded.
-                    [self showMessage:[NSString stringWithFormat:@"%@ Your changes are kept.", message ?: @""]
-                                title:@"Couldn't Revert"];
+                    [self showMessage:[NSString stringWithFormat:NSLocalizedString(@"%@ Your changes are kept.", nil), message ?: @""]
+                                title:NSLocalizedString(@"Couldn't Revert", nil)];
                     return;
                 }
                 doc.root = fresh.root;
@@ -691,15 +690,15 @@ static const NSUInteger kPLMaxDataEditBytes = 64 * 1024;
         tf.autocapitalizationType = UITextAutocapitalizationTypeNone;
         tf.autocorrectionType = UITextAutocorrectionTypeNo;
     }];
-    [ac addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];
-    [ac addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction *a) {
+    [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil) style:UIAlertActionStyleCancel handler:nil]];
+    [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil) style:UIAlertActionStyleDefault handler:^(UIAlertAction *a) {
         NSString *key = ac.textFields.firstObject.text ?: @"";
         if (!key.length) return;
         if (self.container[key] && ![key isEqualToString:initial]) {
-            UIAlertController *dup = [UIAlertController alertControllerWithTitle:@"Key Exists"
-                                                                         message:[NSString stringWithFormat:@"\"%@\" is already in this dictionary.", key]
+            UIAlertController *dup = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Key Exists", nil)
+                                                                         message:[NSString stringWithFormat:NSLocalizedString(@"\"%@\" is already in this dictionary.", nil), key]
                                                                   preferredStyle:UIAlertControllerStyleAlert];
-            [dup addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
+            [dup addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil) style:UIAlertActionStyleDefault handler:nil]];
             [self presentViewController:dup animated:YES completion:nil];
             return;
         }
@@ -842,7 +841,7 @@ static const NSUInteger kPLMaxDataEditBytes = 64 * 1024;
     if (!self.writable || !self.rows.count) return nil;
     id row = self.rows[indexPath.row];
     UIContextualAction *del = [UIContextualAction contextualActionWithStyle:UIContextualActionStyleDestructive
-                                                                      title:@"Delete"
+                                                                      title:NSLocalizedString(@"Delete", nil)
                                                                     handler:^(UIContextualAction *a, UIView *v, void (^done)(BOOL)) {
         [self deleteRow:row];
         done(YES);
@@ -862,13 +861,13 @@ static const NSUInteger kPLMaxDataEditBytes = 64 * 1024;
                                                     actionProvider:^UIMenu *(NSArray<UIMenuElement *> *s) {
         NSMutableArray<UIMenuElement *> *items = [NSMutableArray array];
         id value = [self valueForRow:row];
-        [items addObject:[UIAction actionWithTitle:@"Copy Value" image:[UIImage systemImageNamed:@"doc.on.doc"]
+        [items addObject:[UIAction actionWithTitle:NSLocalizedString(@"Copy Value", nil) image:[UIImage systemImageNamed:@"doc.on.doc"]
                                         identifier:nil handler:^(UIAction *a) {
             id v = [self valueForRow:row];
             UIPasteboard.generalPasteboard.string = [v isKindOfClass:NSString.class] ? v : pl_summary(v);
         }]];
         if (self.isDict) {
-            [items addObject:[UIAction actionWithTitle:@"Copy Key" image:[UIImage systemImageNamed:@"key"]
+            [items addObject:[UIAction actionWithTitle:NSLocalizedString(@"Copy Key", nil) image:[UIImage systemImageNamed:@"key"]
                                             identifier:nil handler:^(UIAction *a) {
                 UIPasteboard.generalPasteboard.string = [row description];
             }]];
@@ -876,11 +875,11 @@ static const NSUInteger kPLMaxDataEditBytes = 64 * 1024;
         if (self.writable) {
             NSMutableArray<UIMenuElement *> *edit = [NSMutableArray array];
             if (self.isDict) {
-                [edit addObject:[UIAction actionWithTitle:@"Rename Key" image:[UIImage systemImageNamed:@"pencil"]
+                [edit addObject:[UIAction actionWithTitle:NSLocalizedString(@"Rename Key", nil) image:[UIImage systemImageNamed:@"pencil"]
                                                identifier:nil handler:^(UIAction *a) { [self renameRow:row]; }]];
             }
             [edit addObject:[self typeMenuForRow:row]];
-            UIAction *del = [UIAction actionWithTitle:@"Delete" image:[UIImage systemImageNamed:@"trash"]
+            UIAction *del = [UIAction actionWithTitle:NSLocalizedString(@"Delete", nil) image:[UIImage systemImageNamed:@"trash"]
                                            identifier:nil handler:^(UIAction *a) { [self deleteRow:row]; }];
             del.attributes = UIMenuElementAttributesDestructive;
             [edit addObject:del];

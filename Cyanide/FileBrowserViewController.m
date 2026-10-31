@@ -257,7 +257,7 @@ FBSaveResult filebrowser_save(NSString *path, NSData *data, FBFileIdentity expec
     struct stat pre;
     if (!fsPath || stat(fsPath, &pre) != 0) {
         int serr = fsPath ? errno : EINVAL;
-        if (message) *message = [NSString stringWithFormat:@"The file can't be opened for writing: %s.", strerror(serr)];
+        if (message) *message = [NSString stringWithFormat:NSLocalizedString(@"The file can't be opened for writing: %s.", nil), strerror(serr)];
         return FBSaveFailed;
     }
     if (!S_ISREG(pre.st_mode)) {
@@ -266,7 +266,7 @@ FBSaveResult filebrowser_save(NSString *path, NSData *data, FBFileIdentity expec
     }
     int fd = open(fsPath, O_RDWR | O_NONBLOCK | O_CLOEXEC);
     if (fd < 0) {
-        if (message) *message = [NSString stringWithFormat:@"The file can't be opened for writing: %s.", strerror(errno)];
+        if (message) *message = [NSString stringWithFormat:NSLocalizedString(@"The file can't be opened for writing: %s.", nil), strerror(errno)];
         return FBSaveFailed;
     }
     struct stat st;
@@ -284,13 +284,13 @@ FBSaveResult filebrowser_save(NSString *path, NSData *data, FBFileIdentity expec
     if (oflags < 0 || fcntl(fd, F_SETFL, oflags & ~O_NONBLOCK) < 0) {
         int ferr = errno;
         close(fd);
-        if (message) *message = [NSString stringWithFormat:@"The file can't be opened for writing: %s.", strerror(ferr)];
+        if (message) *message = [NSString stringWithFormat:NSLocalizedString(@"The file can't be opened for writing: %s.", nil), strerror(ferr)];
         return FBSaveFailed;
     }
     if (flock(fd, LOCK_EX | LOCK_NB) != 0) {
         int lockError = errno;
         close(fd);
-        if (message) *message = [NSString stringWithFormat:@"The file is busy or could not be locked: %s. Nothing was changed.",
+        if (message) *message = [NSString stringWithFormat:NSLocalizedString(@"The file is busy or could not be locked: %s. Nothing was changed.", nil),
                                   strerror(lockError)];
         return FBSaveFailed;
     }
@@ -299,7 +299,7 @@ FBSaveResult filebrowser_save(NSString *path, NSData *data, FBFileIdentity expec
     int rerr = 0;
     NSData *currentData = filebrowser_read_fd(fd, kFBMaxBackupBytes, &tooBig, &rerr);
     if (!currentData) {
-        msg = [NSString stringWithFormat:@"The current file couldn't be read for a backup (%s). Nothing was written.", strerror(rerr)];
+        msg = [NSString stringWithFormat:NSLocalizedString(@"The current file couldn't be read for a backup (%s). Nothing was written.", nil), strerror(rerr)];
     } else if (tooBig) {
         msg = @"The current file is too large to back up first. Nothing was written.";
     } else if (!force && (!fb_same_object(expected, current) || !loaded || ![currentData isEqualToData:loaded])) {
@@ -328,7 +328,7 @@ FBSaveResult filebrowser_save(NSString *path, NSData *data, FBFileIdentity expec
         // fb_leftover_backups / the notice on the next File Browser open).
         NSString *backupPath = [backup stringByAppendingString:@".path"];
         if (!dirReady) {
-            msg = [NSString stringWithFormat:@"A durable recovery folder couldn't be prepared%@. Nothing was changed.",
+            msg = [NSString stringWithFormat:NSLocalizedString(@"A durable recovery folder couldn't be prepared%@. Nothing was changed.", nil),
                    dirError.localizedDescription.length ? [NSString stringWithFormat:@" (%@)", dirError.localizedDescription] : @""];
         } else if (!fb_write_durable_file(backup, currentData, 0600) ||
                    !fb_write_durable_file(backupPath, [path dataUsingEncoding:NSUTF8StringEncoding], 0600)) {
@@ -379,8 +379,7 @@ FBSaveResult filebrowser_save(NSString *path, NSData *data, FBFileIdentity expec
                     // only copy of the previous contents if the file is now
                     // new, partial or unknown.
                     result = FBSaveUncertain;
-                    msg = [NSString stringWithFormat:@"Your edit was written, but the result couldn't be verified (%s). "
-                                                     @"Reload the file to check it. A backup of its previous contents was kept at:\n%@",
+                    msg = [NSString stringWithFormat:NSLocalizedString(@"Your edit was written, but the result couldn't be verified (%s). Reload the file to check it. A backup of its previous contents was kept at:\n%@", nil),
                                                      postError ? strerror(postError) : "the file could not be re-checked", backup];
                 } else {
                     // Someone else wrote to (or replaced) the file during our
@@ -401,10 +400,9 @@ FBSaveResult filebrowser_save(NSString *path, NSData *data, FBFileIdentity expec
                 [NSFileManager.defaultManager removeItemAtPath:backup error:nil];
                 [NSFileManager.defaultManager removeItemAtPath:backupPath error:nil];
                 if (newIdentity) *newIdentity = filebrowser_identity_fd(fd);
-                msg = [NSString stringWithFormat:@"Writing failed (%s). The file's previous contents were written back.", strerror(werr)];
+                msg = [NSString stringWithFormat:NSLocalizedString(@"Writing failed (%s). The file's previous contents were written back.", nil), strerror(werr)];
             } else {
-                msg = [NSString stringWithFormat:@"Writing failed (%s), and restoring the previous contents failed too. "
-                                                 @"The file may be damaged. A backup of its previous contents is at:\n%@",
+                msg = [NSString stringWithFormat:NSLocalizedString(@"Writing failed (%s), and restoring the previous contents failed too. The file may be damaged. A backup of its previous contents is at:\n%@", nil),
                                                  strerror(werr), backup];
             }
             }
@@ -544,7 +542,7 @@ static void fb_alert(UIViewController *vc, NSString *title, NSString *message)
     UIAlertController *ac = [UIAlertController alertControllerWithTitle:title
                                                                 message:message
                                                          preferredStyle:UIAlertControllerStyleAlert];
-    [ac addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
+    [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil) style:UIAlertActionStyleDefault handler:nil]];
     [vc presentViewController:ac animated:YES completion:nil];
 }
 
@@ -572,7 +570,7 @@ static const unsigned long long kFBMaxImportItemBytes = 128ULL * 1024ULL * 1024U
 static BOOL fb_import_add_item(NSUInteger *items, NSString **failure)
 {
     if (*items >= kFBMaxImportItems) {
-        if (failure) *failure = [NSString stringWithFormat:@"Import exceeds the %lu-item limit.",
+        if (failure) *failure = [NSString stringWithFormat:NSLocalizedString(@"Import exceeds the %lu-item limit.", nil),
                                   (unsigned long)kFBMaxImportItems];
         return NO;
     }
@@ -588,27 +586,27 @@ static BOOL fb_import_copy_regular(NSString *source, NSString *target, const str
     // swapped in since then fails here instead of importing its target.
     int in = open(source.fileSystemRepresentation, O_RDONLY | O_NONBLOCK | O_NOFOLLOW | O_CLOEXEC);
     if (in < 0) {
-        if (failure) *failure = [NSString stringWithFormat:@"Couldn't open %@: %s", source.lastPathComponent, strerror(errno)];
+        if (failure) *failure = [NSString stringWithFormat:NSLocalizedString(@"Couldn't open %@: %s", nil), source.lastPathComponent, strerror(errno)];
         return NO;
     }
     struct stat opened;
     if (fstat(in, &opened) != 0 || !S_ISREG(opened.st_mode)) {
         close(in);
-        if (failure) *failure = [NSString stringWithFormat:@"%@ is no longer a regular file.", source.lastPathComponent];
+        if (failure) *failure = [NSString stringWithFormat:NSLocalizedString(@"%@ is no longer a regular file.", nil), source.lastPathComponent];
         return NO;
     }
     // Must still be the object that was inspected, not a different regular
     // file renamed into place meanwhile.
     if (opened.st_dev != sourceStat->st_dev || opened.st_ino != sourceStat->st_ino) {
         close(in);
-        if (failure) *failure = [NSString stringWithFormat:@"%@ was replaced while it was being imported.", source.lastPathComponent];
+        if (failure) *failure = [NSString stringWithFormat:NSLocalizedString(@"%@ was replaced while it was being imported.", nil), source.lastPathComponent];
         return NO;
     }
     int out = open(target.fileSystemRepresentation, O_WRONLY | O_CREAT | O_EXCL | O_CLOEXEC,
                    sourceStat->st_mode & 0777);
     if (out < 0) {
         close(in);
-        if (failure) *failure = [NSString stringWithFormat:@"Couldn't create %@: %s", target.lastPathComponent, strerror(errno)];
+        if (failure) *failure = [NSString stringWithFormat:NSLocalizedString(@"Couldn't create %@: %s", nil), target.lastPathComponent, strerror(errno)];
         return NO;
     }
     BOOL ok = YES;
@@ -633,7 +631,7 @@ static BOOL fb_import_copy_regular(NSString *source, NSString *target, const str
         ssize_t n = read(in, buf, want);
         if (n < 0 && errno == EINTR) continue;
         if (n < 0) {
-            if (failure) *failure = [NSString stringWithFormat:@"Couldn't read %@: %s", source.lastPathComponent, strerror(errno)];
+            if (failure) *failure = [NSString stringWithFormat:NSLocalizedString(@"Couldn't read %@: %s", nil), source.lastPathComponent, strerror(errno)];
             ok = NO;
             break;
         }
@@ -643,7 +641,7 @@ static BOOL fb_import_copy_regular(NSString *source, NSString *target, const str
             ssize_t w = write(out, buf + done, (size_t)n - done);
             if (w < 0 && errno == EINTR) continue;
             if (w <= 0) {
-                if (failure) *failure = [NSString stringWithFormat:@"Couldn't write %@: %s", target.lastPathComponent, strerror(errno)];
+                if (failure) *failure = [NSString stringWithFormat:NSLocalizedString(@"Couldn't write %@: %s", nil), target.lastPathComponent, strerror(errno)];
                 ok = NO;
                 break;
             }
@@ -663,7 +661,7 @@ static BOOL fb_import_copy_path(NSString *source, NSString *target, NSUInteger *
 {
     struct stat st;
     if (lstat(source.fileSystemRepresentation, &st) != 0) {
-        if (failure) *failure = [NSString stringWithFormat:@"Couldn't inspect %@: %s", source.lastPathComponent, strerror(errno)];
+        if (failure) *failure = [NSString stringWithFormat:NSLocalizedString(@"Couldn't inspect %@: %s", nil), source.lastPathComponent, strerror(errno)];
         return NO;
     }
     if (!fb_import_add_item(items, failure)) return NO;
@@ -673,17 +671,17 @@ static BOOL fb_import_copy_path(NSString *source, NSString *target, NSUInteger *
         ssize_t n = readlink(source.fileSystemRepresentation, link, sizeof(link) - 1);
         if (n >= 0 && n < (ssize_t)sizeof(link) - 1) link[n] = 0;   // readlink doesn't terminate
         if (n < 0 || n >= (ssize_t)sizeof(link) - 1 || symlink(link, target.fileSystemRepresentation) != 0) {
-            if (failure) *failure = [NSString stringWithFormat:@"Couldn't copy link %@.", source.lastPathComponent];
+            if (failure) *failure = [NSString stringWithFormat:NSLocalizedString(@"Couldn't copy link %@.", nil), source.lastPathComponent];
             return NO;
         }
         return YES;
     }
     if (!S_ISDIR(st.st_mode)) {
-        if (failure) *failure = [NSString stringWithFormat:@"%@ is a special file and cannot be imported.", source.lastPathComponent];
+        if (failure) *failure = [NSString stringWithFormat:NSLocalizedString(@"%@ is a special file and cannot be imported.", nil), source.lastPathComponent];
         return NO;
     }
     if (mkdir(target.fileSystemRepresentation, st.st_mode & 0777) != 0) {
-        if (failure) *failure = [NSString stringWithFormat:@"Couldn't create %@: %s", target.lastPathComponent, strerror(errno)];
+        if (failure) *failure = [NSString stringWithFormat:NSLocalizedString(@"Couldn't create %@: %s", nil), target.lastPathComponent, strerror(errno)];
         return NO;
     }
     NSDirectoryEnumerator *enumerator = [NSFileManager.defaultManager enumeratorAtPath:source];
@@ -696,13 +694,13 @@ static BOOL fb_import_copy_path(NSString *source, NSString *target, NSUInteger *
         NSString *destination = [target stringByAppendingPathComponent:relative];
         struct stat childStat;
         if (lstat(child.fileSystemRepresentation, &childStat) != 0) {
-            if (failure) *failure = [NSString stringWithFormat:@"Couldn't inspect %@: %s", relative, strerror(errno)];
+            if (failure) *failure = [NSString stringWithFormat:NSLocalizedString(@"Couldn't inspect %@: %s", nil), relative, strerror(errno)];
             return NO;
         }
         if (!fb_import_add_item(items, failure)) return NO;
         if (S_ISDIR(childStat.st_mode)) {
             if (mkdir(destination.fileSystemRepresentation, childStat.st_mode & 0777) != 0) {
-                if (failure) *failure = [NSString stringWithFormat:@"Couldn't create %@: %s", relative, strerror(errno)];
+                if (failure) *failure = [NSString stringWithFormat:NSLocalizedString(@"Couldn't create %@: %s", nil), relative, strerror(errno)];
                 return NO;
             }
         } else if (S_ISREG(childStat.st_mode)) {
@@ -713,11 +711,11 @@ static BOOL fb_import_copy_path(NSString *source, NSString *target, NSUInteger *
             ssize_t n = readlink(child.fileSystemRepresentation, link, sizeof(link) - 1);
             if (n >= 0 && n < (ssize_t)sizeof(link) - 1) link[n] = 0;   // readlink doesn't terminate
             if (n < 0 || n >= (ssize_t)sizeof(link) - 1 || symlink(link, destination.fileSystemRepresentation) != 0) {
-                if (failure) *failure = [NSString stringWithFormat:@"Couldn't copy link %@.", relative];
+                if (failure) *failure = [NSString stringWithFormat:NSLocalizedString(@"Couldn't copy link %@.", nil), relative];
                 return NO;
             }
         } else {
-            if (failure) *failure = [NSString stringWithFormat:@"%@ contains a special file and cannot be imported.", relative];
+            if (failure) *failure = [NSString stringWithFormat:NSLocalizedString(@"%@ contains a special file and cannot be imported.", nil), relative];
             return NO;
         }
     }
@@ -999,7 +997,7 @@ static const NSUInteger kFBMaxHexBytes = 64 * 1024;
         ]];
     }
 
-    self.textView.text = @"Loading…";
+    self.textView.text = NSLocalizedString(@"Loading…", nil);
     NSString *path = self.entry.path;
     BOOL viaRoot = self.entry.viaRoot;
     dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
@@ -1148,7 +1146,7 @@ static const NSUInteger kFBMaxHexBytes = 64 * 1024;
             out = [NSPropertyListSerialization dataWithPropertyList:plist format:fmt options:0 error:&err];
         }
         if (!out) {
-            fb_alert(self, @"Not Saved", [NSString stringWithFormat:@"The plist is not valid: %@",
+            fb_alert(self, @"Not Saved", [NSString stringWithFormat:NSLocalizedString(@"The plist is not valid: %@", nil),
                                           err.localizedDescription ?: @"parse error"]);
             return;
         }
@@ -1172,11 +1170,11 @@ static const NSUInteger kFBMaxHexBytes = 64 * 1024;
             self.textView.editable = self.editingText;
             [self updateBarButtons];
             if (r == FBSaveConflict) {
-                UIAlertController *ac = [UIAlertController alertControllerWithTitle:@"File Changed"
-                                                                            message:@"The file was changed or replaced since you opened it. Overwrite it with your version?"
+                UIAlertController *ac = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"File Changed", nil)
+                                                                            message:NSLocalizedString(@"The file was changed or replaced since you opened it. Overwrite it with your version?", nil)
                                                                      preferredStyle:UIAlertControllerStyleAlert];
-                [ac addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];
-                [ac addAction:[UIAlertAction actionWithTitle:@"Overwrite" style:UIAlertActionStyleDestructive handler:^(UIAlertAction *a) {
+                [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil) style:UIAlertActionStyleCancel handler:nil]];
+                [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Overwrite", nil) style:UIAlertActionStyleDestructive handler:^(UIAlertAction *a) {
                     [self saveEditOverwriting:YES];
                 }]];
                 [self presentViewController:ac animated:YES completion:nil];
@@ -2059,8 +2057,8 @@ static NSString *fb_related_title(FBAppContainer *c)
             if (!me) return;
             if (related) { [me openContainer:related]; return; }
             UIAlertController *ac = [UIAlertController alertControllerWithTitle:c.displayName
-                message:@"No matching container was found for this app." preferredStyle:UIAlertControllerStyleAlert];
-            [ac addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
+                message:NSLocalizedString(@"No matching container was found for this app.", nil) preferredStyle:UIAlertControllerStyleAlert];
+            [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil) style:UIAlertActionStyleDefault handler:nil]];
             [me presentViewController:ac animated:YES completion:nil];
         });
     });
@@ -2085,22 +2083,22 @@ static NSString *fb_related_title(FBAppContainer *c)
     for (NSUInteger i = 0; i < left.count && i < 3; i++) [list appendFormat:@"\n• %@", left[i]];
     if (left.count > 3) [list appendFormat:@"\n…and %lu more", (unsigned long)(left.count - 3)];
     UIAlertController *ac = [UIAlertController
-        alertControllerWithTitle:@"Unfinished Saves"
-                         message:[NSString stringWithFormat:@"A save didn't finish (for example because the app or the device stopped mid-write), so these files may be incomplete:%@\n\nTheir previous contents were backed up.", list]
+        alertControllerWithTitle:NSLocalizedString(@"Unfinished Saves", nil)
+                         message:[NSString stringWithFormat:NSLocalizedString(@"A save didn't finish (for example because the app or the device stopped mid-write), so these files may be incomplete:%@\n\nTheir previous contents were backed up.", nil), list]
                   preferredStyle:UIAlertControllerStyleAlert];
     __weak typeof(self) weakSelf = self;
-    [ac addAction:[UIAlertAction actionWithTitle:@"Show Backups" style:UIAlertActionStyleDefault
+    [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Show Backups", nil) style:UIAlertActionStyleDefault
                                          handler:^(UIAlertAction *a) {
         [weakSelf.navigationController pushViewController:
             [[FileBrowserViewController alloc] initWithPath:fb_backup_dir()] animated:YES];
     }]];
-    [ac addAction:[UIAlertAction actionWithTitle:@"Delete Backups" style:UIAlertActionStyleDestructive
+    [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Delete Backups", nil) style:UIAlertActionStyleDestructive
                                          handler:^(UIAlertAction *a) {
         // Both locations: the notice also lists backups in the old temp folder.
         [NSFileManager.defaultManager removeItemAtPath:fb_backup_dir() error:nil];
         [NSFileManager.defaultManager removeItemAtPath:fb_legacy_backup_dir() error:nil];
     }]];
-    [ac addAction:[UIAlertAction actionWithTitle:@"Later" style:UIAlertActionStyleCancel handler:nil]];
+    [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Later", nil) style:UIAlertActionStyleCancel handler:nil]];
     [self presentViewController:ac animated:YES completion:nil];
 }
 
@@ -2145,7 +2143,7 @@ static NSString *fb_related_title(FBAppContainer *c)
     };
     NSMutableArray<UIMenuElement *> *appItems = [NSMutableArray array];
     if (self.container && ![fb_canonical_path(self.path) isEqualToString:self.container.path])
-        [appItems addObject:[UIAction actionWithTitle:@"Go to Container Top"
+        [appItems addObject:[UIAction actionWithTitle:NSLocalizedString(@"Go to Container Top", nil)
                                                 image:[UIImage systemImageNamed:@"arrow.up.to.line"] identifier:nil
                                               handler:^(UIAction *x) { [weakOptions openContainer:weakOptions.container]; }]];
     if (self.relatedContainer && fb_related_title(self.container))
@@ -2155,7 +2153,7 @@ static NSString *fb_related_title(FBAppContainer *c)
     UIMenu *optionsMenu = [UIMenu menuWithChildren:@[
         [UIMenu menuWithTitle:self.container.displayName ?: @"" image:nil identifier:nil
                       options:UIMenuOptionsDisplayInline children:appItems],
-        [UIAction actionWithTitle:@"Go to Folder…" image:[UIImage systemImageNamed:@"arrow.right.circle"]
+        [UIAction actionWithTitle:NSLocalizedString(@"Go to Folder…", nil) image:[UIImage systemImageNamed:@"arrow.right.circle"]
                        identifier:nil handler:^(UIAction *x) { [weakOptions goToPath]; }],
         [UIMenu menuWithTitle:@"Sort By" image:[UIImage systemImageNamed:@"arrow.up.arrow.down"] identifier:nil options:0 children:({
             NSMutableArray *sorts = [NSMutableArray array];
@@ -2193,11 +2191,11 @@ static NSString *fb_related_title(FBAppContainer *c)
     if (filebrowser_write_enabled() && !self.loadedViaRoot) {   // root access is read-only
         __weak typeof(self) weakSelf = self;
         UIMenu *menu = [UIMenu menuWithChildren:@[
-            [UIAction actionWithTitle:@"New Folder" image:[UIImage systemImageNamed:@"folder.badge.plus"]
+            [UIAction actionWithTitle:NSLocalizedString(@"New Folder", nil) image:[UIImage systemImageNamed:@"folder.badge.plus"]
                            identifier:nil handler:^(UIAction *a) { [weakSelf promptNewItem:YES]; }],
-            [UIAction actionWithTitle:@"New File" image:[UIImage systemImageNamed:@"doc.badge.plus"]
+            [UIAction actionWithTitle:NSLocalizedString(@"New File", nil) image:[UIImage systemImageNamed:@"doc.badge.plus"]
                            identifier:nil handler:^(UIAction *a) { [weakSelf promptNewItem:NO]; }],
-            [UIAction actionWithTitle:@"Import from Files…" image:[UIImage systemImageNamed:@"square.and.arrow.down"]
+            [UIAction actionWithTitle:NSLocalizedString(@"Import from Files…", nil) image:[UIImage systemImageNamed:@"square.and.arrow.down"]
                            identifier:nil handler:^(UIAction *a) { [weakSelf importFromFiles]; }],
         ]];
         if (g_fb_clip_path.length) {
@@ -2222,13 +2220,11 @@ static NSString *fb_related_title(FBAppContainer *c)
         return;
     }
     UIAlertController *ac = [UIAlertController
-        alertControllerWithTitle:@"Enable Changes?"
-                         message:@"Delete, rename, create, import and edit will write directly to the file system as user mobile. "
-                                 @"Removing or editing the wrong file can break apps or settings, and there is no undo.\n\n"
-                                 @"Stays on until you lock it again or Cyanide restarts."
+        alertControllerWithTitle:NSLocalizedString(@"Enable Changes?", nil)
+                         message:NSLocalizedString(@"Delete, rename, create, import and edit will write directly to the file system as user mobile. Removing or editing the wrong file can break apps or settings, and there is no undo.\n\nStays on until you lock it again or Cyanide restarts.", nil)
                   preferredStyle:UIAlertControllerStyleAlert];
-    [ac addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];
-    [ac addAction:[UIAlertAction actionWithTitle:@"Enable" style:UIAlertActionStyleDestructive handler:^(UIAlertAction *a) {
+    [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil) style:UIAlertActionStyleCancel handler:nil]];
+    [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Enable", nil) style:UIAlertActionStyleDestructive handler:^(UIAlertAction *a) {
         atomic_store_explicit(&g_fb_write_enabled, true, memory_order_release);
         [self updateBarButtons];
     }]];
@@ -2291,8 +2287,8 @@ static NSString *fb_related_title(FBAppContainer *c)
         tf.autocapitalizationType = UITextAutocapitalizationTypeNone;
         tf.autocorrectionType = UITextAutocorrectionTypeNo;
     }];
-    [ac addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];
-    [ac addAction:[UIAlertAction actionWithTitle:@"Create" style:UIAlertActionStyleDefault handler:^(UIAlertAction *a) {
+    [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil) style:UIAlertActionStyleCancel handler:nil]];
+    [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Create", nil) style:UIAlertActionStyleDefault handler:^(UIAlertAction *a) {
         NSString *name = [ac.textFields.firstObject.text stringByTrimmingCharactersInSet:NSCharacterSet.whitespaceCharacterSet];
         if (!name.length || [name containsString:@"/"]) return;
         NSString *path = [self.path stringByAppendingPathComponent:name];
@@ -2314,7 +2310,7 @@ static NSString *fb_related_title(FBAppContainer *c)
 
 - (void)promptRename:(FBEntry *)e
 {
-    UIAlertController *ac = [UIAlertController alertControllerWithTitle:@"Rename"
+    UIAlertController *ac = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Rename", nil)
                                                                 message:e.path
                                                          preferredStyle:UIAlertControllerStyleAlert];
     [ac addTextFieldWithConfigurationHandler:^(UITextField *tf) {
@@ -2322,8 +2318,8 @@ static NSString *fb_related_title(FBAppContainer *c)
         tf.autocapitalizationType = UITextAutocapitalizationTypeNone;
         tf.autocorrectionType = UITextAutocorrectionTypeNo;
     }];
-    [ac addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];
-    [ac addAction:[UIAlertAction actionWithTitle:@"Rename" style:UIAlertActionStyleDefault handler:^(UIAlertAction *a) {
+    [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil) style:UIAlertActionStyleCancel handler:nil]];
+    [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Rename", nil) style:UIAlertActionStyleDefault handler:^(UIAlertAction *a) {
         NSString *name = [ac.textFields.firstObject.text stringByTrimmingCharactersInSet:NSCharacterSet.whitespaceCharacterSet];
         if (!name.length || [name containsString:@"/"] || [name isEqualToString:e.name]) return;
         NSString *target = [self.path stringByAppendingPathComponent:name];
@@ -2347,13 +2343,13 @@ static NSString *fb_related_title(FBAppContainer *c)
 - (void)confirmDelete:(FBEntry *)e
 {
     NSString *what = e.isDirectory && !e.isSymlink
-        ? [NSString stringWithFormat:@"The folder \"%@\" and everything in it will be deleted.", e.name]
-        : [NSString stringWithFormat:@"\"%@\" will be deleted.", e.name];
-    UIAlertController *ac = [UIAlertController alertControllerWithTitle:@"Delete?"
+        ? [NSString stringWithFormat:NSLocalizedString(@"The folder \"%@\" and everything in it will be deleted.", nil), e.name]
+        : [NSString stringWithFormat:NSLocalizedString(@"\"%@\" will be deleted.", nil), e.name];
+    UIAlertController *ac = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Delete?", nil)
                                                                 message:[what stringByAppendingString:@" This can't be undone."]
                                                          preferredStyle:UIAlertControllerStyleAlert];
-    [ac addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];
-    [ac addAction:[UIAlertAction actionWithTitle:@"Delete" style:UIAlertActionStyleDestructive handler:^(UIAlertAction *a) {
+    [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil) style:UIAlertActionStyleCancel handler:nil]];
+    [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Delete", nil) style:UIAlertActionStyleDestructive handler:^(UIAlertAction *a) {
         [self performForEntry:e operation:^BOOL(NSError **err) {
             // A symlink is removed itself, never what it points to.
             return [NSFileManager.defaultManager removeItemAtPath:e.path error:err];
@@ -2406,16 +2402,16 @@ static NSString *fb_related_title(FBAppContainer *c)
 // chmod for items mobile owns (mobile can't change anyone else's).
 - (void)promptPermissions:(FBEntry *)e
 {
-    UIAlertController *ac = [UIAlertController alertControllerWithTitle:@"Permissions"
-        message:[NSString stringWithFormat:@"%@\nCurrent: %@ (%03o). Enter the new mode in octal, e.g. 644 or 755.",
+    UIAlertController *ac = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Permissions", nil)
+        message:[NSString stringWithFormat:NSLocalizedString(@"%@\nCurrent: %@ (%03o). Enter the new mode in octal, e.g. 644 or 755.", nil),
                  e.name, fb_mode_string(e.mode, e.isSymlink), e.mode & 07777]
         preferredStyle:UIAlertControllerStyleAlert];
     [ac addTextFieldWithConfigurationHandler:^(UITextField *tf) {
         tf.text = [NSString stringWithFormat:@"%03o", e.mode & 07777];
         tf.keyboardType = UIKeyboardTypeNumberPad;
     }];
-    [ac addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];
-    [ac addAction:[UIAlertAction actionWithTitle:@"Apply" style:UIAlertActionStyleDefault handler:^(UIAlertAction *a) {
+    [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil) style:UIAlertActionStyleCancel handler:nil]];
+    [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Apply", nil) style:UIAlertActionStyleDefault handler:^(UIAlertAction *a) {
         NSString *text = ac.textFields.firstObject.text;
         unsigned long long value = 0;
         BOOL octal = text.length >= 3 && text.length <= 4 &&
@@ -2456,7 +2452,7 @@ static NSString *fb_related_title(FBAppContainer *c)
         BOOL changed = NO;
         for (NSURL *url in urls) {
             if (!filebrowser_write_enabled()) {   // locked mid-import: stop before the next item
-                [failed addObject:[NSString stringWithFormat:@"%@: changes were locked", url.lastPathComponent]];
+                [failed addObject:[NSString stringWithFormat:NSLocalizedString(@"%@: changes were locked", nil), url.lastPathComponent]];
                 continue;
             }
             NSString *target = fb_unique_path(dir, url.lastPathComponent);
@@ -2473,7 +2469,7 @@ static NSString *fb_related_title(FBAppContainer *c)
                     NSError *cleanupError = nil;
                     [NSFileManager.defaultManager removeItemAtPath:target error:&cleanupError];
                     if (lstat(target.fileSystemRepresentation, &partial) == 0)
-                        failure = [NSString stringWithFormat:@"%@ Cleanup failed: %@", failure ?: @"Import failed.", cleanupError.localizedDescription ?: @"the partial item remains"];
+                        failure = [NSString stringWithFormat:NSLocalizedString(@"%@ Cleanup failed: %@", nil), failure ?: @"Import failed.", cleanupError.localizedDescription ?: @"the partial item remains"];
                 }
                 [failed addObject:[NSString stringWithFormat:@"%@: %@", url.lastPathComponent,
                                    failure ?: @"Import failed."]];
@@ -2566,7 +2562,7 @@ static NSString *fb_related_title(FBAppContainer *c)
                 fb_annotate_containers(path, entries, YES);
                 NSString *rstatus = nil;
                 if (!rootEntries.count) rstatus = incomplete ? @"The folder could not be read completely." : @"Empty folder.";
-                else if (!entries.count) rstatus = [NSString stringWithFormat:@"%lu hidden item%@ (root). The ⋯ menu can show them.",
+                else if (!entries.count) rstatus = [NSString stringWithFormat:NSLocalizedString(@"%lu hidden item%@ (root). The ⋯ menu can show them.", nil),
                                                     (unsigned long)filteredOut, filteredOut == 1 ? @"" : @"s"];
                 publish(entries, rstatus, YES, incomplete);
                 return;
@@ -2612,11 +2608,11 @@ static NSString *fb_related_title(FBAppContainer *c)
         } else if (!names.count) {
             status = @"Empty folder.";
         } else if (!entries.count) {
-            status = [NSString stringWithFormat:@"%lu hidden or inaccessible item%@. The ⋯ menu can show them.",
+            status = [NSString stringWithFormat:NSLocalizedString(@"%lu hidden or inaccessible item%@. The ⋯ menu can show them.", nil),
                       (unsigned long)filteredOut, filteredOut == 1 ? @"" : @"s"];
         }
         if (ordinaryIncomplete) {
-            status = [NSString stringWithFormat:@"Listing incomplete: the first %lu entries are shown.",
+            status = [NSString stringWithFormat:NSLocalizedString(@"Listing incomplete: the first %lu entries are shown.", nil),
                       (unsigned long)kFBMaxOrdinaryEntries];
         }
         publish(entries, status, NO, ordinaryIncomplete);
@@ -2690,7 +2686,7 @@ static NSString *fb_related_title(FBAppContainer *c)
         UILabel *note = nil;
         if (self.searchTruncated && self.shown.count) {
             note = [UILabel new];
-            note.text = [NSString stringWithFormat:@"Showing the first %lu matches (search stops at %lu results, %lu entries or %.0f s). Narrow the search or start deeper.",
+            note.text = [NSString stringWithFormat:NSLocalizedString(@"Showing the first %lu matches (search stops at %lu results, %lu entries or %.0f s). Narrow the search or start deeper.", nil),
                          (unsigned long)self.shown.count, (unsigned long)kFBSearchMaxResults,
                          (unsigned long)kFBSearchMaxVisited, kFBSearchMaxSeconds];
             note.font = [UIFont systemFontOfSize:13];
@@ -2718,7 +2714,7 @@ static NSString *fb_related_title(FBAppContainer *c)
     // A cut-short listing is a prefix of the folder, not all of it.
     if (self.listingIncomplete && self.entries.count) {
         UILabel *note = [UILabel new];
-        note.text = [NSString stringWithFormat:@"Listing incomplete: only %lu entries are shown; reload or narrow the folder.",
+        note.text = [NSString stringWithFormat:NSLocalizedString(@"Listing incomplete: only %lu entries are shown; reload or narrow the folder.", nil),
                      (unsigned long)self.entries.count];
         note.font = [UIFont systemFontOfSize:13];
         note.textColor = UIColor.systemOrangeColor;
@@ -2780,7 +2776,7 @@ static NSString *fb_related_title(FBAppContainer *c)
 
 - (void)goToPath
 {
-    UIAlertController *ac = [UIAlertController alertControllerWithTitle:@"Go to Folder"
+    UIAlertController *ac = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Go to Folder", nil)
                                                                 message:nil
                                                          preferredStyle:UIAlertControllerStyleAlert];
     [ac addTextFieldWithConfigurationHandler:^(UITextField *tf) {
@@ -2789,8 +2785,8 @@ static NSString *fb_related_title(FBAppContainer *c)
         tf.autocorrectionType = UITextAutocorrectionTypeNo;
         tf.clearButtonMode = UITextFieldViewModeWhileEditing;
     }];
-    [ac addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];
-    [ac addAction:[UIAlertAction actionWithTitle:@"Go" style:UIAlertActionStyleDefault handler:^(UIAlertAction *a) {
+    [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil) style:UIAlertActionStyleCancel handler:nil]];
+    [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Go", nil) style:UIAlertActionStyleDefault handler:^(UIAlertAction *a) {
         NSString *target = [ac.textFields.firstObject.text stringByStandardizingPath];
         if (!target.length) return;
         FileBrowserViewController *vc = [[FileBrowserViewController alloc] initWithPath:target];
@@ -2847,7 +2843,7 @@ static NSString *fb_related_title(FBAppContainer *c)
     if (e.searchLocation) {
         cell.detailTextLabel.text = [@"in " stringByAppendingString:e.searchLocation];
     } else if (e.statFailed) {
-        cell.detailTextLabel.text = @"(no information)";
+        cell.detailTextLabel.text = NSLocalizedString(@"(no information)", nil);
     } else {
         NSString *size = e.isDirectory ? @"" : [fb_size_string(e.size) stringByAppendingString:@"  "];
         cell.detailTextLabel.text = [NSString stringWithFormat:@"%@%@  %@ %@",
@@ -2933,13 +2929,13 @@ static NSString *fb_related_title(FBAppContainer *c)
     FBEntry *e = self.shown[indexPath.row];
     if (e.viaRoot) return nil;   // root-only item: view-only
     UIContextualAction *del = [UIContextualAction contextualActionWithStyle:UIContextualActionStyleDestructive
-                                                                      title:@"Delete"
+                                                                      title:NSLocalizedString(@"Delete", nil)
                                                                     handler:^(UIContextualAction *a, UIView *v, void (^done)(BOOL)) {
         [self confirmDelete:e];
         done(YES);
     }];
     UIContextualAction *ren = [UIContextualAction contextualActionWithStyle:UIContextualActionStyleNormal
-                                                                      title:@"Rename"
+                                                                      title:NSLocalizedString(@"Rename", nil)
                                                                     handler:^(UIContextualAction *a, UIView *v, void (^done)(BOOL)) {
         [self promptRename:e];
         done(YES);
@@ -2960,11 +2956,11 @@ static NSString *fb_related_title(FBAppContainer *c)
     return [UIContextMenuConfiguration configurationWithIdentifier:nil
                                                    previewProvider:nil
                                                     actionProvider:^UIMenu *(NSArray<UIMenuElement *> *suggested) {
-        UIAction *copy = [UIAction actionWithTitle:@"Copy Path"
+        UIAction *copy = [UIAction actionWithTitle:NSLocalizedString(@"Copy Path", nil)
                                              image:[UIImage systemImageNamed:@"doc.on.doc"]
                                         identifier:nil
                                            handler:^(UIAction *a) { UIPasteboard.generalPasteboard.string = e.path; }];
-        UIAction *info = [UIAction actionWithTitle:@"Open as Text / Hex / Info"
+        UIAction *info = [UIAction actionWithTitle:NSLocalizedString(@"Open as Text / Hex / Info", nil)
                                              image:[UIImage systemImageNamed:@"info.circle"]
                                         identifier:nil
                                            handler:^(UIAction *a) {
@@ -2975,7 +2971,7 @@ static NSString *fb_related_title(FBAppContainer *c)
         if (!e.isDirectory) {
             [items addObject:info];
             // AirDrop, Mail, Save to Files … a copy, never the original.
-            [items addObject:[UIAction actionWithTitle:@"Share…" image:[UIImage systemImageNamed:@"square.and.arrow.up"]
+            [items addObject:[UIAction actionWithTitle:NSLocalizedString(@"Share…", nil) image:[UIImage systemImageNamed:@"square.and.arrow.up"]
                                             identifier:nil handler:^(UIAction *a) {
                 UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
                 filebrowser_share_file(self, e.path, e.viaRoot, nil, cell, nil);
@@ -2988,14 +2984,14 @@ static NSString *fb_related_title(FBAppContainer *c)
                 [items insertObject:[UIAction actionWithTitle:relatedTitle image:[UIImage systemImageNamed:@"arrow.triangle.swap"]
                                                    identifier:nil handler:^(UIAction *a) { [self openRelatedOf:c]; }]
                             atIndex:0];
-            [items addObject:[UIAction actionWithTitle:@"Copy Identifier" image:[UIImage systemImageNamed:@"number"]
+            [items addObject:[UIAction actionWithTitle:NSLocalizedString(@"Copy Identifier", nil) image:[UIImage systemImageNamed:@"number"]
                                             identifier:nil handler:^(UIAction *a) {
                 UIPasteboard.generalPasteboard.string = c.identifier;
             }]];
         }
         if (e.searchLocation) {
             NSString *folder = e.path.stringByDeletingLastPathComponent;
-            [items insertObject:[UIAction actionWithTitle:@"Show in Folder" image:[UIImage systemImageNamed:@"folder"]
+            [items insertObject:[UIAction actionWithTitle:NSLocalizedString(@"Show in Folder", nil) image:[UIImage systemImageNamed:@"folder"]
                                                identifier:nil handler:^(UIAction *a) {
                 [self.navigationController pushViewController:[[FileBrowserViewController alloc] initWithPath:folder]
                                                      animated:YES];
@@ -3005,24 +3001,24 @@ static NSString *fb_related_title(FBAppContainer *c)
         // can't be copied as mobile.
         NSMutableArray<UIMenuElement *> *clip = [NSMutableArray array];
         if (!e.viaRoot && e.readable && !self.loadedViaRoot)
-            [clip addObject:[UIAction actionWithTitle:@"Copy" image:[UIImage systemImageNamed:@"doc.on.doc.fill"]
+            [clip addObject:[UIAction actionWithTitle:NSLocalizedString(@"Copy", nil) image:[UIImage systemImageNamed:@"doc.on.doc.fill"]
                                            identifier:nil handler:^(UIAction *a) { [self setClipboard:e cut:NO]; }]];
         if (filebrowser_write_enabled() && !self.loadedViaRoot && !e.viaRoot) {
-            [clip addObject:[UIAction actionWithTitle:@"Cut" image:[UIImage systemImageNamed:@"scissors"]
+            [clip addObject:[UIAction actionWithTitle:NSLocalizedString(@"Cut", nil) image:[UIImage systemImageNamed:@"scissors"]
                                            identifier:nil handler:^(UIAction *a) { [self setClipboard:e cut:YES]; }]];
         }
         if (clip.count)
             [items addObject:[UIMenu menuWithTitle:@"" image:nil identifier:nil options:UIMenuOptionsDisplayInline children:clip]];
         if (filebrowser_write_enabled() && !self.loadedViaRoot && !e.viaRoot) {
-            UIAction *ren = [UIAction actionWithTitle:@"Rename" image:[UIImage systemImageNamed:@"pencil"]
+            UIAction *ren = [UIAction actionWithTitle:NSLocalizedString(@"Rename", nil) image:[UIImage systemImageNamed:@"pencil"]
                                            identifier:nil handler:^(UIAction *a) { [self promptRename:e]; }];
-            UIAction *dup = [UIAction actionWithTitle:@"Duplicate" image:[UIImage systemImageNamed:@"plus.square.on.square"]
+            UIAction *dup = [UIAction actionWithTitle:NSLocalizedString(@"Duplicate", nil) image:[UIImage systemImageNamed:@"plus.square.on.square"]
                                            identifier:nil handler:^(UIAction *a) { [self duplicate:e]; }];
             NSMutableArray *edit = [NSMutableArray arrayWithObjects:ren, dup, nil];
             if (!e.statFailed && e.uid == getuid() && !e.isSymlink)
-                [edit addObject:[UIAction actionWithTitle:@"Permissions…" image:[UIImage systemImageNamed:@"lock.shield"]
+                [edit addObject:[UIAction actionWithTitle:NSLocalizedString(@"Permissions…", nil) image:[UIImage systemImageNamed:@"lock.shield"]
                                                identifier:nil handler:^(UIAction *a) { [self promptPermissions:e]; }]];
-            UIAction *del = [UIAction actionWithTitle:@"Delete" image:[UIImage systemImageNamed:@"trash"]
+            UIAction *del = [UIAction actionWithTitle:NSLocalizedString(@"Delete", nil) image:[UIImage systemImageNamed:@"trash"]
                                            identifier:nil handler:^(UIAction *a) { [self confirmDelete:e]; }];
             del.attributes = UIMenuElementAttributesDestructive;
             [edit addObject:del];

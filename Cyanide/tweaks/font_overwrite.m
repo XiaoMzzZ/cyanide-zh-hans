@@ -165,13 +165,13 @@ static bool fontow_write_file_cache(NSString *path, NSData *data, NSString **why
     struct stat st;
     if (fd < 0 || fstat(fd, &st) != 0 || st.st_size < 1) {
         if (fd >= 0) close(fd);
-        *why = [NSString stringWithFormat:@"%@ can't be read.", path.lastPathComponent];
+        *why = [NSString stringWithFormat:NSLocalizedString(@"%@ can't be read.", nil), path.lastPathComponent];
         return false;
     }
     size_t size = (size_t)st.st_size;
     if (data.length > size) {
         close(fd);
-        *why = [NSString stringWithFormat:@"The font is %@, larger than the system's %@: it has to fit.",
+        *why = [NSString stringWithFormat:NSLocalizedString(@"The font is %@, larger than the system's %@: it has to fit.", nil),
                 [NSByteCountFormatter stringFromByteCount:(long long)data.length countStyle:NSByteCountFormatterCountStyleFile],
                 [NSByteCountFormatter stringFromByteCount:(long long)size countStyle:NSByteCountFormatterCountStyleFile]];
         return false;
@@ -298,7 +298,7 @@ bool fontow_apply(FontOWTarget target, NSString *fontPath, NSString **result)
         NSString *family = fontpatch_family_name(current);
         printf("[FONTOW] %s is now '%s'\n", path.UTF8String, (family ?: @"?").UTF8String);
         if (!fontow_is_apple_font(current, family)) {
-            *result = [NSString stringWithFormat:@"%@ is '%@'%@ right now, not Apple's font, so it isn't backed up as the original. Restart the device, then try again.",
+            *result = [NSString stringWithFormat:NSLocalizedString(@"%@ is '%@'%@ right now, not Apple's font, so it isn't backed up as the original. Restart the device, then try again.", nil),
                        path.lastPathComponent, family ?: @"unknown", fontpatch_is_adapted(current) ? @" from Cyanide" : @""];
             log_user("[FONTOW] %s\n", (*result).UTF8String);
             return false;
@@ -306,7 +306,7 @@ bool fontow_apply(FontOWTarget target, NSString *fontPath, NSString **result)
         [NSFileManager.defaultManager removeItemAtPath:backup error:nil];
         NSError *err = nil;
         if (![NSFileManager.defaultManager copyItemAtPath:path toPath:backup error:&err]) {
-            *result = [NSString stringWithFormat:@"The original couldn't be backed up (%@); nothing was changed.",
+            *result = [NSString stringWithFormat:NSLocalizedString(@"The original couldn't be backed up (%@); nothing was changed.", nil),
                        err.localizedDescription];
             return false;
         }
@@ -325,7 +325,7 @@ bool fontow_apply(FontOWTarget target, NSString *fontPath, NSString **result)
         NSString *patchError = nil;
         NSData *adapted = fontpatch_adapt(originalForPatch, font, &patchError, &note);
         if (!adapted) {
-            *result = [NSString stringWithFormat:@"%@ can't be used as the %@: %@", fontPath.lastPathComponent,
+            *result = [NSString stringWithFormat:NSLocalizedString(@"%@ can't be used as the %@: %@", nil), fontPath.lastPathComponent,
                        fontow_target_title(target).lowercaseString, patchError];
             log_user("[FONTOW] %s\n", (*result).UTF8String);
             return false;
@@ -354,7 +354,7 @@ bool fontow_apply(FontOWTarget target, NSString *fontPath, NSString **result)
         why = [why stringByAppendingString:undone ? @" Nothing was changed."
                                                   : @" Restart the device before respringing, to be safe."];
     }
-    *result = ok ? [NSString stringWithFormat:@"%@ replaced with %@%@. Respring to see it; restart or Restore to undo.",
+    *result = ok ? [NSString stringWithFormat:NSLocalizedString(@"%@ replaced with %@%@. Respring to see it; restart or Restore to undo.", nil),
                     fontow_target_title(target), fontPath.lastPathComponent,
                     note ? [NSString stringWithFormat:@" (%@)", note] : @""]
                  : why;
@@ -375,7 +375,7 @@ bool fontow_restore(FontOWTarget target, NSString **result)
     printf("[FONTOW] restore %s: file is '%s', backup is '%s'\n", fontow_target_path(target).UTF8String,
            (currentFamily ?: @"?").UTF8String, (backupFamily ?: @"?").UTF8String);
     if (!fontow_is_apple_font(original, backupFamily)) {
-        *result = [NSString stringWithFormat:@"The backup isn't Apple's font ('%@'). Restart the device: that always brings the original back.",
+        *result = [NSString stringWithFormat:NSLocalizedString(@"The backup isn't Apple's font ('%@'). Restart the device: that always brings the original back.", nil),
                    backupFamily ?: @"unknown"];
         return false;
     }
@@ -389,7 +389,7 @@ bool fontow_restore(FontOWTarget target, NSString **result)
         fontow_set_replaced(target, false);
         fontow_restart_font_users();
     }
-    *result = ok ? [NSString stringWithFormat:@"%@ restored. Respring to see it.", fontow_target_title(target)] : why;
+    *result = ok ? [NSString stringWithFormat:NSLocalizedString(@"%@ restored. Respring to see it.", nil), fontow_target_title(target)] : why;
     log_user("[FONTOW] %s\n", (*result).UTF8String);
     return ok;
 }

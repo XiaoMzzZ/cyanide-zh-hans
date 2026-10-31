@@ -51,16 +51,16 @@ static const NSInteger kLaraHUDModeCount = sizeof(kLaraHUDModes) / sizeof(kLaraH
         _hudMode = -2;
         _prefStates = [NSMutableDictionary dictionary];
         switch (tool) {
-            case LaraToolPerformanceHUD: self.title = @"Performance HUD"; break;
-            case LaraToolDebugOverlay:   self.title = @"Debug Overlay"; break;
-            case LaraToolUpsideDown:     self.title = @"Upside Down"; break;
-            case LaraToolHiddenSettings: self.title = @"Hidden Settings"; break;
-            case LaraToolJIT:            self.title = @"JIT Enabler"; break;
-            case LaraToolAppLimit:       self.title = @"3-App Limit"; break;
-            case LaraToolCards:          self.title = @"Wallet Card Art"; break;
-            case LaraToolDecrypt:        self.title = @"App Decrypt"; break;
-            case LaraToolSpringBoard:    self.title = @"SpringBoard Tools"; break;
-            case LaraToolFonts:          self.title = @"Font Overwrite"; break;
+            case LaraToolPerformanceHUD: self.title = NSLocalizedString(@"Performance HUD", nil); break;
+            case LaraToolDebugOverlay:   self.title = NSLocalizedString(@"Debug Overlay", nil); break;
+            case LaraToolUpsideDown:     self.title = NSLocalizedString(@"Upside Down", nil); break;
+            case LaraToolHiddenSettings: self.title = NSLocalizedString(@"Hidden Settings", nil); break;
+            case LaraToolJIT:            self.title = NSLocalizedString(@"JIT Enabler", nil); break;
+            case LaraToolAppLimit:       self.title = NSLocalizedString(@"3-App Limit", nil); break;
+            case LaraToolCards:          self.title = NSLocalizedString(@"Wallet Card Art", nil); break;
+            case LaraToolDecrypt:        self.title = NSLocalizedString(@"App Decrypt", nil); break;
+            case LaraToolSpringBoard:    self.title = NSLocalizedString(@"SpringBoard Tools", nil); break;
+            case LaraToolFonts:          self.title = NSLocalizedString(@"Font Overwrite", nil); break;
         }
     }
     return self;
@@ -114,14 +114,14 @@ static const NSInteger kLaraHUDModeCount = sizeof(kLaraHUDModes) / sizeof(kLaraH
 {
     unsigned long long fontSize = [NSFileManager.defaultManager attributesOfItemAtPath:fontPath error:nil].fileSize;
     UIAlertController *sheet = [UIAlertController alertControllerWithTitle:fontPath.lastPathComponent
-        message:[NSString stringWithFormat:@"%@. Replace which system font? It has to be the same size or smaller.",
+        message:[NSString stringWithFormat:NSLocalizedString(@"%@. Replace which system font? It has to be the same size or smaller.", nil),
                  [NSByteCountFormatter stringFromByteCount:(long long)fontSize countStyle:NSByteCountFormatterCountStyleFile]]
         preferredStyle:UIAlertControllerStyleActionSheet];
     __weak typeof(self) weakSelf = self;
     for (FontOWTarget t = 0; t < FontOWTargetCount; t++) {
         unsigned long long max = fontow_target_size(t);
         if (!max) continue;
-        NSString *title = [NSString stringWithFormat:@"%@ (up to %@)", fontow_target_title(t),
+        NSString *title = [NSString stringWithFormat:NSLocalizedString(@"%@ (up to %@)", nil), fontow_target_title(t),
                            [NSByteCountFormatter stringFromByteCount:(long long)max countStyle:NSByteCountFormatterCountStyleFile]];
         UIAlertAction *a = [UIAlertAction actionWithTitle:title style:UIAlertActionStyleDefault handler:^(UIAlertAction *x) {
             [weakSelf fontsRun:YES target:t font:fontPath];
@@ -129,7 +129,7 @@ static const NSInteger kLaraHUDModeCount = sizeof(kLaraHUDModes) / sizeof(kLaraH
         a.enabled = fontSize <= max;
         [sheet addAction:a];
     }
-    [sheet addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];
+    [sheet addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil) style:UIAlertActionStyleCancel handler:nil]];
     UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
     sheet.popoverPresentationController.sourceView = cell ?: self.view;
     sheet.popoverPresentationController.sourceRect = cell ? cell.bounds : self.view.bounds;
@@ -148,7 +148,7 @@ static const NSInteger kLaraHUDModeCount = sizeof(kLaraHUDModes) / sizeof(kLaraH
         me.status = outcome ?: (ok ? nil : @"It didn't work. Check the log.");
         if (ok && me.view.window)
             settings_present_respring_prompt(me, @"Respring Now?",
-                [NSString stringWithFormat:@"SpringBoard loads the %@ again after a respring. If it keeps crashing afterwards, force-restart the device: the original font comes back.",
+                [NSString stringWithFormat:NSLocalizedString(@"SpringBoard loads the %@ again after a respring. If it keeps crashing afterwards, force-restart the device: the original font comes back.", nil),
                  fontow_target_title(target).lowercaseString]);
     }];
 }
@@ -464,16 +464,16 @@ static const NSInteger kLaraHUDModeCount = sizeof(kLaraHUDModes) / sizeof(kLaraH
             break;
         }
         case LaraToolDebugOverlay:
-            c.text = @"Enable Debug Overlay";
+            c.text = NSLocalizedString(@"Enable Debug Overlay", nil);
             c.textProperties.color = self.busy ? UIColor.secondaryLabelColor : UIColor.systemBlueColor;
             break;
         case LaraToolUpsideDown:
-            c.text = @"Enable Upside Down";
+            c.text = NSLocalizedString(@"Enable Upside Down", nil);
             c.textProperties.color = self.busy ? UIColor.secondaryLabelColor : UIColor.systemBlueColor;
             break;
         case LaraToolFonts: {
             if (indexPath.section == 0 && indexPath.row == (NSInteger)self.fonts.count) {
-                c.text = @"Import Font…";
+                c.text = NSLocalizedString(@"Import Font…", nil);
                 c.image = [UIImage systemImageNamed:@"plus.circle.fill"];
                 c.textProperties.color = self.busy ? UIColor.secondaryLabelColor : UIColor.systemBlueColor;
                 break;
@@ -500,7 +500,7 @@ static const NSInteger kLaraHUDModeCount = sizeof(kLaraHUDModes) / sizeof(kLaraH
         }
         case LaraToolSpringBoard: {
             if (indexPath.section == 0 && indexPath.row == 2) {
-                c.text = @"Apply with Tweaks";
+                c.text = NSLocalizedString(@"Apply with Tweaks", nil);
                 c.secondaryText = @"Applies this look in every Apply Tweaks run too, e.g. after a respring.";
                 c.secondaryTextProperties.color = UIColor.secondaryLabelColor;
                 UISwitch *sw = [UISwitch new];
@@ -538,7 +538,7 @@ static const NSInteger kLaraHUDModeCount = sizeof(kLaraHUDModes) / sizeof(kLaraH
                 return cell;
             }
             if (indexPath.row == 1) {
-                c.text = @"Tint";
+                c.text = NSLocalizedString(@"Tint", nil);
                 UIColorWell *well = [UIColorWell new];
                 well.supportsAlpha = YES;
                 well.selectedColor = [self sbColorFor:item];
@@ -547,7 +547,7 @@ static const NSInteger kLaraHUDModeCount = sizeof(kLaraHUDModes) / sizeof(kLaraH
                 [well sizeToFit];
                 cell.accessoryView = well;
             } else {
-                c.text = @"Blur";
+                c.text = NSLocalizedString(@"Blur", nil);
                 c.secondaryText = [NSString stringWithFormat:@"%.0f", [self sbBlurFor:item]];
                 c.secondaryTextProperties.color = UIColor.secondaryLabelColor;
                 UISlider *slider = [[UISlider alloc] initWithFrame:CGRectMake(0, 0, 180, 30)];
@@ -580,8 +580,8 @@ static const NSInteger kLaraHUDModeCount = sizeof(kLaraHUDModes) / sizeof(kLaraH
                 NSUInteger n = 0;
                 for (NSString *f in [NSFileManager.defaultManager contentsOfDirectoryAtPath:app_decrypt_output_dir() error:nil])
                     if ([f.pathExtension isEqualToString:@"ipa"]) n++;
-                c.text = @"Decrypted IPAs";
-                c.secondaryText = n ? [NSString stringWithFormat:@"%lu IPA%@ — open to share or delete", (unsigned long)n, n == 1 ? @"" : @"s"]
+                c.text = NSLocalizedString(@"Decrypted IPAs", nil);
+                c.secondaryText = n ? [NSString stringWithFormat:NSLocalizedString(@"%lu IPA%@ — open to share or delete", nil), (unsigned long)n, n == 1 ? @"" : @"s"]
                                     : @"None yet";
                 c.secondaryTextProperties.color = UIColor.secondaryLabelColor;
                 c.image = [UIImage systemImageNamed:@"shippingbox.fill"];
@@ -610,7 +610,7 @@ static const NSInteger kLaraHUDModeCount = sizeof(kLaraHUDModes) / sizeof(kLaraH
         case LaraToolAppLimit: {
             if (indexPath.section == 0) {
                 NSUInteger marked = [self markedAppCount];
-                c.text = marked ? [NSString stringWithFormat:@"Remove Limit Marks (%lu)", (unsigned long)marked]
+                c.text = marked ? [NSString stringWithFormat:NSLocalizedString(@"Remove Limit Marks (%lu)", nil), (unsigned long)marked]
                                 : @"No App Counts Toward the Limit";
                 c.textProperties.color = (marked && !self.busy) ? UIColor.systemBlueColor : UIColor.secondaryLabelColor;
                 break;
@@ -701,13 +701,13 @@ static const NSInteger kLaraHUDModeCount = sizeof(kLaraHUDModes) / sizeof(kLaraH
             NSDictionary *app = self.jitApps[indexPath.row];
             NSString *bid = app[@"bundleID"], *name = app[@"name"];
             __block int err = 0;
-            [self runNamed:[NSString stringWithFormat:@"Opening %@ with JIT", name]
+            [self runNamed:[NSString stringWithFormat:NSLocalizedString(@"Opening %@ with JIT", nil), name]
                       work:^BOOL{ err = lara_jit_enable_in_session(bid); return err == 0; }
                       done:^(BOOL ok) {
-                weakSelf.status = ok ? [NSString stringWithFormat:@"JIT is on for %@ until it quits.", name]
-                    : err == ESRCH ? [NSString stringWithFormat:@"%@ didn't start. Open it once, then try again.", name]
-                    : err == EPERM ? [NSString stringWithFormat:@"iOS refused to attach to %@. It needs a development profile (get-task-allow).", name]
-                    : [NSString stringWithFormat:@"JIT couldn't be enabled for %@ (error %d). Check the log.", name, err];
+                weakSelf.status = ok ? [NSString stringWithFormat:NSLocalizedString(@"JIT is on for %@ until it quits.", nil), name]
+                    : err == ESRCH ? [NSString stringWithFormat:NSLocalizedString(@"%@ didn't start. Open it once, then try again.", nil), name]
+                    : err == EPERM ? [NSString stringWithFormat:NSLocalizedString(@"iOS refused to attach to %@. It needs a development profile (get-task-allow).", nil), name]
+                    : [NSString stringWithFormat:NSLocalizedString(@"JIT couldn't be enabled for %@ (error %d). Check the log.", nil), name, err];
             }];
             break;
         }
@@ -719,11 +719,11 @@ static const NSInteger kLaraHUDModeCount = sizeof(kLaraHUDModes) / sizeof(kLaraH
 - (void)confirmDecrypt:(NSDictionary *)app
 {
     UIAlertController *ac = [UIAlertController alertControllerWithTitle:[NSString stringWithFormat:@"Decrypt %@?", app[@"name"]]
-        message:@"Makes a decrypted IPA of this app for your own use (e.g. tweak injection and sideloading). It can take a while for large apps; keep Cyanide open."
+        message:NSLocalizedString(@"Makes a decrypted IPA of this app for your own use (e.g. tweak injection and sideloading). It can take a while for large apps; keep Cyanide open.", nil)
         preferredStyle:UIAlertControllerStyleAlert];
-    [ac addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];
+    [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil) style:UIAlertActionStyleCancel handler:nil]];
     __weak typeof(self) weakSelf = self;
-    [ac addAction:[UIAlertAction actionWithTitle:@"Decrypt" style:UIAlertActionStyleDefault handler:^(UIAlertAction *a) {
+    [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Decrypt", nil) style:UIAlertActionStyleDefault handler:^(UIAlertAction *a) {
         [weakSelf decrypt:app];
     }]];
     [self presentViewController:ac animated:YES completion:nil];
@@ -784,12 +784,12 @@ static const NSInteger kLaraHUDModeCount = sizeof(kLaraHUDModes) / sizeof(kLaraH
         // An alert, not just the footer: that is below the whole app list.
         UIAlertController *ac = [UIAlertController
             alertControllerWithTitle:ipa ? @"IPA Ready" : @"Decryption Failed"
-                             message:ipa ? [NSString stringWithFormat:@"%@ is saved in Decrypted IPAs.%@", ipa.lastPathComponent,
+                             message:ipa ? [NSString stringWithFormat:NSLocalizedString(@"%@ is saved in Decrypted IPAs.%@", nil), ipa.lastPathComponent,
                                             error.length ? [@"\n\n" stringByAppendingString:error] : @""] : failure
                       preferredStyle:UIAlertControllerStyleAlert];
         if (ipa) {
             NSString *path = ipa;
-            [ac addAction:[UIAlertAction actionWithTitle:@"Share…" style:UIAlertActionStyleDefault handler:^(UIAlertAction *a) {
+            [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Share…", nil) style:UIAlertActionStyleDefault handler:^(UIAlertAction *a) {
                 typeof(self) me2 = weakSelf;
                 UITableViewCell *cell = [me2.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
                 if (me2) filebrowser_share_file(me2, path, NO, nil, cell, nil);
@@ -836,18 +836,18 @@ static const NSInteger kLaraHUDModeCount = sizeof(kLaraHUDModes) / sizeof(kLaraH
     UIAlertController *ac = [UIAlertController alertControllerWithTitle:card[@"name"] message:nil
                                                          preferredStyle:UIAlertControllerStyleActionSheet];
     __weak typeof(self) weakSelf = self;
-    [ac addAction:[UIAlertAction actionWithTitle:@"Choose Image…" style:UIAlertActionStyleDefault handler:^(UIAlertAction *a) {
+    [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Choose Image…", nil) style:UIAlertActionStyleDefault handler:^(UIAlertAction *a) {
         [weakSelf pickImageForCard:card];
     }]];
     if ([card[@"hasBackup"] boolValue]) {
-        [ac addAction:[UIAlertAction actionWithTitle:@"Restore Original" style:UIAlertActionStyleDestructive handler:^(UIAlertAction *a) {
+        [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Restore Original", nil) style:UIAlertActionStyleDestructive handler:^(UIAlertAction *a) {
             NSString *err = nil;
             BOOL ok = lara_wallet_card_restore(card, &err);
             weakSelf.status = ok ? @"Original restored. Respring or reopen Wallet to see it." : err;
             [weakSelf listJITApps];
         }]];
     }
-    [ac addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];
+    [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil) style:UIAlertActionStyleCancel handler:nil]];
     UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
     ac.popoverPresentationController.sourceView = cell ?: self.view;
     ac.popoverPresentationController.sourceRect = cell ? cell.bounds : self.view.bounds;
@@ -926,8 +926,8 @@ static const NSInteger kLaraHUDModeCount = sizeof(kLaraHUDModes) / sizeof(kLaraH
             me.busy = NO;
             [me listJITApps];
             me.status = done == paths.count
-                ? [NSString stringWithFormat:@"Removed the mark from %lu app%@.", (unsigned long)done, done == 1 ? @"" : @"s"]
-                : [NSString stringWithFormat:@"Removed %lu of %lu: %@", (unsigned long)done, (unsigned long)paths.count,
+                ? [NSString stringWithFormat:NSLocalizedString(@"Removed the mark from %lu app%@.", nil), (unsigned long)done, done == 1 ? @"" : @"s"]
+                : [NSString stringWithFormat:NSLocalizedString(@"Removed %lu of %lu: %@", nil), (unsigned long)done, (unsigned long)paths.count,
                                              lastError ?: @"see the log"];
         });
     });

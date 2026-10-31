@@ -26,8 +26,8 @@ static NSString * const kSearchCellID = @"SearchPkgCell";
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.title = @"Packages";
-    self.navigationItem.title = @"Packages";
+    self.title = NSLocalizedString(@"Packages", nil);
+    self.navigationItem.title = NSLocalizedString(@"Packages", nil);
     self.navigationItem.largeTitleDisplayMode = UINavigationItemLargeTitleDisplayModeAlways;
     self.navigationController.navigationBar.prefersLargeTitles = YES;
     self.searchText = @"";
@@ -214,11 +214,11 @@ static NSString * const kSearchCellID = @"SearchPkgCell";
     if (disabledForInstall) config.textProperties.color = UIColor.secondaryLabelColor;
 
     if (unsupported && installed && pkg.shortDescription.length > 0) {
-        config.secondaryText = [NSString stringWithFormat:@"Installed, unsupported here · %@ · %@",
+        config.secondaryText = [NSString stringWithFormat:NSLocalizedString(@"Installed, unsupported here · %@ · %@", nil),
                                 pkg.installDisabledReason,
                                 pkg.shortDescription];
     } else if (unsupported && installed) {
-        config.secondaryText = [NSString stringWithFormat:@"Installed, unsupported here · %@",
+        config.secondaryText = [NSString stringWithFormat:NSLocalizedString(@"Installed, unsupported here · %@", nil),
                                 pkg.installDisabledReason];
     } else if (unsupported && pkg.shortDescription.length > 0) {
         config.secondaryText = [NSString stringWithFormat:@"%@ · %@", pkg.installDisabledReason, pkg.shortDescription];
@@ -240,7 +240,7 @@ static NSString * const kSearchCellID = @"SearchPkgCell";
 
     if (unsupported && installed) {
         UILabel *pill = [[UILabel alloc] init];
-        pill.text = @"INSTALLED";
+        pill.text = NSLocalizedString(@"INSTALLED", nil);
         pill.font = [UIFont systemFontOfSize:11.0 weight:UIFontWeightHeavy];
         pill.textColor = UIColor.systemGreenColor;
         pill.backgroundColor = [UIColor.systemGreenColor colorWithAlphaComponent:0.15];

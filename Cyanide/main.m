@@ -34,7 +34,7 @@
     icon.tintColor = UIColor.systemOrangeColor;
 
     UILabel *title = [UILabel new];
-    title.text = @"Not Supported";
+    title.text = NSLocalizedString(@"Not Supported", nil);
     title.font = [UIFont preferredFontForTextStyle:UIFontTextStyleTitle2];
     title.adjustsFontForContentSizeCategory = YES;
 
