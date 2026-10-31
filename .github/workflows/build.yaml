@@ -35,5 +35,8 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: Cyanide-TweakRunner
-          path: build/Cyanide.ipa
+          # build/Cyanide.ipa 是软链接，upload-artifact 处理软链接不可靠，
+          # 这里直接上传真实文件（Cyanide-<版本>.ipa）。
+          path: build/Cyanide-*.ipa
+          if-no-files-found: error
           retention-days: 7
