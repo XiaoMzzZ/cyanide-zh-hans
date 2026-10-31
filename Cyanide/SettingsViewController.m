@@ -18727,7 +18727,7 @@ void cyanide_present_contact(UIViewController *host)
             typeof(self) me = weakSelf;
             if (!me) return;
             if (ok || !message) {
-                if (state == SupervisionStateCyanide) message = NSLocalizedString(@"Supervised by ", nil) @SUPERVISION_ORGANIZATION_NAME @" (set by Cyanide).";
+                if (state == SupervisionStateCyanide) message = [NSString stringWithFormat:NSLocalizedString(@"Supervised by %@ (set by Cyanide).", nil), @SUPERVISION_ORGANIZATION_NAME];
                 else if (state == SupervisionStateOther) message = NSLocalizedString(@"Supervised by an organization, not by Cyanide. Cyanide leaves it alone.", nil);
                 else if (state == SupervisionStateOff) message = NSLocalizedString(@"Not supervised (stock).", nil);
                 else message = NSLocalizedString(@"Could not read the supervision state — filesystem access was denied.", nil);

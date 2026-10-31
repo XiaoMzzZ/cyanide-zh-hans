@@ -1525,3 +1525,4 @@
 "Unknown action \"%@\". Use /toggle, /on or /off." = "未知操作“%@”。请使用 /toggle、/on 或 /off。";
 "%@ is saved in Decrypted IPAs.%@" = "%@ 已保存到“已解密的 IPA”。%@";
 "%lu file(s) written, %lu failed in %.1fs%@.%@ Failures: %@." = "已写入 %lu 个文件，%lu 个失败，耗时 %.1fs%@。%@ 失败详情：%@。";
+"Supervised by %@ (set by Cyanide)." = "由 %@ 监管（由 Cyanide 设置）。";
