@@ -788,7 +788,7 @@ static BOOL cleaner_intro_accepted(void)
     self.searchCtrl = [[UISearchController alloc] initWithSearchResultsController:nil];
     self.searchCtrl.searchResultsUpdater = self;
     self.searchCtrl.obscuresBackgroundDuringPresentation = NO;
-    self.searchCtrl.searchBar.placeholder = @"Filter apps";
+    self.searchCtrl.searchBar.placeholder = NSLocalizedString(@"Filter apps", nil);
     self.navigationItem.searchController = self.searchCtrl;
     self.navigationItem.hidesSearchBarWhenScrolling = YES;
     self.definesPresentationContext = YES;
@@ -1088,7 +1088,7 @@ static BOOL cleaner_intro_accepted(void)
         if (item.selected) selected++;
     }
     BOOL allSelected = selectable > 0 && selected == selectable;
-    UIAction *selectAll = [UIAction actionWithTitle:allSelected ? @"Deselect All" : @"Select All Apps"
+    UIAction *selectAll = [UIAction actionWithTitle:allSelected ? NSLocalizedString(@"Deselect All", nil) : NSLocalizedString(@"Select All Apps", nil)
                                               image:[UIImage systemImageNamed:allSelected ? @"circle" : @"checkmark.circle"]
                                          identifier:nil handler:^(UIAction *x) { [weakSelf toggleSelectAll:nil]; }];
     if (busy || !self.processListAvailable || selectable == 0) selectAll.attributes = UIMenuElementAttributesDisabled;
@@ -1099,14 +1099,14 @@ static BOOL cleaner_intro_accepted(void)
                                                 image:[UIImage systemImageNamed:@"externaldrive.badge.checkmark"]
                                            identifier:nil handler:^(UIAction *x) { [weakSelf selectLargeCaches:nil]; }];
     selectLarge.subtitle = large ? [NSString stringWithFormat:NSLocalizedString(@"%lu app%@", nil), (unsigned long)large, large == 1 ? @"" : @"s"]
-                                 : @"None this large";
+                                 : NSLocalizedString(@"None this large", nil);
     if (busy || !self.processListAvailable || large == 0) selectLarge.attributes = UIMenuElementAttributesDisabled;
     UIAction *folders = [UIAction actionWithTitle:NSLocalizedString(@"Review Folders", nil) image:[UIImage systemImageNamed:@"folder"]
                                        identifier:nil handler:^(UIAction *x) { [weakSelf showSelectedFolders:nil]; }];
     if (busy || count == 0) folders.attributes = UIMenuElementAttributesDisabled;
     UIMenu *menu = [UIMenu menuWithChildren:@[
         [UIMenu menuWithTitle:@"" image:nil identifier:nil options:UIMenuOptionsDisplayInline children:@[ selectAll, selectLarge, folders ]],
-        [UIMenu menuWithTitle:@"Sort By" image:nil identifier:nil options:UIMenuOptionsDisplayInline children:@[
+        [UIMenu menuWithTitle:NSLocalizedString(@"Sort By", nil) image:nil identifier:nil options:UIMenuOptionsDisplayInline children:@[
             sortAction(@"Size", CYCleanerSortSize), sortAction(@"Name", CYCleanerSortName),
         ]],
     ]];
@@ -1159,11 +1159,11 @@ static BOOL cleaner_intro_accepted(void)
         BOOL needsFullRun = [message isEqualToString:kSettingsFullExploitRequiredMessage];
         self.accessMessage = needsFullRun
             ? kSettingsNoKernelAccessHint
-            : (message ?: @"Filesystem access is not available.");
+            : (message ?: NSLocalizedString(@"Filesystem access is not available.", nil));
         [self.tableView reloadData];
         [self updateControls];
         if (needsFullRun) {
-            settings_tool_needs_exploit(self, self.tableView, @"Cache Cleaner", ^{
+            settings_tool_needs_exploit(self, self.tableView, NSLocalizedString(@"Cache Cleaner", nil), ^{
                 [weakSelf ensureAccessAllowingFullExploit:NO];
             });
         }
@@ -1365,7 +1365,7 @@ static BOOL cleaner_intro_accepted(void)
                 }
                 if (logBytes > 0) {
                     crashLogs = [[CYCleanerItem alloc] init];
-                    crashLogs.name = @"Crash Logs";
+                    crashLogs.name = NSLocalizedString(@"Crash Logs", nil);
                     crashLogs.cacheBytes = logBytes;
                     crashLogs.fileCount = logFiles;
                     crashLogs.logRoots = logRoots;
@@ -1761,7 +1761,7 @@ static BOOL cleaner_intro_accepted(void)
     NSUInteger count = [self itemsInSection:section].count;
     if (!count) return nil;
     UIButtonConfiguration *cfg = [UIButtonConfiguration plainButtonConfiguration];
-    cfg.title = [NSString stringWithFormat:@"%@ (%lu)", self.processListAvailable ? @"Skipped — In Use" : @"Not Checked",
+    cfg.title = [NSString stringWithFormat:@"%@ (%lu)", self.processListAvailable ? NSLocalizedString(@"Skipped — In Use", nil) : NSLocalizedString(@"Not Checked", nil),
                  (unsigned long)count];
     cfg.image = [UIImage systemImageNamed:self.skippedExpanded ? @"chevron.down" : @"chevron.right"];
     cfg.imagePlacement = NSDirectionalRectEdgeTrailing;
@@ -1790,7 +1790,7 @@ static BOOL cleaner_intro_accepted(void)
     // Right under the card, where it's seen: how the list works.
     if (section == CYCleanerSectionSummary)
         return !self.loading && self.items.count
-            ? @"Tap an app or Crash Logs to select or deselect it. Touch and hold an app to open its cache folders in the File Browser."
+            ? NSLocalizedString(@"Tap an app or Crash Logs to select or deselect it. Touch and hold an app to open its cache folders in the File Browser.", nil)
             : nil;
     if (section != CYCleanerSectionSkipped) return nil;
     return @"Only Library/Caches and tmp contents, plus the optional CrashReporter folders, are removed. "
@@ -1834,8 +1834,8 @@ static BOOL cleaner_intro_accepted(void)
                 cell.totalLabel.text = self.scanTotal ? [NSString stringWithFormat:@"%lu / %lu",
                                                          (unsigned long)self.scanDone, (unsigned long)self.scanTotal] : @"…";
                 cell.bar.progress = self.scanTotal ? (float)self.scanDone / (float)self.scanTotal : 0;
-                cell.statusLabel.text = self.scanName.length ? [NSString stringWithFormat:@"Checking %@…", self.scanName]
-                                                             : @"Starting…";
+                cell.statusLabel.text = self.scanName.length ? [NSString stringWithFormat:NSLocalizedString(@"Checking %@…", nil), self.scanName]
+                                                             : NSLocalizedString(@"Starting…", nil);
                 break;
         }
         return;
@@ -1846,8 +1846,7 @@ static BOOL cleaner_intro_accepted(void)
         cell.captionLabel.text = NSLocalizedString(@"Cache Cleaner", nil);
         cell.totalLabel.text = @"—";
         cell.bar.progress = 0;
-        cell.statusLabel.text = self.accessMessage ?: (cleaner_intro_accepted() ? @"Filesystem access is not available."
-                                                                                : @"Read the note first; nothing is scanned until then.");
+        cell.statusLabel.text = self.accessMessage ?: (cleaner_intro_accepted() ? NSLocalizedString(@"Filesystem access is not available.", nil) : NSLocalizedString(@"Read the note first; nothing is scanned until then.", nil));
         return;
     }
     cell.captionLabel.text = NSLocalizedString(@"Reclaimable", nil);
@@ -1857,9 +1856,9 @@ static BOOL cleaner_intro_accepted(void)
     if (self.resultText) [lines addObject:self.resultText];
     [lines addObject:[NSString stringWithFormat:NSLocalizedString(@"%@ selected in %lu item%@", nil), cleaner_bytes(selected),
                       (unsigned long)[self selectedCount], [self selectedCount] == 1 ? @"" : @"s"]];
-    [lines addObject:@"Logical file sizes, not guaranteed recovered storage."];
+    [lines addObject:NSLocalizedString(@"Logical file sizes, not guaranteed recovered storage.", nil)];
     if (!self.processListAvailable)
-        [lines addObject:@"Kernel access is unavailable, so apps in use can't be detected and nothing can be cleaned."];
+        [lines addObject:NSLocalizedString(@"Kernel access is unavailable, so apps in use can't be detected and nothing can be cleaned.", nil)];
     cell.statusLabel.text = [lines componentsJoinedByString:@"\n"];
 }
 

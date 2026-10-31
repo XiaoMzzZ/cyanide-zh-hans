@@ -37,7 +37,7 @@ static BOOL PackageIsSnowBoardLite(Package *package)
 static NSString *PackageMissingThemeReason(Package *package)
 {
     if (PackageIsThemer(package) && !settings_themer_has_selected_theme()) {
-        return @"Icon Theme Engine needs a selected theme before it can be activated. Open its settings and choose a theme first.";
+        return NSLocalizedString(@"Icon Theme Engine needs a selected theme before it can be activated. Open its settings and choose a theme first.", nil);
     }
     if (PackageIsSnowBoardLite(package) && !settings_snowboardlite_has_selected_theme()) {
         return @"SnowBoard Lite needs a selected theme before it can be activated. Open SnowBoard Lite settings and choose iOS 6 Theme or import a SnowBoard/IconBundles theme first.";
@@ -273,7 +273,7 @@ static BOOL PackageShouldAutoQueueForApply(Package *package)
             if (reason) {
                 *reason = package.installDisabledReason.length
                     ? package.installDisabledReason
-                    : @"This package is not available on this iOS version.";
+                    : NSLocalizedString(@"This package is not available on this iOS version.", nil);
             }
             return NO;
         }
@@ -287,14 +287,14 @@ static BOOL PackageShouldAutoQueueForApply(Package *package)
     BOOL isHideHomeBar = package.kind == PackageInstallKindHideHomeBar;
     if (isHideHomeBar && [self pendingCountExcludingPackage:package] > 0) {
         if (reason) {
-            *reason = @"Hide Home Bar changes the system home-indicator asset and needs a respring right after. Clear the current queue, run Hide Home Bar by itself, respring, then queue your other tweaks.";
+            *reason = NSLocalizedString(@"Hide Home Bar changes the system home-indicator asset and needs a respring right after. Clear the current queue, run Hide Home Bar by itself, respring, then queue your other tweaks.", nil);
         }
         return NO;
     }
 
     if (!isHideHomeBar && [self hasQueuedHideHomeBarIntentExcludingPackage:package]) {
         if (reason) {
-            *reason = @"Hide Home Bar is already waiting in the queue and must run by itself. Apply or remove Hide Home Bar first, then queue other tweaks after the respring.";
+            *reason = NSLocalizedString(@"Hide Home Bar is already waiting in the queue and must run by itself. Apply or remove Hide Home Bar first, then queue other tweaks after the respring.", nil);
         }
         return NO;
     }
@@ -304,7 +304,7 @@ static BOOL PackageShouldAutoQueueForApply(Package *package)
         package.repoTweakUsesQuickLoader &&
         [self hasQueuedRepoTweakInstallExcludingPackage:package]) {
         if (reason) {
-            *reason = @"QuickLoader installs one repo tweak at a time. Apply or remove the currently queued repo tweak first.";
+            *reason = NSLocalizedString(@"QuickLoader installs one repo tweak at a time. Apply or remove the currently queued repo tweak first.", nil);
         }
         return NO;
     }
@@ -463,7 +463,7 @@ static BOOL PackageShouldAutoQueueForApply(Package *package)
             // this, a package whose apply failed (e.g. a repo tweak whose
             // script download failed) would show as installed successfully
             // whenever the rest of the run succeeds.
-            settings_note_run_preflight_failure(@"Some packages failed to apply — check the log above.");
+            settings_note_run_preflight_failure(NSLocalizedString(@"Some packages failed to apply — check the log above.", nil));
         }
         // Keep the queue locked until the run we start reports completion.
         // Clearing it here let a second commit begin while this run was still
@@ -494,7 +494,7 @@ static BOOL PackageShouldAutoQueueForApply(Package *package)
     if (!allApplied) {
         info[kSettingsActionsDidCompleteSuccessKey] = @NO;
         info[kSettingsActionsDidCompleteMessageKey] =
-            @"Some packages failed to apply — check the log above.";
+            NSLocalizedString(@"Some packages failed to apply — check the log above.", nil);
     } else if (preflight.length > 0) {
         info[kSettingsActionsDidCompleteSuccessKey] = @YES;
         info[kSettingsActionsDidCompletePartialKey] = @YES;

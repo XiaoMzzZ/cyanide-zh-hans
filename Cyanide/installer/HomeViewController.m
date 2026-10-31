@@ -282,17 +282,17 @@ static const CGFloat kMargin = 20.0;
     row.spacing = 12.0;
     row.distribution = UIStackViewDistributionFillEqually;
 
-    [row addArrangedSubview:[self actionCard:@"Packages"
+    [row addArrangedSubview:[self actionCard:NSLocalizedString(@"Packages", nil)
                                        icon:@"shippingbox.fill"
                                       color:UIColor.systemBlueColor
                                         sel:@selector(openPackagesTab)]];
     if (repotweaks_sources_enabled()) {
-        [row addArrangedSubview:[self actionCard:@"Sources"
+        [row addArrangedSubview:[self actionCard:NSLocalizedString(@"Sources", nil)
                                            icon:@"tray.and.arrow.down.fill"
                                           color:UIColor.systemGreenColor
                                             sel:@selector(openSourcesTab)]];
     } else {
-        [row addArrangedSubview:[self actionCard:@"Settings"
+        [row addArrangedSubview:[self actionCard:NSLocalizedString(@"Settings", nil)
                                            icon:@"gear"
                                           color:UIColor.systemGrayColor
                                             sel:@selector(openSettingsTab)]];
@@ -385,7 +385,7 @@ static const CGFloat kMargin = 20.0;
 
     UILabel *header = [self sectionHeader:version.length
         ? [NSString stringWithFormat:NSLocalizedString(@"What's New in %@", nil), [version hasPrefix:@"v"] ? [version substringFromIndex:1] : version]
-        : @"What's New"];
+        : NSLocalizedString(@"What's New", nil)];
     [s addArrangedSubview:header];
     [s setCustomSpacing:18.0 afterView:header];
 
@@ -401,7 +401,7 @@ static const CGFloat kMargin = 20.0;
     // The whole card opens Settings → What's New; this row says so.
     UIButton *all = [UIButton buttonWithType:UIButtonTypeSystem];
     UIButtonConfiguration *cfg = [UIButtonConfiguration plainButtonConfiguration];
-    cfg.title = shown ? @"See All Changes" : @"See This Version's Changes";
+    cfg.title = shown ? NSLocalizedString(@"See All Changes", nil) : NSLocalizedString(@"See This Version's Changes", nil);
     cfg.image = [UIImage systemImageNamed:@"chevron.right"
                         withConfiguration:[UIImageSymbolConfiguration configurationWithPointSize:12.0 weight:UIImageSymbolWeightSemibold]];
     cfg.imagePlacement = NSDirectionalRectEdgeTrailing;
@@ -426,41 +426,41 @@ static const CGFloat kMargin = 20.0;
     UIView *card = [self card];
     UIStackView *s = [self vstackInCard:card spacing:12.0];
 
-    [s addArrangedSubview:[self sectionHeader:@"Tools"]];
+    [s addArrangedSubview:[self sectionHeader:NSLocalizedString(@"Tools", nil)]];
     // Only while there is no live or saved kernel access: then the tools can't
     // get it by themselves on A18/M4. Runs the exploit alone, with the log.
     // A local strong reference: the property is weak, so assigning the new
     // view to it directly released it before it was added (no row at all).
-    UIView *kernelRow = [self bigActionButton:@"Run Exploit"
-                                          sub:@"Kernel access for the tools"
+    UIView *kernelRow = [self bigActionButton:NSLocalizedString(@"Run Exploit", nil)
+                                          sub:NSLocalizedString(@"Kernel access for the tools", nil)
                                          icon:@"lock.open.fill"
                                         color:UIColor.systemPurpleColor
                                           sel:@selector(runExploit)];
     kernelRow.hidden = settings_kernel_access_available();
     [s addArrangedSubview:kernelRow];
     self.kernelAccessRow = kernelRow;
-    [s addArrangedSubview:[self bigActionButton:@"Process Viewer"
-                                          sub:@"See and quit running processes"
+    [s addArrangedSubview:[self bigActionButton:NSLocalizedString(@"Process Viewer", nil)
+                                          sub:NSLocalizedString(@"See and quit running processes", nil)
                                          icon:@"list.bullet.rectangle.fill"
                                         color:UIColor.systemIndigoColor
                                           sel:@selector(openProcessViewer)]];
-    [s addArrangedSubview:[self bigActionButton:@"File Browser"
-                                          sub:@"Browse files and edit plists"
+    [s addArrangedSubview:[self bigActionButton:NSLocalizedString(@"File Browser", nil)
+                                          sub:NSLocalizedString(@"Browse files and edit plists", nil)
                                          icon:@"folder.fill"
                                         color:UIColor.systemBlueColor
                                           sel:@selector(openFileBrowser)]];
-    [s addArrangedSubview:[self bigActionButton:@"Daemon Manager"
-                                          sub:@"Turn system services off and on"
+    [s addArrangedSubview:[self bigActionButton:NSLocalizedString(@"Daemon Manager", nil)
+                                          sub:NSLocalizedString(@"Turn system services off and on", nil)
                                          icon:@"gearshape.2.fill"
                                         color:UIColor.systemTealColor
                                           sel:@selector(openDaemons)]];
-    [s addArrangedSubview:[self bigActionButton:@"Cache Cleaner"
-                                          sub:@"Free space from app caches"
+    [s addArrangedSubview:[self bigActionButton:NSLocalizedString(@"Cache Cleaner", nil)
+                                          sub:NSLocalizedString(@"Free space from app caches", nil)
                                          icon:@"trash.fill"
                                         color:UIColor.systemCyanColor
                                           sel:@selector(openCleaner)]];
-    [s addArrangedSubview:[self bigActionButton:@"System Info"
-                                          sub:@"Battery, uptime, kernel access, storage"
+    [s addArrangedSubview:[self bigActionButton:NSLocalizedString(@"System Info", nil)
+                                          sub:NSLocalizedString(@"Battery, uptime, kernel access, storage", nil)
                                          icon:@"info.circle.fill"
                                         color:UIColor.systemGreenColor
                                           sel:@selector(openSystemInfo)]];
@@ -474,16 +474,16 @@ static const CGFloat kMargin = 20.0;
     UIView *card = [self card];
     UIStackView *s = [self vstackInCard:card spacing:12.0];
 
-    [s addArrangedSubview:[self sectionHeader:@"Get Started"]];
+    [s addArrangedSubview:[self sectionHeader:NSLocalizedString(@"Get Started", nil)]];
 
-    [s addArrangedSubview:[self bigActionButton:@"Open QuickLoader"
-                                          sub:@"Run a local .js tweak file"
+    [s addArrangedSubview:[self bigActionButton:NSLocalizedString(@"Open QuickLoader", nil)
+                                          sub:NSLocalizedString(@"Run a local .js tweak file", nil)
                                          icon:@"bolt.fill"
                                         color:UIColor.systemOrangeColor
                                           sel:@selector(openQuickLoader)]];
     if (repotweaks_sources_enabled()) {
-        [s addArrangedSubview:[self bigActionButton:@"Add a Source"
-                                              sub:@"Browse and install JS tweaks from repos"
+        [s addArrangedSubview:[self bigActionButton:NSLocalizedString(@"Add a Source", nil)
+                                              sub:NSLocalizedString(@"Browse and install JS tweaks from repos", nil)
                                              icon:@"plus.circle.fill"
                                             color:UIColor.systemGreenColor
                                               sel:@selector(openSourcesTab)]];
@@ -575,7 +575,7 @@ static const CGFloat kMargin = 20.0;
     UIView *card = [self card];
     UIStackView *s = [self vstackInCard:card spacing:0.0];
 
-    UILabel *header = [self sectionHeader:@"Community"];
+    UILabel *header = [self sectionHeader:NSLocalizedString(@"Community", nil)];
     UIView *headerWrap = [[UIView alloc] init];
     header.translatesAutoresizingMaskIntoConstraints = NO;
     [headerWrap addSubview:header];
@@ -587,7 +587,7 @@ static const CGFloat kMargin = 20.0;
     ]];
     [s addArrangedSubview:headerWrap];
 
-    [s addArrangedSubview:[self linkCell:@"Report a Bug" icon:@"exclamationmark.bubble.fill"
+    [s addArrangedSubview:[self linkCell:NSLocalizedString(@"Report a Bug", nil) icon:@"exclamationmark.bubble.fill"
                                   color:UIColor.systemRedColor url:kGitHubIssuesURL sep:YES]];
     [s addArrangedSubview:[self linkCell:@"GitHub" icon:@"chevron.left.forwardslash.chevron.right"
                                   color:UIColor.systemGrayColor url:kGitHubRepoURL sep:NO]];

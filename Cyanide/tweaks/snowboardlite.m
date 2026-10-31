@@ -315,7 +315,7 @@ BOOL settings_sbl_import_folder_theme_named(NSURL *url,
     if (error && *error) return NO;
 
     NSString *baseName = displayName.length ? displayName :
-        (url.lastPathComponent.length ? url.lastPathComponent : @"Imported Theme");
+        (url.lastPathComponent.length ? url.lastPathComponent : NSLocalizedString(@"Imported Theme", nil));
     NSString *themeID = [NSString stringWithFormat:@"sbl-%llu",
                          (unsigned long long)(NSDate.date.timeIntervalSince1970 * 1000.0)];
     NSString *themeDir = [root stringByAppendingPathComponent:themeID];

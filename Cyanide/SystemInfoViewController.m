@@ -234,7 +234,7 @@ static NSString * const kSIAppSortKey = @"SystemInfoAppSort";
     self.navigationItem.largeTitleDisplayMode = UINavigationItemLargeTitleDisplayModeAlways;
     self.refreshControl = [UIRefreshControl new];
     [self.refreshControl addTarget:self action:@selector(pullToRefresh) forControlEvents:UIControlEventValueChanged];
-    self.appsStatus = @"Tap to calculate";
+    self.appsStatus = NSLocalizedString(@"Tap to calculate", nil);
     self.appSort = [NSUserDefaults.standardUserDefaults integerForKey:kSIAppSortKey];
     [self updateSortMenu];
     [self refreshLocal];
@@ -253,7 +253,7 @@ static NSString * const kSIAppSortKey = @"SystemInfoAppSort";
 
 - (void)updateSortMenu
 {
-    NSArray *titles = @[ @"Total Size", @"App Size", @"Data Size", @"Name" ];
+    NSArray *titles = @[ NSLocalizedString(@"Total Size", nil), NSLocalizedString(@"App Size", nil), NSLocalizedString(@"Data Size", nil), @"Name" ];
     NSMutableArray *actions = [NSMutableArray array];
     __weak typeof(self) weakSelf = self;
     for (NSInteger i = 0; i < (NSInteger)titles.count; i++) {
@@ -271,7 +271,7 @@ static NSString * const kSIAppSortKey = @"SystemInfoAppSort";
     }
     UIBarButtonItem *item = [[UIBarButtonItem alloc]
         initWithImage:[UIImage systemImageNamed:@"arrow.up.arrow.down"]
-                 menu:[UIMenu menuWithTitle:@"Sort Apps By" children:actions]];
+                 menu:[UIMenu menuWithTitle:NSLocalizedString(@"Sort Apps By", nil) children:actions]];
     item.enabled = self.apps.count > 0;
     self.navigationItem.rightBarButtonItem = item;
 }
@@ -307,13 +307,13 @@ static NSString * const kSIAppSortKey = @"SystemInfoAppSort";
         @[ dev.systemName ?: @"iOS", [NSString stringWithFormat:@"%@ (%@)", dev.systemVersion,
                                        si_string_sysctl("kern.osversion") ?: @"?"] ],
         @[ @"Uptime", uptime ],
-        @[ @"Last restart", booted ],
+        @[ NSLocalizedString(@"Last restart", nil), booted ],
     ];
 
     NSDictionary *k = settings_kernel_access_status();
     self.kernelRows = @[
         @[ @"State", k[@"state"] ],
-        @[ @"SpringBoard session", [k[@"springboard"] boolValue] ? @"Open" : @"Closed" ],
+        @[ NSLocalizedString(@"SpringBoard session", nil), [k[@"springboard"] boolValue] ? NSLocalizedString(@"Open", nil) : @"Closed" ],
         @[ @"", k[@"detail"] ],
     ];
 
@@ -322,12 +322,12 @@ static NSString * const kSIAppSortKey = @"SystemInfoAppSort";
         unsigned long long total = (unsigned long long)fs.f_blocks * fs.f_bsize;
         unsigned long long avail = (unsigned long long)fs.f_bavail * fs.f_bsize;
         self.storageRows = @[
-            @[ @"Capacity", si_bytes(total) ],
+            @[ NSLocalizedString(@"Capacity", nil), si_bytes(total) ],
             @[ @"Used", si_bytes(total - avail) ],
-            @[ @"Available", si_bytes(avail) ],
+            @[ NSLocalizedString(@"Available", nil), si_bytes(avail) ],
         ];
     } else {
-        self.storageRows = @[ @[ @"Storage", @"Unavailable" ] ];
+        self.storageRows = @[ @[ @"Storage", NSLocalizedString(@"Unavailable", nil) ] ];
     }
     [self.tableView reloadData];
 }
@@ -342,37 +342,37 @@ static NSString * const kSIAppSortKey = @"SystemInfoAppSort";
         return [v isKindOfClass:NSNumber.class] ? v : nil;
     };
     NSNumber *cycles = num(@"CycleCount");
-    if (cycles != nil) [rows addObject:@[ @"Cycle count", cycles.stringValue ]];
+    if (cycles != nil) [rows addObject:@[ NSLocalizedString(@"Cycle count", nil), cycles.stringValue ]];
     NSNumber *design = num(@"DesignCapacity");
     NSNumber *full = num(@"NominalChargeCapacity") ?: num(@"AppleRawMaxCapacity");
     NSNumber *applePct = num(@"MaximumCapacityPercent");
-    if (applePct != nil) [rows addObject:@[ @"Maximum capacity", [NSString stringWithFormat:@"%@%%", applePct] ]];
+    if (applePct != nil) [rows addObject:@[ NSLocalizedString(@"Maximum capacity", nil), [NSString stringWithFormat:@"%@%%", applePct] ]];
     if (design.doubleValue > 0 && full != nil) {
-        [rows addObject:@[ applePct != nil ? @"Measured capacity" : @"Maximum capacity",
+        [rows addObject:@[ applePct != nil ? NSLocalizedString(@"Measured capacity", nil) : NSLocalizedString(@"Maximum capacity", nil),
                            [NSString stringWithFormat:NSLocalizedString(@"%.1f%% (%@ of %@ mAh)", nil),
                             100.0 * full.doubleValue / design.doubleValue, full, design] ]];
     }
     NSNumber *charge = num(@"CurrentCapacity");
     if (charge != nil) [rows addObject:@[ @"Charge", [NSString stringWithFormat:@"%@%%", charge] ]];
-    NSNumber *temp = num(@"Temperature");
-    if (temp != nil) [rows addObject:@[ @"Temperature", [NSString stringWithFormat:@"%.1f °C", temp.doubleValue / 100.0] ]];
+    NSNumber *temp = num(NSLocalizedString(@"Temperature", nil));
+    if (temp != nil) [rows addObject:@[ NSLocalizedString(@"Temperature", nil), [NSString stringWithFormat:@"%.1f °C", temp.doubleValue / 100.0] ]];
     NSNumber *voltage = num(@"Voltage");
     if (voltage != nil) [rows addObject:@[ @"Voltage", [NSString stringWithFormat:@"%.2f V", voltage.doubleValue / 1000.0] ]];
     NSNumber *amps = num(@"InstantAmperage") ?: num(@"Amperage");
     if (amps != nil) [rows addObject:@[ @"Current", [NSString stringWithFormat:@"%d mA", amps.intValue] ]];
     NSNumber *charging = num(@"IsCharging"), *external = num(@"ExternalConnected");
     if (charging != nil || external != nil)
-        [rows addObject:@[ @"Power", charging.boolValue ? @"Charging" : external.boolValue ? @"Connected, not charging" : @"On battery" ]];
+        [rows addObject:@[ @"Power", charging.boolValue ? NSLocalizedString(@"Charging", nil) : external.boolValue ? NSLocalizedString(@"Connected, not charging", nil) : NSLocalizedString(@"On battery", nil) ]];
     self.batteryRows = rows;
     self.batteryStatus = rows.count ? [NSString stringWithFormat:NSLocalizedString(@"Read from AppleSmartBattery in %@.", nil), source]
-                                    : @"The battery driver returned no values.";
+                                    : NSLocalizedString(@"The battery driver returned no values.", nil);
 }
 
 - (void)readBatteryAllowingFullExploit:(BOOL)allowFullExploit
 {
     if (self.readingBattery) return;
     self.readingBattery = YES;
-    if (!self.batteryRows.count) self.batteryStatus = @"Reading…";
+    if (!self.batteryRows.count) self.batteryStatus = NSLocalizedString(@"Reading…", nil);
     [self.tableView reloadData];
     __weak typeof(self) weakSelf = self;
     settings_battery_info_async(allowFullExploit, ^(NSDictionary *battery, NSString *source, NSString *message) {
@@ -386,7 +386,7 @@ static NSString * const kSIAppSortKey = @"SystemInfoAppSort";
             BOOL needsRun = [message isEqualToString:kSettingsFullExploitRequiredMessage];
             me.batteryStatus = needsRun
                 ? kSettingsNoKernelAccessHint
-                : (message ?: @"Unavailable.");
+                : (message ?: NSLocalizedString(@"Unavailable.", nil));
             if (needsRun) [me needsExploit];
         }
         [me refreshLocal];   // kernel state may have changed too
@@ -397,7 +397,7 @@ static NSString * const kSIAppSortKey = @"SystemInfoAppSort";
 {
     if (self.scanningApps) return;
     self.scanningApps = YES;
-    self.appsStatus = @"Calculating… this can take a moment";
+    self.appsStatus = NSLocalizedString(@"Calculating… this can take a moment", nil);
     [self.tableView reloadData];
     __weak typeof(self) weakSelf = self;
     void (^scan)(void) = ^{
@@ -408,7 +408,7 @@ static NSString * const kSIAppSortKey = @"SystemInfoAppSort";
                 if (!me) return;
                 me.scanningApps = NO;
                 me.apps = [me sortedApps:apps];
-                me.appsStatus = apps.count ? nil : @"No apps could be read. Tap to try again.";
+                me.appsStatus = apps.count ? nil : NSLocalizedString(@"No apps could be read. Tap to try again.", nil);
                 [me updateSortMenu];
                 [me.tableView reloadData];
             });
@@ -423,7 +423,7 @@ static NSString * const kSIAppSortKey = @"SystemInfoAppSort";
         BOOL needsRun = [message isEqualToString:kSettingsFullExploitRequiredMessage];
         me.appsStatus = needsRun
             ? kSettingsNoKernelAccessHint
-            : (message ?: @"Filesystem access is not available.");
+            : (message ?: NSLocalizedString(@"Filesystem access is not available.", nil));
         [me.tableView reloadData];
         if (needsRun) [me needsExploit];
     });
@@ -434,7 +434,7 @@ static NSString * const kSIAppSortKey = @"SystemInfoAppSort";
 - (void)needsExploit
 {
     __weak typeof(self) weakSelf = self;
-    settings_tool_needs_exploit(self, self.tableView, @"System Info", ^{
+    settings_tool_needs_exploit(self, self.tableView, NSLocalizedString(@"System Info", nil), ^{
         typeof(self) me = weakSelf;
         if (!me) return;
         if (!me.batteryRows.count) [me readBatteryAllowingFullExploit:NO];
@@ -454,7 +454,7 @@ static NSString * const kSIAppSortKey = @"SystemInfoAppSort";
 {
     switch ((SISection)section) {
         case SISectionDevice:  return @"Device";
-        case SISectionKernel:  return @"Kernel Access";
+        case SISectionKernel:  return NSLocalizedString(@"Kernel Access", nil);
         case SISectionBattery: return @"Battery";
         case SISectionStorage: return @"Storage";
         case SISectionApps:    return self.apps.count ? [NSString stringWithFormat:NSLocalizedString(@"%lu Apps", nil), (unsigned long)self.apps.count] : @"Apps";
@@ -466,9 +466,7 @@ static NSString * const kSIAppSortKey = @"SystemInfoAppSort";
 {
     if (section == SISectionBattery) return self.batteryStatus;
     if (section == SISectionApps)
-        return @"Installed apps only, app bundle plus data container. Shared App Group data and system apps are not "
-               @"included, so iOS Settings can show larger numbers. “≥” marks an app whose folders couldn't all be read. "
-               @"Pull down to recalculate.";
+        return NSLocalizedString(@"Installed apps only, app bundle plus data container. Shared App Group data and system apps are not included, so iOS Settings can show larger numbers. “≥” marks an app whose folders couldn't all be read. Pull down to recalculate.", nil);
     return nil;
 }
 
@@ -533,7 +531,7 @@ static NSString * const kSIAppSortKey = @"SystemInfoAppSort";
         case SISectionStorage: return [self valueCell:self.storageRows[row]];
         case SISectionBattery:
             if (self.batteryRows.count) return [self valueCell:self.batteryRows[row]];
-            return [self actionCell:self.readingBattery ? @"Reading battery…" : @"Read Battery Info" busy:self.readingBattery];
+            return [self actionCell:self.readingBattery ? NSLocalizedString(@"Reading battery…", nil) : NSLocalizedString(@"Read Battery Info", nil) busy:self.readingBattery];
         case SISectionApps: {
             if (self.appsStatus && row == 0) return [self actionCell:self.appsStatus busy:self.scanningApps];
             SIApp *app = self.apps[row - (self.appsStatus ? 1 : 0)];

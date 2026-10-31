@@ -554,7 +554,7 @@ static NSDictionary *repotweaks_sanitized_repo(id raw, NSString **errorMessage) 
     }
 
     return @{
-        @"repoName": repotweaks_string_or_empty(dict[@"repoName"]).length ? repotweaks_string_or_empty(dict[@"repoName"]) : @"Repository",
+        @"repoName": repotweaks_string_or_empty(dict[@"repoName"]).length ? repotweaks_string_or_empty(dict[@"repoName"]) : NSLocalizedString(@"Repository", nil),
         @"author": repotweaks_string_or_empty(dict[@"author"]),
         @"tweaks": tweaks,
     };
@@ -1689,7 +1689,7 @@ void repotweaks_refresh_all_sources(void (^completion)(RepoTweaksRefreshStatus s
             ? RepoTweaksRefreshStatusSuccess
             : (successes > 0 ? RepoTweaksRefreshStatusPartial : RepoTweaksRefreshStatusFailure);
         if (failures > 0 && messages.count == 0) {
-            [messages addObject:@"All configured sources failed to refresh."];
+            [messages addObject:NSLocalizedString(@"All configured sources failed to refresh.", nil)];
         }
         finish(status, [messages copy]);
     });

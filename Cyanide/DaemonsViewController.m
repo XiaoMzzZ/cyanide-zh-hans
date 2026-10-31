@@ -188,7 +188,7 @@ static void daemons_invalidate_snapshot(NSDictionary * __strong *disabled,
                                                       target:self action:@selector(confirmSave)];
     self.refreshControl = [UIRefreshControl new];
     [self.refreshControl addTarget:self action:@selector(pullToRefresh) forControlEvents:UIControlEventValueChanged];
-    self.status = @"Reading disabled daemons…";
+    self.status = NSLocalizedString(@"Reading disabled daemons…", nil);
     [self loadAllowingFullExploit:NO];
 }
 
@@ -459,11 +459,11 @@ static void daemons_invalidate_snapshot(NSDictionary * __strong *disabled,
             [presenter presentViewController:ac animated:YES completion:nil];
             return;
         }
-        settings_tool_needs_exploit(self, self.tableView, @"Daemon Manager", retry);
+        settings_tool_needs_exploit(self, self.tableView, NSLocalizedString(@"Daemon Manager", nil), retry);
         return;
     }
     if (!presenter.view.window || presenter.presentedViewController) return;
-    UIAlertController *ac = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Daemon Manager", nil) message:message ?: @"Something went wrong."
+    UIAlertController *ac = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Daemon Manager", nil) message:message ?: NSLocalizedString(@"Something went wrong.", nil)
                                                          preferredStyle:UIAlertControllerStyleAlert];
     [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil) style:UIAlertActionStyleDefault handler:nil]];
     [presenter presentViewController:ac animated:YES completion:nil];
@@ -524,12 +524,12 @@ static void daemons_invalidate_snapshot(NSDictionary * __strong *disabled,
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
 {
-    if (section == 1) return @"Advanced";
+    if (section == 1) return NSLocalizedString(@"Advanced", nil);
     if (self.status) return self.status;
     if (self.staged.count)
         return [NSString stringWithFormat:NSLocalizedString(@"%lu unsaved change%@ — tap Save to apply", nil), (unsigned long)self.staged.count,
                 self.staged.count == 1 ? @"" : @"s"];
-    return daemons_restart_pending() ? @"Restart the device to apply your changes" : nil;
+    return daemons_restart_pending() ? NSLocalizedString(@"Restart the device to apply your changes", nil) : nil;
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section

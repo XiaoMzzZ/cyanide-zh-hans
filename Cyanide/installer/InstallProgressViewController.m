@@ -176,7 +176,7 @@
     NSString *message = note.userInfo[kSettingsActionsDidCompleteMessageKey];
     self.statusLabel.text = message.length
         ? message
-        : (success ? @"All tweaks applied in-session." : @"Failed — check the log above.");
+        : (success ? NSLocalizedString(@"All tweaks applied in-session.", nil) : NSLocalizedString(@"Failed — check the log above.", nil));
     self.statusLabel.font = [UIFont systemFontOfSize:13.5 weight:UIFontWeightSemibold];
     BOOL partial = success && [note.userInfo[kSettingsActionsDidCompletePartialKey] boolValue];
     self.statusLabel.textColor = partial
@@ -184,7 +184,7 @@
         : success
         ? [UIColor colorWithRed:0.38 green:0.90 blue:0.55 alpha:1.0]
         : [UIColor colorWithRed:1.0 green:0.38 blue:0.32 alpha:1.0];
-    self.title = partial ? @"Done with Warnings" : (success ? @"Complete" : @"Failed");
+    self.title = partial ? NSLocalizedString(@"Done with Warnings", nil) : (success ? NSLocalizedString(@"Complete", nil) : @"Failed");
     self.hideOrDoneButton.title = NSLocalizedString(@"Done", nil);
     // Offer a one-tap retry only for the main chain run's KRW-acquire
     // failure — a clean miss that is fully re-entrant in the same boot

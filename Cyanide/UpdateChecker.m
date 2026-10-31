@@ -71,7 +71,7 @@ static int compare_versions(NSString *a, NSString *b)
 // nil for an HTTP 200; otherwise the failure text.
 static NSString *update_http_failure(NSURLResponse *response)
 {
-    if (![response isKindOfClass:NSHTTPURLResponse.class]) return @"Unexpected response from GitHub.";
+    if (![response isKindOfClass:NSHTTPURLResponse.class]) return NSLocalizedString(@"Unexpected response from GitHub.", nil);
     NSInteger status = ((NSHTTPURLResponse *)response).statusCode;
     if (status != 200) return [NSString stringWithFormat:NSLocalizedString(@"GitHub returned HTTP %ld.", nil), (long)status];
     return nil;
@@ -262,21 +262,21 @@ static NSString *update_http_failure(NSURLResponse *response)
         NSString *notes = nil;
 
         if (error || !data) {
-            failureReason = error ? error.localizedDescription : @"No response from GitHub.";
+            failureReason = error ? error.localizedDescription : NSLocalizedString(@"No response from GitHub.", nil);
         } else if ((failureReason = update_http_failure(response))) {
             // Non-200 (rate limit, outage): don't parse an error body as a release.
         } else {
             NSError *jsonErr = nil;
             id obj = [NSJSONSerialization JSONObjectWithData:data options:0 error:&jsonErr];
             if (jsonErr || ![obj isKindOfClass:NSDictionary.class]) {
-                failureReason = @"Could not parse the release feed.";
+                failureReason = NSLocalizedString(@"Could not parse the release feed.", nil);
             } else {
                 NSDictionary *release = obj;
                 id tagObj  = release[@"tag_name"];
                 id urlObj  = release[@"html_url"];
                 id bodyObj = release[@"body"];
                 if (![tagObj isKindOfClass:NSString.class] || ![urlObj isKindOfClass:NSString.class]) {
-                    failureReason = @"Release feed was missing fields.";
+                    failureReason = NSLocalizedString(@"Release feed was missing fields.", nil);
                 } else {
                     latest  = self_ ? [self_ normalizeTag:tagObj] : tagObj;
                     htmlURL = urlObj;

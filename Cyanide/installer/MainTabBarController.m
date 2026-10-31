@@ -411,7 +411,7 @@ static NSString * const kSourcesLastRefreshKey = @"RepoTweaksLastRefreshTimestam
                                                green:partial ? 0.58 : 0.20
                                                 blue:0.10
                                                alpha:0.95];
-    label.text = partial ? @"Some sources could not be refreshed" : @"Source refresh failed";
+    label.text = partial ? NSLocalizedString(@"Some sources could not be refreshed", nil) : NSLocalizedString(@"Source refresh failed", nil);
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         if (self.refreshBanner != banner) return;
         self.refreshBanner = nil;

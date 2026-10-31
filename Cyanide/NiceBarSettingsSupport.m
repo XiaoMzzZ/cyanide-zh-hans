@@ -68,7 +68,7 @@ typedef NS_ENUM(NSInteger, CyanideNiceBarTrafficRange) {
             NSFontAttributeName: [UIFont systemFontOfSize:12],
             NSForegroundColorAttributeName: UIColor.secondaryLabelColor,
         };
-        [@"No traffic history yet" drawInRect:bounds withAttributes:attrs];
+        [NSLocalizedString(@"No traffic history yet", nil) drawInRect:bounds withAttributes:attrs];
         return;
     }
 
@@ -149,7 +149,7 @@ typedef NS_ENUM(NSInteger, CyanideNiceBarTrafficRange) {
                      items:(NSArray<CyanideNiceBarTrafficItem *> *)items
 {
     self.summaryLabel.text = title;
-    self.detailLabelView.text = [NSString stringWithFormat:@"Total %@", nicebarlite_format_traffic_bytes(total)];
+    self.detailLabelView.text = [NSString stringWithFormat:NSLocalizedString(@"Total %@", nil), nicebarlite_format_traffic_bytes(total)];
     self.chartView.items = items;
 }
 
@@ -257,9 +257,9 @@ typedef NS_ENUM(NSInteger, CyanideNiceBarTrafficRange) {
 - (NSString *)rangeTitle
 {
     switch (self.selectedRange) {
-        case CyanideNiceBarTrafficRangeWeek: return @"This Week";
-        case CyanideNiceBarTrafficRangeMonth: return @"This Month";
-        case CyanideNiceBarTrafficRangeYear: return @"This Year";
+        case CyanideNiceBarTrafficRangeWeek: return NSLocalizedString(@"This Week", nil);
+        case CyanideNiceBarTrafficRangeMonth: return NSLocalizedString(@"This Month", nil);
+        case CyanideNiceBarTrafficRangeYear: return NSLocalizedString(@"This Year", nil);
     }
     return @"Traffic";
 }
@@ -277,7 +277,7 @@ typedef NS_ENUM(NSInteger, CyanideNiceBarTrafficRange) {
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
 {
-    if (section == 2) return self.selectedRange == CyanideNiceBarTrafficRangeYear ? @"Monthly Details" : @"Daily Details";
+    if (section == 2) return self.selectedRange == CyanideNiceBarTrafficRangeYear ? NSLocalizedString(@"Monthly Details", nil) : NSLocalizedString(@"Daily Details", nil);
     return nil;
 }
 
@@ -328,37 +328,37 @@ typedef NS_ENUM(NSInteger, CyanideNiceBarTrafficRange) {
 NSString *CyanideNiceBarSystemName(NSInteger item)
 {
     switch (item) {
-        case NiceBarLiteSystemBatteryTemp: return @"Battery temp";
-        case NiceBarLiteSystemFreeRAM: return @"Free RAM";
-        case NiceBarLiteSystemBatteryPercent: return @"Battery %";
-        case NiceBarLiteSystemNetworkSpeed: return @"Network speed";
+        case NiceBarLiteSystemBatteryTemp: return NSLocalizedString(@"Battery temp", nil);
+        case NiceBarLiteSystemFreeRAM: return NSLocalizedString(@"Free RAM", nil);
+        case NiceBarLiteSystemBatteryPercent: return NSLocalizedString(@"Battery %", nil);
+        case NiceBarLiteSystemNetworkSpeed: return NSLocalizedString(@"Network speed", nil);
         case NiceBarLiteSystemUptime: return @"Uptime";
-        case NiceBarLiteSystemDate: return @"Date";
-        case NiceBarLiteSystemLunarDate: return @"Lunar date";
-        case NiceBarLiteSystemTodayTraffic: return @"Today traffic";
-        case NiceBarLiteSystemCurrentIP: return @"Current IP";
-        case NiceBarLiteSystemFreeDisk: return @"Free disk";
-        case NiceBarLiteSystemThermalState: return @"Thermal state";
+        case NiceBarLiteSystemDate: return NSLocalizedString(@"Date", nil);
+        case NiceBarLiteSystemLunarDate: return NSLocalizedString(@"Lunar date", nil);
+        case NiceBarLiteSystemTodayTraffic: return NSLocalizedString(@"Today traffic", nil);
+        case NiceBarLiteSystemCurrentIP: return NSLocalizedString(@"Current IP", nil);
+        case NiceBarLiteSystemFreeDisk: return NSLocalizedString(@"Free disk", nil);
+        case NiceBarLiteSystemThermalState: return NSLocalizedString(@"Thermal state", nil);
     }
-    return @"System";
+    return NSLocalizedString(@"System", nil);
 }
 
 NSString *CyanideNiceBarSystemDescription(NSInteger item)
 {
     switch (item) {
-        case NiceBarLiteSystemBatteryTemp: return @"Battery sensor temperature.";
-        case NiceBarLiteSystemFreeRAM: return @"Currently free memory.";
-        case NiceBarLiteSystemBatteryPercent: return @"Current battery percentage.";
-        case NiceBarLiteSystemNetworkSpeed: return @"Live download and upload speed.";
-        case NiceBarLiteSystemUptime: return @"Time since the device last booted.";
-        case NiceBarLiteSystemDate: return @"Current date.";
-        case NiceBarLiteSystemLunarDate: return @"Chinese lunar date.";
-        case NiceBarLiteSystemTodayTraffic: return @"Traffic counted today.";
-        case NiceBarLiteSystemCurrentIP: return @"Current Wi-Fi IPv4 address.";
-        case NiceBarLiteSystemFreeDisk: return @"Available storage.";
-        case NiceBarLiteSystemThermalState: return @"Device heat level.";
+        case NiceBarLiteSystemBatteryTemp: return NSLocalizedString(@"Battery sensor temperature.", nil);
+        case NiceBarLiteSystemFreeRAM: return NSLocalizedString(@"Currently free memory.", nil);
+        case NiceBarLiteSystemBatteryPercent: return NSLocalizedString(@"Current battery percentage.", nil);
+        case NiceBarLiteSystemNetworkSpeed: return NSLocalizedString(@"Live download and upload speed.", nil);
+        case NiceBarLiteSystemUptime: return NSLocalizedString(@"Time since the device last booted.", nil);
+        case NiceBarLiteSystemDate: return NSLocalizedString(@"Current date.", nil);
+        case NiceBarLiteSystemLunarDate: return NSLocalizedString(@"Chinese lunar date.", nil);
+        case NiceBarLiteSystemTodayTraffic: return NSLocalizedString(@"Traffic counted today.", nil);
+        case NiceBarLiteSystemCurrentIP: return NSLocalizedString(@"Current Wi-Fi IPv4 address.", nil);
+        case NiceBarLiteSystemFreeDisk: return NSLocalizedString(@"Available storage.", nil);
+        case NiceBarLiteSystemThermalState: return NSLocalizedString(@"Device heat level.", nil);
     }
-    return @"System status item.";
+    return NSLocalizedString(@"System status item.", nil);
 }
 
 NSString *CyanideNiceBarSystemLanguageName(NSString *language)
@@ -368,19 +368,19 @@ NSString *CyanideNiceBarSystemLanguageName(NSString *language)
 
 NSString *CyanideNiceBarTimeFormatName(NSString *format)
 {
-    if ([format isEqualToString:@"HH:mm"]) return @"24h time";
-    if ([format isEqualToString:@"h:mm a"]) return @"12h time";
-    if ([format isEqualToString:@"HH:mm:ss"]) return @"Time + seconds";
-    if ([format isEqualToString:@"EEE HH:mm"]) return @"Weekday + time";
+    if ([format isEqualToString:@"HH:mm"]) return NSLocalizedString(@"24h time", nil);
+    if ([format isEqualToString:@"h:mm a"]) return NSLocalizedString(@"12h time", nil);
+    if ([format isEqualToString:@"HH:mm:ss"]) return NSLocalizedString(@"Time + seconds", nil);
+    if ([format isEqualToString:@"EEE HH:mm"]) return NSLocalizedString(@"Weekday + time", nil);
     if ([format isEqualToString:@"a h:mm"]) return @"中文上下午";
-    if ([format isEqualToString:@"M/d"]) return @"Short date";
-    if ([format isEqualToString:@"MM/dd"]) return @"Date";
-    if ([format isEqualToString:@"M/d EEE"]) return @"Date + weekday";
-    if ([format isEqualToString:@"MM-dd HH:mm"]) return @"Date + time";
+    if ([format isEqualToString:@"M/d"]) return NSLocalizedString(@"Short date", nil);
+    if ([format isEqualToString:@"MM/dd"]) return NSLocalizedString(@"Date", nil);
+    if ([format isEqualToString:@"M/d EEE"]) return NSLocalizedString(@"Date + weekday", nil);
+    if ([format isEqualToString:@"MM-dd HH:mm"]) return NSLocalizedString(@"Date + time", nil);
     if ([format isEqualToString:@"M月d日"]) return @"中文日期";
     if ([format isEqualToString:@"cyanide:cn-date-weekday"]) return @"中文日期+星期";
     if ([format isEqualToString:@"M月d日 EEE"]) return @"中文日期+星期";
-    if ([format isEqualToString:@"cyanide:lunar"]) return @"Lunar date";
+    if ([format isEqualToString:@"cyanide:lunar"]) return NSLocalizedString(@"Lunar date", nil);
     if ([format isEqualToString:@"cyanide:lunar-cn"]) return @"农历";
     if ([format isEqualToString:@"cyanide:lunar-cn-full"]) return @"农历完整";
     return format.length ? format : @"HH:mm";
@@ -425,7 +425,7 @@ NSString *CyanideNiceBarPreviewForTimeFormat(NSString *format)
         if (c.month > 0 && c.day > 0) {
             return [NSString stringWithFormat:@"L%02ld/%02ld", (long)c.month, (long)c.day];
         }
-        return @"Lunar --";
+        return NSLocalizedString(@"Lunar --", nil);
     }
     if ([format isEqualToString:@"cyanide:lunar-cn"]) return CyanideNiceBarLunarCNPreview(NO);
     if ([format isEqualToString:@"cyanide:lunar-cn-full"]) return CyanideNiceBarLunarCNPreview(YES);
@@ -450,11 +450,11 @@ static NSArray<NSDictionary<NSString *, NSString *> *> *CyanideNiceBarTimePreset
         @{ @"section": @"Time", @"title": NSLocalizedString(@"24h time", nil),       @"format": @"HH:mm" },
         @{ @"section": @"Time", @"title": NSLocalizedString(@"12h time", nil),       @"format": @"h:mm a" },
         @{ @"section": @"Time", @"title": NSLocalizedString(@"Time + seconds", nil), @"format": @"HH:mm:ss" },
-        @{ @"section": @"Time", @"title": NSLocalizedString(@"Weekday + time", nil), @"format": @"EEE HH:mm" },
-        @{ @"section": @"Date", @"title": NSLocalizedString(@"Short date", nil),     @"format": @"M/d" },
-        @{ @"section": @"Date", @"title": NSLocalizedString(@"Date", nil),           @"format": @"MM/dd" },
-        @{ @"section": @"Date", @"title": NSLocalizedString(@"Date + weekday", nil), @"format": @"M/d EEE" },
-        @{ @"section": @"Date", @"title": NSLocalizedString(@"Date + time", nil),    @"format": @"MM-dd HH:mm" },
+        @{ @"section": @"Time", @"title": NSLocalizedString(@"Weekday + time", nil), @"format": NSLocalizedString(@"EEE HH:mm", nil) },
+        @{ @"section": NSLocalizedString(@"Date", nil), @"title": NSLocalizedString(@"Short date", nil),     @"format": @"M/d" },
+        @{ @"section": NSLocalizedString(@"Date", nil), @"title": NSLocalizedString(@"Date", nil),           @"format": @"MM/dd" },
+        @{ @"section": NSLocalizedString(@"Date", nil), @"title": NSLocalizedString(@"Date + weekday", nil), @"format": @"M/d EEE" },
+        @{ @"section": NSLocalizedString(@"Date", nil), @"title": NSLocalizedString(@"Date + time", nil),    @"format": NSLocalizedString(@"MM-dd HH:mm", nil) },
         @{ @"section": @"中文", @"title": @"中文时间",        @"format": @"a h:mm" },
         @{ @"section": @"中文", @"title": @"中文日期",        @"format": @"M月d日" },
         @{ @"section": @"中文", @"title": @"中文日期+星期",    @"format": @"cyanide:cn-date-weekday" },
@@ -479,7 +479,7 @@ static NSArray<NSDictionary<NSString *, NSString *> *> *CyanideNiceBarTimePreset
 {
     self = [super initWithStyle:UITableViewStyleInsetGrouped];
     if (self) {
-        self.title = slotTitle.length ? slotTitle : @"Date / Time";
+        self.title = slotTitle.length ? slotTitle : NSLocalizedString(@"Date / Time", nil);
         self.selectedFormat = selectedFormat.length ? selectedFormat : @"HH:mm";
         self.selection = selection;
         NSMutableArray<NSString *> *titles = [NSMutableArray array];
@@ -556,7 +556,7 @@ static NSArray<NSDictionary<NSString *, NSString *> *> *CyanideNiceBarTimePreset
 {
     self = [super initWithStyle:UITableViewStyleInsetGrouped];
     if (self) {
-        self.title = slotTitle.length ? slotTitle : @"System Item";
+        self.title = slotTitle.length ? slotTitle : NSLocalizedString(@"System Item", nil);
         self.selectedItem = selectedItem;
         self.selectedLanguage = selectedLanguage.length ? selectedLanguage : @"en";
         self.selection = selection;
@@ -576,7 +576,7 @@ static NSArray<NSDictionary<NSString *, NSString *> *> *CyanideNiceBarTimePreset
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
 {
-    return section == 0 ? @"System Item" : @"Thermal State Language";
+    return section == 0 ? NSLocalizedString(@"System Item", nil) : NSLocalizedString(@"Thermal State Language", nil);
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -592,7 +592,7 @@ static NSArray<NSDictionary<NSString *, NSString *> *> *CyanideNiceBarTimePreset
     } else {
         NSString *language = indexPath.row == 0 ? @"en" : @"zh";
         cell.textLabel.text = CyanideNiceBarSystemLanguageName(language);
-        cell.detailTextLabel.text = indexPath.row == 0 ? @"Shows thermal state in English." : @"Shows thermal state in Chinese.";
+        cell.detailTextLabel.text = indexPath.row == 0 ? NSLocalizedString(@"Shows thermal state in English.", nil) : NSLocalizedString(@"Shows thermal state in Chinese.", nil);
         cell.accessoryType = [language isEqualToString:self.selectedLanguage] &&
                              self.selectedItem == NiceBarLiteSystemThermalState
             ? UITableViewCellAccessoryCheckmark

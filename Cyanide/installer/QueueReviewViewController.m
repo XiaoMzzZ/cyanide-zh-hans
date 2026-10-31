@@ -154,11 +154,11 @@ static BOOL QueuePackageIsHideHomeBar(Package *pkg)
 
     NSString *confirmTitle;
     if (count == 1) {
-        confirmTitle = @"Confirm 1 Change";
+        confirmTitle = NSLocalizedString(@"Confirm 1 Change", nil);
     } else if (count > 1) {
         confirmTitle = [NSString stringWithFormat:NSLocalizedString(@"Confirm %ld Changes", nil), (long)count];
     } else {
-        confirmTitle = @"Confirm";
+        confirmTitle = NSLocalizedString(@"Confirm", nil);
     }
     UIButtonConfiguration *cfg = self.confirmButton.configuration;
     cfg.title = confirmTitle;
@@ -330,20 +330,20 @@ static BOOL QueuePackageIsHideHomeBar(Package *pkg)
     NSString *label;
     switch ((QueueReviewSection)section) {
         case QueueReviewSectionInstall:
-            if (allSameKind && commonKind == PackageInstallKindNanoRegistry) label = @"Apply";
+            if (allSameKind && commonKind == PackageInstallKindNanoRegistry) label = NSLocalizedString(@"Apply", nil);
             else if (allSameKind && commonKind == PackageInstallKindCallRecordingSound) label = @"Silence";
-            else if (allSameKind && commonKind == PackageInstallKindHideHomeBar) label = @"Hide";
+            else if (allSameKind && commonKind == PackageInstallKindHideHomeBar) label = NSLocalizedString(@"Hide", nil);
             else if (allSameKind && commonKind == PackageInstallKindRepoTweak) label = @"Install";
-            else label = @"Activate";
+            else label = NSLocalizedString(@"Activate", nil);
             break;
         case QueueReviewSectionUninstall:
-            if (allSameKind && commonKind == PackageInstallKindNanoRegistry) label = @"Remove";
+            if (allSameKind && commonKind == PackageInstallKindNanoRegistry) label = NSLocalizedString(@"Remove", nil);
             else if (allSameKind && commonKind == PackageInstallKindCallRecordingSound) label = @"Restore";
             else if (allSameKind && commonKind == PackageInstallKindHideHomeBar) label = @"Restore";
-            else if (allSameKind && commonKind == PackageInstallKindRepoTweak) label = @"Remove";
-            else label = @"Deactivate";
+            else if (allSameKind && commonKind == PackageInstallKindRepoTweak) label = NSLocalizedString(@"Remove", nil);
+            else label = NSLocalizedString(@"Deactivate", nil);
             break;
-        case QueueReviewSectionReApply: label = @"Already Active"; break;
+        case QueueReviewSectionReApply: label = NSLocalizedString(@"Already Active", nil); break;
         default: return nil;
     }
     return [NSString stringWithFormat:@"%@  ·  %ld", label, (long)list.count];
@@ -365,10 +365,10 @@ static BOOL QueuePackageIsHideHomeBar(Package *pkg)
     switch ((QueueReviewSection)section) {
         case QueueReviewSectionInstall:
             if (![self queueIncludesHideHomeBar]) return nil;
-            return @"Hide Home Bar must run by itself because it edits the system home-indicator asset and then needs a respring. Run it alone first, then apply other tweaks after the respring.";
+            return NSLocalizedString(@"Hide Home Bar must run by itself because it edits the system home-indicator asset and then needs a respring. Run it alone first, then apply other tweaks after the respring.", nil);
         case QueueReviewSectionReApply:
             if ([self reApplyPackages].count == 0) return nil;
-            return @"These are already installed, not new pending changes. Confirming re-runs the chain so RemoteCall-backed tweaks come back after a force-quit. To stop one from running, deactivate it from the Packages tab, or use Reset All Packages in Settings → Quick Actions.";
+            return NSLocalizedString(@"These are already installed, not new pending changes. Confirming re-runs the chain so RemoteCall-backed tweaks come back after a force-quit. To stop one from running, deactivate it from the Packages tab, or use Reset All Packages in Settings → Quick Actions.", nil);
         default:
             return nil;
     }
@@ -400,7 +400,7 @@ static BOOL QueuePackageIsHideHomeBar(Package *pkg)
                           [pkg.enabledKey isEqualToString:kSettingsQuickLoaderEnabled]);
     if (isQuickLoader) {
         NSString *scriptName = [[NSUserDefaults standardUserDefaults] stringForKey:@"QuickLoaderSourceScriptName"];
-        cell.textLabel.text = scriptName.length ? [NSString stringWithFormat:@"QuickLoader: %@", scriptName] : pkg.name;
+        cell.textLabel.text = scriptName.length ? [NSString stringWithFormat:NSLocalizedString(@"QuickLoader: %@", nil), scriptName] : pkg.name;
     } else {
         cell.textLabel.text = pkg.name;
     }
@@ -459,8 +459,7 @@ static BOOL QueuePackageIsHideHomeBar(Package *pkg)
         case QueueReviewSectionReApply:
             cell.detailTextLabel.text =
                 [pkg.enabledKey isEqualToString:kSettingsSBCEnabled]
-                    ? @"Enabled; will apply"
-                    : @"Active; will refresh";
+                    ? NSLocalizedString(@"Enabled; will apply", nil) : NSLocalizedString(@"Active; will refresh", nil);
             cell.detailTextLabel.textColor = UIColor.secondaryLabelColor;
             break;
         default:

@@ -88,7 +88,7 @@ static BOOL PackageRepoScriptRequiresNativeBridge(NSString *rawScript)
                                repoTweakID:(NSString *)repoTweakID
                               repoScriptURL:(NSString *)repoScriptURL
 {
-    NSString *source = repoName.length ? repoName : @"Repo Source";
+    NSString *source = repoName.length ? repoName : NSLocalizedString(@"Repo Source", nil);
     NSString *longDescription = shortDescription.length > 0
         ? shortDescription
         : NSLocalizedString(@"JavaScript tweak from a source.", nil);

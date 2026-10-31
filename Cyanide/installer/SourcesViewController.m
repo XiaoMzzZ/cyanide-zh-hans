@@ -95,7 +95,7 @@ static Package *sources_package_for_tweak(NSString *url, NSDictionary *tweak)
         pkg.installDisabledReason = unsupportedReason;
         pkg.unstableWarning = unsupportedReason;
     } else if ([[NSUserDefaults.standardUserDefaults stringForKey:repotweaks_script_defaults_key(url, tweakID)] length] == 0) {
-        pkg.installDisabledReason = @"Refresh this source before installing.";
+        pkg.installDisabledReason = NSLocalizedString(@"Refresh this source before installing.", nil);
     }
     return pkg;
 }
@@ -468,7 +468,7 @@ static UIColor *category_color(NSString *cat)
     config.imageProperties.reservedLayoutSize = CGSizeMake(32.0, 32.0);
     config.imageProperties.maximumSize = CGSizeMake(32.0, 32.0);
     config.imageToTextPadding = 12.0;
-    config.text = cat;
+    config.text = NSLocalizedString(cat, nil);
     config.textProperties.font = [UIFont systemFontOfSize:16.0 weight:UIFontWeightSemibold];
     config.secondaryText = [NSString stringWithFormat:NSLocalizedString(@"%lu package%@", nil),
                             (unsigned long)count, count == 1 ? @"" : @"s"];
@@ -507,11 +507,11 @@ static UIColor *category_color(NSString *cat)
     if (row == 0) {
         config.image = CYIconBadgeImage(@"hammer.fill", UIColor.systemOrangeColor, 32.0);
         config.text = NSLocalizedString(@"Build Your Own JS Tweak", nil);
-        config.secondaryText = @"Write scripts, declare parameters, use the RemoteCall API";
+        config.secondaryText = NSLocalizedString(@"Write scripts, declare parameters, use the RemoteCall API", nil);
     } else {
         config.image = CYIconBadgeImage(@"server.rack", UIColor.systemIndigoColor, 32.0);
         config.text = NSLocalizedString(@"Set Up a Tweak Repository", nil);
-        config.secondaryText = @"Host a JSON feed on GitHub Pages or any HTTPS server";
+        config.secondaryText = NSLocalizedString(@"Host a JSON feed on GitHub Pages or any HTTPS server", nil);
     }
 
     cell.contentConfiguration = config;
@@ -541,7 +541,7 @@ static UIColor *category_color(NSString *cat)
                               object:nil
                             userInfo:@{ @"status": @(success ? RepoTweaksRefreshStatusSuccess
                                                              : RepoTweaksRefreshStatusFailure) }];
-            if (!success) [self presentError:message ?: @"Could not refresh that source."];
+            if (!success) [self presentError:message ?: NSLocalizedString(@"Could not refresh that source.", nil)];
         });
     }]];
     [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil) style:UIAlertActionStyleCancel handler:nil]];
@@ -573,7 +573,7 @@ static UIColor *category_color(NSString *cat)
 - (void)presentError:(NSString *)message
 {
     UIAlertController *err = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Source Failed", nil)
-                                                                 message:message ?: @"Could not refresh source."
+                                                                 message:message ?: NSLocalizedString(@"Could not refresh source.", nil)
                                                           preferredStyle:UIAlertControllerStyleAlert];
     [err addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil) style:UIAlertActionStyleDefault handler:nil]];
     [self presentViewController:err animated:YES completion:nil];
@@ -588,10 +588,10 @@ static UIColor *category_color(NSString *cat)
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
-    if (section == SourcesSectionRepos) return self.urls.count > 0 ? CYSectionHeaderView(@"Repositories") : nil;
+    if (section == SourcesSectionRepos) return self.urls.count > 0 ? CYSectionHeaderView(NSLocalizedString(@"Repositories", nil)) : nil;
     if (section == SourcesSectionQuickLoader) return CYSectionHeaderView(@"QuickLoader");
-    if (section == SourcesSectionCategories) return self.categories.count > 0 ? CYSectionHeaderView(@"Categories") : nil;
-    return CYSectionHeaderView(@"Developer");
+    if (section == SourcesSectionCategories) return self.categories.count > 0 ? CYSectionHeaderView(NSLocalizedString(@"Categories", nil)) : nil;
+    return CYSectionHeaderView(NSLocalizedString(@"Developer", nil));
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
@@ -604,8 +604,8 @@ static UIColor *category_color(NSString *cat)
 - (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section
 {
     if (section == SourcesSectionRepos) {
-        if (self.urls.count == 0) return @"No sources added yet. Tap + to add an HTTPS RepoTweaks JSON URL.";
-        return @"Swipe left to remove a source.";
+        if (self.urls.count == 0) return NSLocalizedString(@"No sources added yet. Tap + to add an HTTPS RepoTweaks JSON URL.", nil);
+        return NSLocalizedString(@"Swipe left to remove a source.", nil);
     }
     return nil;
 }
@@ -632,7 +632,7 @@ static UIColor *category_color(NSString *cat)
     config.imageToTextPadding = 12.0;
     config.text = NSLocalizedString(@"Open QuickLoader", nil);
     config.textProperties.font = [UIFont systemFontOfSize:16.0 weight:UIFontWeightSemibold];
-    config.secondaryText = @"Run a local .js tweak file";
+    config.secondaryText = NSLocalizedString(@"Run a local .js tweak file", nil);
     config.secondaryTextProperties.font = [UIFont systemFontOfSize:14.0 weight:UIFontWeightRegular];
     config.secondaryTextProperties.color = [UIColor.labelColor colorWithAlphaComponent:0.55];
     config.textToSecondaryTextVerticalPadding = 2.0;
@@ -666,13 +666,13 @@ static UIColor *category_color(NSString *cat)
     config.imageProperties.reservedLayoutSize = CGSizeMake(32.0, 32.0);
     config.imageProperties.maximumSize = CGSizeMake(32.0, 32.0);
     config.imageToTextPadding = 12.0;
-    config.text = repoName.length ? repoName : @"Unknown Source";
+    config.text = repoName.length ? repoName : NSLocalizedString(@"Unknown Source", nil);
     config.textProperties.font = [UIFont systemFontOfSize:16.0 weight:UIFontWeightSemibold];
 
     NSUInteger updates = sources_update_count_for_url(url);
     NSMutableString *detail = [NSMutableString string];
     if (author.length) [detail appendFormat:@"%@ · ", author];
-    [detail appendFormat:@"%lu package%@", (unsigned long)tweaks.count, tweaks.count == 1 ? @"" : @"s"];
+    [detail appendFormat:NSLocalizedString(@"%lu package%@", nil), (unsigned long)tweaks.count, tweaks.count == 1 ? @"" : @"s"];
     if (updates > 0) [detail appendFormat:@" · %lu update%@", (unsigned long)updates, updates == 1 ? @"" : @"s"];
     config.secondaryText = detail;
     config.secondaryTextProperties.font = [UIFont systemFontOfSize:14.0 weight:UIFontWeightRegular];

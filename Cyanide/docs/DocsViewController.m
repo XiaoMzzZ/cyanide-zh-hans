@@ -524,7 +524,7 @@ static NSString * const kFooterID      = @"DocsFooter";
                   @"text": NSLocalizedString(@"RemoteCall isn't a hook framework. You can't intercept a method or replace a C function in place.", nil) },
                @{ @"kind": @"prose",
                   @"text": NSLocalizedString(@"Ports work when the effect is a finite mutation — set this property, call this controller method, add this view, hold this assertion, or refresh on a timer.", nil) },
-               @{ @"kind": @"code", @"filename": @"Theos → RemoteCall", @"text": portingNotes },
+               @{ @"kind": @"code", @"filename": NSLocalizedString(@"Theos → RemoteCall", nil), @"text": portingNotes },
                @{ @"kind": @"prose",
                   @"text": NSLocalizedString(@"Targeting another process? Open a separate session with init_remote_call(name, false), do the work, destroy_remote_call before switching back. Powercuff does this for thermalmonitord.", nil) },
            ]},

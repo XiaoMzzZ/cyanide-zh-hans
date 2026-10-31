@@ -41,7 +41,7 @@ static NSString * const kSearchCellID = @"SearchPkgCell";
     self.searchCtl = [[UISearchController alloc] initWithSearchResultsController:nil];
     self.searchCtl.searchResultsUpdater = self;
     self.searchCtl.obscuresBackgroundDuringPresentation = NO;
-    self.searchCtl.searchBar.placeholder = @"Search all tweaks";
+    self.searchCtl.searchBar.placeholder = NSLocalizedString(@"Search all tweaks", nil);
     self.navigationItem.searchController = self.searchCtl;
     self.navigationItem.hidesSearchBarWhenScrolling = NO;
 
@@ -97,7 +97,7 @@ static NSString * const kSearchCellID = @"SearchPkgCell";
                                                  style:UIBarButtonItemStylePlain
                                                 target:self
                                                 action:@selector(reapplyAppliedTweaks)];
-            item.accessibilityLabel = @"Re-apply tweaks";
+            item.accessibilityLabel = NSLocalizedString(@"Re-apply tweaks", nil);
             self.navigationItem.rightBarButtonItem = item;
         }
     } else {
@@ -177,7 +177,7 @@ static NSString * const kSearchCellID = @"SearchPkgCell";
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
     if ([self isSearchActive]) return nil;
-    return CYSectionHeaderView(@"All Packages");
+    return CYSectionHeaderView(NSLocalizedString(@"All Packages", nil));
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
@@ -256,7 +256,7 @@ static NSString * const kSearchCellID = @"SearchPkgCell";
         cell.accessoryView = pill;
     } else if (unsupported) {
         UILabel *pill = [[UILabel alloc] init];
-        pill.text = [pkg.category isEqualToString:@"In Development"] ? @"DISABLED" : @"UNSUPPORTED";
+        pill.text = [pkg.category isEqualToString:@"In Development"] ? NSLocalizedString(@"DISABLED", nil) : NSLocalizedString(@"UNSUPPORTED", nil);
         pill.font = [UIFont systemFontOfSize:11.0 weight:UIFontWeightHeavy];
         pill.textColor = UIColor.systemOrangeColor;
         pill.backgroundColor = [UIColor.systemOrangeColor colorWithAlphaComponent:0.15];

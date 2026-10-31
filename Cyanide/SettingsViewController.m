@@ -305,9 +305,9 @@ static NSArray<NSDictionary *> *settings_repotweaks_tweaks_for_url(NSString *rep
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
-    if (section == 0) return CYSectionHeaderView(@"Tweak Infos");
-    if (section == 1) return CYSectionHeaderView(@"Tweak Status");
-    return CYSectionHeaderView(@"Personalization Options");
+    if (section == 0) return CYSectionHeaderView(NSLocalizedString(@"Tweak Infos", nil));
+    if (section == 1) return CYSectionHeaderView(NSLocalizedString(@"Tweak Status", nil));
+    return CYSectionHeaderView(NSLocalizedString(@"Personalization Options", nil));
 }
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section { return 46.0; }
 
@@ -474,7 +474,7 @@ static NSArray<NSDictionary *> *settings_repotweaks_tweaks_for_url(NSString *rep
     [super viewDidLoad];
     NSDictionary *repo = settings_repotweaks_repo_for_url(self.repoURL);
     NSString *repoName = settings_string_or_empty(repo[@"repoName"]);
-    self.title = repoName.length ? repoName : @"Repository";
+    self.title = repoName.length ? repoName : NSLocalizedString(@"Repository", nil);
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -641,7 +641,7 @@ static NSArray<NSDictionary *> *settings_repotweaks_tweaks_for_url(NSString *rep
                 [self updateData];
                 if (!success) {
                     UIAlertController *err = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Source Failed", nil)
-                                                                                 message:message ?: @"Could not refresh that repository."
+                                                                                 message:message ?: NSLocalizedString(@"Could not refresh that repository.", nil)
                                                                           preferredStyle:UIAlertControllerStyleAlert];
                     [err addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil) style:UIAlertActionStyleDefault handler:nil]];
                     [self presentViewController:err animated:YES completion:nil];
@@ -684,7 +684,7 @@ static NSArray<NSDictionary *> *settings_repotweaks_tweaks_for_url(NSString *rep
 // Native tweak sections
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView { return 2; }
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
-    return CYSectionHeaderView(section == 0 ? @"Sources" : @"All Tweaks");
+    return CYSectionHeaderView(section == 0 ? NSLocalizedString(@"Sources", nil) : NSLocalizedString(@"All Tweaks", nil));
 }
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section { return 46.0; }
 
@@ -704,7 +704,7 @@ static NSArray<NSDictionary *> *settings_repotweaks_tweaks_for_url(NSString *rep
         NSDictionary *repo = settings_repotweaks_repo_for_url(url);
 
         NSString *repoName = settings_string_or_empty(repo[@"repoName"]);
-        cell.textLabel.text = repoName.length ? repoName : @"Unknown Repo";
+        cell.textLabel.text = repoName.length ? repoName : NSLocalizedString(@"Unknown Repo", nil);
         cell.detailTextLabel.text = url;
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     } else {
@@ -1215,7 +1215,7 @@ static NSString * const kSettingsFastLockXLiteRetryInterval = @"FastLockXLiteRet
 // acquire KRW. Shared between the run loop and the progress UI's retry button
 // so the two can never drift apart.
 NSString * const kSettingsRunKRWFailedMessage =
-    @"Failed: kernel primitives were not acquired. Please try running chain again.";
+    NSLocalizedString(@"Failed: kernel primitives were not acquired. Please try running chain again.", nil);
 
 // Auto-retry: when On, a chain run that fails to acquire KRW re-enters itself
 // instead of reporting failure, up to the attempt cap. Each attempt is an
@@ -2674,7 +2674,7 @@ static void settings_handle_springboard_restart(void)
         // A run in flight was working against the old SpringBoard; its own
         // completion may never come (or would report stale success).
         if (g_settings_actions_running == kSettingsLockRun) {
-            settings_post_actions_complete_async(NO, @"SpringBoard restarted during the run — run it again.");
+            settings_post_actions_complete_async(NO, NSLocalizedString(@"SpringBoard restarted during the run — run it again.", nil));
         }
         // Only now, with the old session dropped: the respring cover waits
         // for this, so nothing can reuse stale SpringBoard state meanwhile.
@@ -3332,9 +3332,7 @@ NSString *settings_unsupported_message(void)
     return [NSString stringWithFormat:NSLocalizedString(@"VPhone debug build is bypassing Cyanide's iOS version gate on iOS %@.", nil), version];
 #endif
     if (is_unsupported_new_device()) {
-        return @"Not supported on this device: Memory Integrity Enforcement "
-                "(iPhone 17 and newer, M5 iPad Pro) blocks the kernel exploit "
-                "this relies on.";
+        return NSLocalizedString(@"Not supported on this device: Memory Integrity Enforcement (iPhone 17 and newer, M5 iPad Pro) blocks the kernel exploit this relies on.", nil);
     }
     return [NSString stringWithFormat:NSLocalizedString(@"Not supported on iOS %@. Supported: iOS/iPadOS 17.0-18.7.1 or 26.0-26.0.1.", nil), version];
 }
@@ -4401,11 +4399,11 @@ static NSString *settings_nicebar_key(NSString *prefix, NSInteger slot)
 static NSString *settings_nicebar_slot_name(NSInteger slot)
 {
     switch ((NiceBarLiteSlot)slot) {
-        case NiceBarLiteSlotTopLeft: return @"Top Left";
-        case NiceBarLiteSlotTopRight: return @"Top Right";
-        case NiceBarLiteSlotBottomLeft: return @"Bottom Left";
-        case NiceBarLiteSlotBottomRight: return @"Bottom Right";
-        case NiceBarLiteSlotBottomCenter: return @"Bottom Center";
+        case NiceBarLiteSlotTopLeft: return NSLocalizedString(@"Top Left", nil);
+        case NiceBarLiteSlotTopRight: return NSLocalizedString(@"Top Right", nil);
+        case NiceBarLiteSlotBottomLeft: return NSLocalizedString(@"Bottom Left", nil);
+        case NiceBarLiteSlotBottomRight: return NSLocalizedString(@"Bottom Right", nil);
+        case NiceBarLiteSlotBottomCenter: return NSLocalizedString(@"Bottom Center", nil);
         case NiceBarLiteSlotCount: return @"Slot";
     }
     return @"Slot";
@@ -4414,31 +4412,31 @@ static NSString *settings_nicebar_slot_name(NSInteger slot)
 static NSString *settings_nicebar_kind_name(NSInteger kind)
 {
     switch ((NiceBarLiteContentKind)kind) {
-        case NiceBarLiteContentOff: return @"Off";
-        case NiceBarLiteContentCustomText: return @"Custom Text";
-        case NiceBarLiteContentSystem: return @"System";
-        case NiceBarLiteContentTimeFormat: return @"Date / Time";
-        case NiceBarLiteContentWeather: return @"Weather";
+        case NiceBarLiteContentOff: return NSLocalizedString(@"Off", nil);
+        case NiceBarLiteContentCustomText: return NSLocalizedString(@"Custom Text", nil);
+        case NiceBarLiteContentSystem: return NSLocalizedString(@"System", nil);
+        case NiceBarLiteContentTimeFormat: return NSLocalizedString(@"Date / Time", nil);
+        case NiceBarLiteContentWeather: return NSLocalizedString(@"Weather", nil);
     }
-    return @"Off";
+    return NSLocalizedString(@"Off", nil);
 }
 
 static NSString *settings_nicebar_system_name(NSInteger item)
 {
     switch ((NiceBarLiteSystemItem)item) {
-        case NiceBarLiteSystemBatteryTemp: return @"Battery Temp";
-        case NiceBarLiteSystemFreeRAM: return @"Free RAM";
+        case NiceBarLiteSystemBatteryTemp: return NSLocalizedString(@"Battery Temp", nil);
+        case NiceBarLiteSystemFreeRAM: return NSLocalizedString(@"Free RAM", nil);
         case NiceBarLiteSystemBatteryPercent: return @"Battery";
-        case NiceBarLiteSystemNetworkSpeed: return @"Network Speed";
+        case NiceBarLiteSystemNetworkSpeed: return NSLocalizedString(@"Network Speed", nil);
         case NiceBarLiteSystemUptime: return @"Uptime";
-        case NiceBarLiteSystemDate: return @"Date";
-        case NiceBarLiteSystemLunarDate: return @"Lunar Date";
-        case NiceBarLiteSystemTodayTraffic: return @"Today Traffic";
-        case NiceBarLiteSystemCurrentIP: return @"Current IP";
-        case NiceBarLiteSystemFreeDisk: return @"Free Disk";
-        case NiceBarLiteSystemThermalState: return @"Thermal State";
+        case NiceBarLiteSystemDate: return NSLocalizedString(@"Date", nil);
+        case NiceBarLiteSystemLunarDate: return NSLocalizedString(@"Lunar Date", nil);
+        case NiceBarLiteSystemTodayTraffic: return NSLocalizedString(@"Today Traffic", nil);
+        case NiceBarLiteSystemCurrentIP: return NSLocalizedString(@"Current IP", nil);
+        case NiceBarLiteSystemFreeDisk: return NSLocalizedString(@"Free Disk", nil);
+        case NiceBarLiteSystemThermalState: return NSLocalizedString(@"Thermal State", nil);
     }
-    return @"System";
+    return NSLocalizedString(@"System", nil);
 }
 
 static BOOL settings_nicebar_has_weather_slots(NSUserDefaults *d)
@@ -4457,7 +4455,7 @@ static NSString *settings_nicebar_weather_text_for_slot(NSUserDefaults *d, NSInt
     if (![tempNumber isKindOfClass:NSNumber.class] || ![codeNumber isKindOfClass:NSNumber.class]) {
         return [d stringForKey:kSettingsNiceBarLiteWeatherCache] ?:
                [d stringForKey:settings_nicebar_key(kSettingsNiceBarLiteSlotWeatherPrefix, slot)] ?:
-               @"Weather --";
+               NSLocalizedString(@"Weather --", nil);
     }
 
     NSString *language = [d stringForKey:settings_nicebar_key(kSettingsNiceBarLiteSlotWeatherLanguagePrefix, slot)] ?: @"en";
@@ -4496,7 +4494,7 @@ static void settings_nicebar_store_weather_result(NSUserDefaults *d,
                            temp.doubleValue];
         [d setObject:cache forKey:kSettingsNiceBarLiteWeatherCache];
     } else {
-        NSString *resolved = fallbackText.length ? fallbackText : @"Weather --";
+        NSString *resolved = fallbackText.length ? fallbackText : NSLocalizedString(@"Weather --", nil);
         [d setObject:resolved forKey:kSettingsNiceBarLiteWeatherCache];
     }
 
@@ -4511,19 +4509,19 @@ static void settings_nicebar_store_weather_result(NSUserDefaults *d,
 static NSString *settings_nsbar_position_name(NSInteger position)
 {
     switch ((NSBarPosition)position) {
-        case NSBarPositionTopLeft: return @"Top Left";
-        case NSBarPositionBottomLeft: return @"Bottom Left";
-        case NSBarPositionTopRight: return @"Top Right";
-        case NSBarPositionBottomRight: return @"Bottom Right";
+        case NSBarPositionTopLeft: return NSLocalizedString(@"Top Left", nil);
+        case NSBarPositionBottomLeft: return NSLocalizedString(@"Bottom Left", nil);
+        case NSBarPositionTopRight: return NSLocalizedString(@"Top Right", nil);
+        case NSBarPositionBottomRight: return NSLocalizedString(@"Bottom Right", nil);
         case NSBarPositionCenter: return @"Center";
     }
-    return @"Top Left";
+    return NSLocalizedString(@"Top Left", nil);
 }
 
 static NSString *settings_livewp_video_detail(void)
 {
     NSString *path = livewp_absolute_path();
-    if (path.length == 0) return @"No video selected.";
+    if (path.length == 0) return NSLocalizedString(@"No video selected.", nil);
     NSDictionary *attrs = [[NSFileManager defaultManager] attributesOfItemAtPath:path error:nil];
     if (attrs) {
         unsigned long long bytes = [attrs fileSize];
@@ -4777,10 +4775,9 @@ void settings_present_hide_home_bar_respring_prompt(UIViewController *host)
 {
     BOOL targetHidden = [NSUserDefaults.standardUserDefaults boolForKey:kSettingsHideHomeBarPendingHidden];
     settings_present_respring_prompt(host,
-        (targetHidden ? @"Respring to Hide Home Bar?" : @"Respring to Restore Home Bar?"),
+        (targetHidden ? NSLocalizedString(@"Respring to Hide Home Bar?", nil) : NSLocalizedString(@"Respring to Restore Home Bar?", nil)),
         (targetHidden
-         ? @"Hide Home Bar was applied, but SpringBoard needs to restart before the home indicator disappears."
-         : @"Home Bar restore was queued, but SpringBoard needs to restart before the stock home indicator returns."));
+         ? NSLocalizedString(@"Hide Home Bar was applied, but SpringBoard needs to restart before the home indicator disappears.", nil) : NSLocalizedString(@"Home Bar restore was queued, but SpringBoard needs to restart before the stock home indicator returns.", nil)));
 }
 
 void settings_present_respring_prompt(UIViewController *host, NSString *title, NSString *message)
@@ -5256,7 +5253,7 @@ NSString *settings_themer_selected_theme_display_name(void)
             stringForKey:kSettingsThemerCustomThemeName];
         return name.length > 0 ? name : NSLocalizedString(@"Imported Theme", nil);
     }
-    return @"None";
+    return NSLocalizedString(@"None", nil);
 }
 
 static void settings_themer_import_fail(NSError **error, NSString *message)
@@ -5264,7 +5261,7 @@ static void settings_themer_import_fail(NSError **error, NSString *message)
     if (error && !*error) {
         *error = [NSError errorWithDomain:@"CyanideThemerImport"
                                      code:1
-                                 userInfo:@{ NSLocalizedDescriptionKey: message ?: @"Import failed." }];
+                                 userInfo:@{ NSLocalizedDescriptionKey: message ?: NSLocalizedString(@"Import failed.", nil) }];
     }
 }
 
@@ -5588,8 +5585,7 @@ static void settings_nano_load_from_plist_into_defaults(BOOL logResult)
 }
 
 static NSString * const kSettingsNanoCachePushFailedMessage =
-    @"Watch pairing override was written. Respring before pairing so the system "
-    @"reloads it — until then the old values are still cached and may overwrite it.";
+    NSLocalizedString(@"Watch pairing override was written. Respring before pairing so the system reloads it — until then the old values are still cached and may overwrite it.", nil);
 
 // Synchronous entry point used by both the Settings UI buttons and the
 // Installer's PackageQueue commit path. Logs progress to the in-app log so
@@ -5671,7 +5667,7 @@ static void settings_post_nano_action_complete(BOOL ok, BOOL pushed)
         NSDictionary *info = @{
             kSettingsActionsDidCompleteSuccessKey: @(ok),
             kSettingsActionsDidCompletePartialKey: @(ok && !pushed),
-            kSettingsActionsDidCompleteMessageKey: !ok ? @"Watch pairing override failed. Check the log."
+            kSettingsActionsDidCompleteMessageKey: !ok ? NSLocalizedString(@"Watch pairing override failed. Check the log.", nil)
                                                  : (pushed ? @"" : kSettingsNanoCachePushFailedMessage)
         };
         [[NSNotificationCenter defaultCenter]
@@ -7275,7 +7271,7 @@ void settings_location_services_set_async(int desired, BOOL allowFullExploit,
     dispatch_async(dispatch_get_global_queue(0, 0), ^{
         if (!settings_try_claim_actions_lock("Location Services",
                                              "[LOCSVC] Another action is already running.")) {
-            finishEarly(@"Another action is already running. Try again when it has finished.");
+            finishEarly(NSLocalizedString(@"Another action is already running. Try again when it has finished.", nil));
             return;
         }
         // The target is decided now, under the action lock, from one fresh
@@ -7283,7 +7279,7 @@ void settings_location_services_set_async(int desired, BOOL allowFullExploit,
         // changed since, and a toggle must flip what is actually there).
         BOOL enable = desired < 0 ? (locationservices_enabled_local() != 1) : (desired != 0);
         target = enable ? 1 : 0;
-        NSString *verb = enable ? @"Turning on" : @"Turning off";
+        NSString *verb = enable ? NSLocalizedString(@"Turning on", nil) : NSLocalizedString(@"Turning off", nil);
         __block BOOL ok = NO;
         __block BOOL doneSent = NO;   // the result phase is reported once
         __block NSString *message = nil;
@@ -7298,13 +7294,13 @@ void settings_location_services_set_async(int desired, BOOL allowFullExploit,
             settings_post_actions_complete_async(ok, message ?: @"");
         };
         NSString *(^doneText)(void) = ^NSString *{
-            return [NSString stringWithFormat:NSLocalizedString(@"Location Services %@.", nil), enable ? NSLocalizedString(@"on", nil) : NSLocalizedString(@"off", nil)];
+            return [NSString stringWithFormat:NSLocalizedString(@"Location Services %@.", nil), enable ? NSLocalizedString(@"On", nil) : NSLocalizedString(@"Off", nil)];
         };
         @try {
             if (locationservices_enabled_local() == (enable ? 1 : 0)) {
                 ok = YES;
-                message = [NSString stringWithFormat:NSLocalizedString(@"Location Services already %@.", nil), enable ? NSLocalizedString(@"on", nil) : NSLocalizedString(@"off", nil)];
-                step(1.0f, enable ? @"Already on" : @"Already off", 0);
+                message = [NSString stringWithFormat:NSLocalizedString(@"Location Services already %@.", nil), enable ? NSLocalizedString(@"On", nil) : NSLocalizedString(@"Off", nil)];
+                step(1.0f, enable ? NSLocalizedString(@"Already on", nil) : NSLocalizedString(@"Already off", nil), 0);
                 doneSent = YES;
                 return;
             }
@@ -7318,18 +7314,18 @@ void settings_location_services_set_async(int desired, BOOL allowFullExploit,
             // user's go-ahead for a full run (it can reboot A18/M4 devices):
             // without it, report kSettingsFullExploitRequiredMessage and let
             // the caller ask (in-app) or tell the user to open Cyanide.
-            step(0.1f, @"Getting kernel ready", 0);
+            step(0.1f, NSLocalizedString(@"Getting kernel ready", nil), 0);
             BOOL kernelReady = settings_ensure_kexploit_for_read();
             if (!kernelReady && !settings_tool_may_run_exploit(allowFullExploit)) {
                 message = kSettingsFullExploitRequiredMessage;
                 return;
             }
             if (!kernelReady) {
-                step(0.45f, @"Running the full exploit", 12.0);
+                step(0.45f, NSLocalizedString(@"Running the full exploit", nil), 12.0);
                 kernelReady = settings_ensure_kexploit();
             }
             if (!kernelReady) {
-                message = @"Failed: kernel primitives were not acquired. Run the chain, then try again.";
+                message = NSLocalizedString(@"Failed: kernel primitives were not acquired. Run the chain, then try again.", nil);
                 return;
             }
             // The longest step is the activation settle window before the
@@ -7342,9 +7338,9 @@ void settings_location_services_set_async(int desired, BOOL allowFullExploit,
                 // The settle window shows as "Getting kernel ready". The
                 // "Connecting" phase is reported when the SpringBoard
                 // connection actually starts (g_springboard_connect_progress).
-                if (settle > 0.3) step(0.7f, @"Getting kernel ready", settle);
+                if (settle > 0.3) step(0.7f, NSLocalizedString(@"Getting kernel ready", nil), settle);
             }
-            g_springboard_connect_progress = ^{ step(0.82f, @"Connecting", 0.5); };
+            g_springboard_connect_progress = ^{ step(0.82f, NSLocalizedString(@"Connecting", nil), 0.5); };
             @synchronized (settings_rc_lock()) {
                 if (settings_ensure_springboard_remote_call_locked()) {
                     step(0.85f, verb, 0.3);
@@ -7369,7 +7365,7 @@ void settings_location_services_set_async(int desired, BOOL allowFullExploit,
                         // Report now; the teardown below runs while the
                         // result is already on screen.
                         message = doneText();
-                        step(1.0f, @"Done", 0.2);
+                        step(1.0f, NSLocalizedString(@"Done", nil), 0.2);
                         doneSent = YES;
                         postResult();
                         // Switcher card: SpringBoard deletes it removalDelay
@@ -7432,19 +7428,17 @@ void settings_location_services_set_async(int desired, BOOL allowFullExploit,
                 if (locationservices_enabled_local() == (enable ? 1 : 0)) {
                     ok = YES;
                     message = doneText();
-                    if (!doneSent) { step(1.0f, @"Done", 0.2); doneSent = YES; }
+                    if (!doneSent) { step(1.0f, NSLocalizedString(@"Done", nil), 0.2); doneSent = YES; }
                     return;
                 }
                 if (springboardSent == LSCallUncertain) {
                     // The SpringBoard request may still land; sending it again
                     // from Preferences is exactly what LSCallUncertain forbids.
-                    message = @"Location Services may not have changed: the request's result was lost. "
-                              @"Check the switch, then try again if needed.";
+                    message = NSLocalizedString(@"Location Services may not have changed: the request's result was lost. Check the switch, then try again if needed.", nil);
                     return;
                 }
                 if (settings_any_registered_live_loop_running() || settings_has_persistent_springboard_remote_call_user()) {
-                    message = @"SpringBoard didn't change it, and the Preferences fallback would need the "
-                              @"SpringBoard channel closed while live tweaks use it. Stop them and try again.";
+                    message = NSLocalizedString(@"SpringBoard didn't change it, and the Preferences fallback would need the SpringBoard channel closed while live tweaks use it. Stop them and try again.", nil);
                     return;
                 }
                 // SpringBoard may have been refused because the activation
@@ -7453,13 +7447,13 @@ void settings_location_services_set_async(int desired, BOOL allowFullExploit,
                 // reopen the AMFI/runningboardd deadlock the window prevents.
                 if (clock_gettime_nsec_np(CLOCK_MONOTONIC_RAW) < g_activation_settle_until_ns ||
                     g_app_in_background || settings_cleanup_in_progress()) {
-                    message = @"Cyanide was busy — try again in a moment.";
+                    message = NSLocalizedString(@"Cyanide was busy — try again in a moment.", nil);
                     return;
                 }
                 // Fallback: Preferences, only if it's already running (see
                 // locationservices_set_enabled_via_running_preferences).
                 log_user("[LOCSVC] No change from SpringBoard; trying a running Preferences…\n");
-                step(0.9f, @"Trying another way", 0.3);
+                step(0.9f, NSLocalizedString(@"Trying another way", nil), 0.3);
                 LSCallResult sent;
                 @synchronized (settings_rc_lock()) {
                     settings_destroy_springboard_remote_call_locked_internal("switching to Preferences", NO);
@@ -7467,13 +7461,12 @@ void settings_location_services_set_async(int desired, BOOL allowFullExploit,
                 }
                 ok = sent != LSCallNotSent && locationservices_wait_for_state(enable, 3000);
                 if (!ok && sent == LSCallNotSent) {
-                    message = @"Location Services did not change. Opening the Settings app once and trying "
-                              @"again lets Cyanide use it as a fallback.";
+                    message = NSLocalizedString(@"Location Services did not change. Opening the Settings app once and trying again lets Cyanide use it as a fallback.", nil);
                     return;
                 }
             }
-            if (ok && !doneSent) { step(1.0f, @"Done", 0.2); doneSent = YES; }
-            message = ok ? doneText() : @"Location Services did not change. Check the log.";
+            if (ok && !doneSent) { step(1.0f, NSLocalizedString(@"Done", nil), 0.2); doneSent = YES; }
+            message = ok ? doneText() : NSLocalizedString(@"Location Services did not change. Check the log.", nil);
         } @finally {
             g_springboard_connect_progress = nil;
             kexploit_set_full_run_notice(nil);
@@ -7504,7 +7497,7 @@ BOOL settings_filesystem_access_available(void)
 
 NSString * const kSettingsLocationServicesLinksEnabled = @"LocationServicesLinksEnabled";
 NSString * const kSettingsFullExploitRequiredMessage =
-    @"No saved kernel access — this needs a full exploit run first.";
+    NSLocalizedString(@"No saved kernel access — this needs a full exploit run first.", nil);
 
 // Lifts the sandbox for the File Browser if it isn't already. `completion`
 // runs on the main queue. See the header for allowFullExploit.
@@ -7520,7 +7513,7 @@ void settings_unlock_filesystem_async(BOOL allowFullExploit,
     dispatch_async(dispatch_get_global_queue(0, 0), ^{
         if (!settings_try_claim_actions_lock("File Browser",
                                              "[FILES] Another action is already running.")) {
-            finish(NO, @"Another action is already running. Try again when it has finished.");
+            finish(NO, NSLocalizedString(@"Another action is already running. Try again when it has finished.", nil));
             return;
         }
         BOOL ok = NO;
@@ -7536,12 +7529,12 @@ void settings_unlock_filesystem_async(BOOL allowFullExploit,
             }
             if (!kernelReady) kernelReady = settings_ensure_kexploit();
             if (!kernelReady) {
-                message = @"Kernel access could not be acquired. Run the chain, then try again.";
+                message = NSLocalizedString(@"Kernel access could not be acquired. Run the chain, then try again.", nil);
                 return;
             }
             @synchronized (settings_rc_lock()) {
                 if (!settings_ensure_springboard_remote_call_locked()) {
-                    message = @"SpringBoard could not be reached.";
+                    message = NSLocalizedString(@"SpringBoard could not be reached.", nil);
                     return;
                 }
                 int sbx = escape_sbx_demo2_in_session();
@@ -7552,8 +7545,7 @@ void settings_unlock_filesystem_async(BOOL allowFullExploit,
                 }
             }
             ok = settings_filesystem_access_available();
-            message = ok ? @"Filesystem sandbox lifted — File Browser ready."
-                         : @"The sandbox could not be lifted. Check the log.";
+            message = ok ? NSLocalizedString(@"Filesystem sandbox lifted — File Browser ready.", nil) : NSLocalizedString(@"The sandbox could not be lifted. Check the log.", nil);
         } @finally {
             settings_release_actions_lock();
             finish(ok, message);
@@ -7645,13 +7637,13 @@ static void settings_run_exploit_with_log_reason(UIViewController *presenter, NS
         return;
     }
     if (!settings_device_supported()) {
-        settings_simple_alert(presenter, @"Not Supported", settings_unsupported_message());
+        settings_simple_alert(presenter, NSLocalizedString(@"Not Supported", nil), settings_unsupported_message());
         if (completion) completion(NO);
         return;
     }
     if (g_settings_manual_exploit_running || settings_run_in_flight()) {
-        settings_simple_alert(presenter, @"Already Running",
-                              @"Another run is in progress. Try again when it has finished.");
+        settings_simple_alert(presenter, NSLocalizedString(@"Already Running", nil),
+                              NSLocalizedString(@"Another run is in progress. Try again when it has finished.", nil));
         if (completion) completion(NO);
         return;
     }
@@ -7695,7 +7687,7 @@ BOOL settings_kernel_access_available(void)
 }
 
 NSString * const kSettingsNoKernelAccessHint =
-    @"No kernel access. Run the exploit from Home, or open this screen again.";
+    NSLocalizedString(@"No kernel access. Run the exploit from Home, or open this screen again.", nil);
 
 // One behaviour for every tool without kernel access (A18/M4 only; other
 // devices run the exploit by themselves): a "Run Exploit?" popup, once per
@@ -7752,7 +7744,7 @@ void settings_springboard_tool_async(const char *tag, BOOL (^work)(void),
     NSString *owner = [NSString stringWithUTF8String:tag ?: "Tool"];
     dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
         if (!settings_try_claim_actions_lock(owner.UTF8String, "[LARA] Another action is already running.")) {
-            finish(NO, @"Another action is already running. Try again when it has finished.");
+            finish(NO, NSLocalizedString(@"Another action is already running. Try again when it has finished.", nil));
             return;
         }
         BOOL ok = NO;
@@ -7765,19 +7757,19 @@ void settings_springboard_tool_async(const char *tag, BOOL (^work)(void),
             }
             if (!kernelReady) kernelReady = settings_ensure_kexploit();
             if (!kernelReady) {
-                message = @"Kernel access could not be acquired. Check the log.";
+                message = NSLocalizedString(@"Kernel access could not be acquired. Check the log.", nil);
                 return;
             }
             @synchronized (settings_rc_lock()) {
                 if (!settings_ensure_springboard_remote_call_locked()) {
-                    message = @"SpringBoard could not be reached.";
+                    message = NSLocalizedString(@"SpringBoard could not be reached.", nil);
                     return;
                 }
                 ok = work ? work() : YES;
                 if (!settings_has_persistent_springboard_remote_call_user() && g_springboard_rc_ready)
                     settings_destroy_springboard_remote_call_locked_internal_ex(tag ?: "tool", YES, YES);
             }
-            if (!ok && !message) message = @"It didn't work on this device. Check the log.";
+            if (!ok && !message) message = NSLocalizedString(@"It didn't work on this device. Check the log.", nil);
         } @finally {
             settings_release_actions_lock();
             finish(ok, message);
@@ -7792,7 +7784,7 @@ static BOOL settings_daemons_kernel_ready(BOOL allowFullExploit, NSString **mess
     if (settings_ensure_kexploit_for_read()) return YES;
     if (!settings_tool_may_run_exploit(allowFullExploit)) { *message = kSettingsFullExploitRequiredMessage; return NO; }
     if (settings_ensure_kexploit()) return YES;
-    *message = @"Kernel access could not be acquired. Run the chain, then try again.";
+    *message = NSLocalizedString(@"Kernel access could not be acquired. Run the chain, then try again.", nil);
     return NO;
 }
 
@@ -7909,12 +7901,12 @@ void settings_daemons_read_async(BOOL allowFullExploit,
         NSDictionary *disabled = nil, *running = nil;
         NSString *message = nil;
         if (!settings_try_claim_actions_lock("Daemons", "[DAEMONS] Another action is already running.")) {
-            message = @"Another action is already running. Try again when it has finished.";
+            message = NSLocalizedString(@"Another action is already running. Try again when it has finished.", nil);
         } else {
             @try {
                 if (settings_daemons_kernel_ready(allowFullExploit, &message)) {
                     disabled = launchd_disabled_read();
-                    if (!disabled) message = @"The list of disabled daemons could not be read. Check the log.";
+                    if (!disabled) message = NSLocalizedString(@"The list of disabled daemons could not be read. Check the log.", nil);
                     else running = settings_daemons_running();
                 }
             } @finally {
@@ -7937,13 +7929,13 @@ NSDictionary *settings_kernel_access_status(void)
     NSString *state, *detail;
     if (live) {
         state = @"Active";
-        detail = @"Kernel access is live in Cyanide.";
+        detail = NSLocalizedString(@"Kernel access is live in Cyanide.", nil);
     } else if (parked) {
         state = @"Parked";
-        detail = @"Saved in launchd for this boot; restored without a full exploit run.";
+        detail = NSLocalizedString(@"Saved in launchd for this boot; restored without a full exploit run.", nil);
     } else {
-        state = @"None";
-        detail = @"No saved kernel access for this boot; the next use needs a full exploit run.";
+        state = NSLocalizedString(@"None", nil);
+        detail = NSLocalizedString(@"No saved kernel access for this boot; the next use needs a full exploit run.", nil);
     }
     return @{ @"state": state, @"detail": detail, @"springboard": @(springboard) };
 }
@@ -8024,17 +8016,17 @@ void settings_battery_info_async(BOOL allowFullExploit,
             if (!settings_device_supported()) {
                 message = settings_unsupported_message();
             } else if (!settings_try_claim_actions_lock("System Info", "[SYSINFO] Another action is already running.")) {
-                message = @"Another action is already running. Try again when it has finished.";
+                message = NSLocalizedString(@"Another action is already running. Try again when it has finished.", nil);
             } else {
                 @try {
                     if (settings_daemons_kernel_ready(allowFullExploit, &message)) {
                         @synchronized (settings_rc_lock()) {
                             BOOL opened = !g_springboard_rc_ready;
                             if (!settings_ensure_springboard_remote_call_locked()) {
-                                message = @"SpringBoard could not be reached.";
+                                message = NSLocalizedString(@"SpringBoard could not be reached.", nil);
                             } else {
                                 battery = settings_battery_props_springboard_locked();
-                                if (!battery) message = @"The battery information could not be read. Check the log.";
+                                if (!battery) message = NSLocalizedString(@"The battery information could not be read. Check the log.", nil);
                                 if (opened && !settings_has_persistent_springboard_remote_call_user() && g_springboard_rc_ready)
                                     settings_destroy_springboard_remote_call_locked_internal_ex("battery info", YES, YES);
                             }
@@ -8129,7 +8121,7 @@ void settings_daemons_apply_async(NSDictionary<NSString *, NSNumber *> *changes,
         BOOL ok = NO;
         NSString *message = nil;
         if (!settings_try_claim_actions_lock("Daemons", "[DAEMONS] Another action is already running.")) {
-            message = @"Another action is already running. Try again when it has finished.";
+            message = NSLocalizedString(@"Another action is already running. Try again when it has finished.", nil);
         } else {
             @try {
                 if (settings_daemons_kernel_ready(allowFullExploit, &message)) {
@@ -8138,8 +8130,7 @@ void settings_daemons_apply_async(NSDictionary<NSString *, NSNumber *> *changes,
                     log_user("[DAEMONS] Disabling %lu, enabling %lu daemon(s)…\n",
                              (unsigned long)off, (unsigned long)(snapshot.count - off));
                     ok = launchd_disabled_apply(snapshot);
-                    message = ok ? @"Saved. Restart the device to apply."
-                                 : @"disabled.plist could not be written. Check the log.";
+                    message = ok ? NSLocalizedString(@"Saved. Restart the device to apply.", nil) : @"disabled.plist could not be written. Check the log.";
                     log_user("%s %s\n", ok ? "[OK]" : "[FAIL]", message.UTF8String);
                 }
             } @finally {
@@ -8161,23 +8152,22 @@ static void settings_supervision_async(int op, BOOL allowFullExploit,
         int state = SupervisionStateUnknown;
         NSString *message = nil;
         if (!settings_try_claim_actions_lock("Supervision", "[SUPERVISION] Another action is already running.")) {
-            message = @"Another action is already running. Try again when it has finished.";
+            message = NSLocalizedString(@"Another action is already running. Try again when it has finished.", nil);
         } else {
             @try {
                 BOOL ready = (op < 0) ? settings_ensure_kexploit_for_read()
                                       : settings_daemons_kernel_ready(allowFullExploit, &message);
                 if (!ready) {
-                    if (!message) message = @"Kernel access isn't active. Run the chain first, then try again.";
+                    if (!message) message = NSLocalizedString(@"Kernel access isn't active. Run the chain first, then try again.", nil);
                 } else if (op < 0) {
                     state = supervision_read_state();
                     ok = state != SupervisionStateUnknown;
                 } else {
                     ok = supervision_set(op == 1);
                     if (ok) {
-                        message = op == 1 ? @"Supervision activated. Reopen Settings to see it; restart only if it doesn't show."
-                                          : @"Supervision deactivated. Reopen Settings to see it; restart only if it still shows.";
+                        message = op == 1 ? NSLocalizedString(@"Supervision activated. Reopen Settings to see it; restart only if it doesn't show.", nil) : NSLocalizedString(@"Supervision deactivated. Reopen Settings to see it; restart only if it still shows.", nil);
                     } else {
-                        message = @"Supervision could not be changed. Check the log.";
+                        message = NSLocalizedString(@"Supervision could not be changed. Check the log.", nil);
                     }
                     log_user("%s %s\n", ok ? "[OK]" : "[FAIL]", message.UTF8String);
                 }
@@ -8701,8 +8691,7 @@ static NSString *settings_location_sim_mode_summary(NSUserDefaults *d)
 {
     BOOL simulationStarted = [d boolForKey:kSettingsLocationSimStarted];
     NSString *simulation = simulationStarted
-        ? @"Mode: Target simulation started"
-        : @"Mode: Real location requested";
+        ? NSLocalizedString(@"Mode: Target simulation started", nil) : NSLocalizedString(@"Mode: Real location requested", nil);
     NSString *note = simulationStarted ? @"\nUse Restore Real Location to stop it." : @"";
     return [NSString stringWithFormat:@"%@%@\nTarget: %@", simulation, note,
             settings_location_sim_target_summary(d)];
@@ -8836,19 +8825,19 @@ static void settings_schedule_live_apply_for_key(NSString *key)
         if (!settings_location_sim_install_allowed()) {
             log_user("[LOCSIM] Target refresh skipped: Location Simulator is unavailable in this build.\n");
             settings_notify_package_queue_changed_async();
-            settings_post_actions_complete_async(NO, @"Location Simulator is unavailable in this build.");
+            settings_post_actions_complete_async(NO, NSLocalizedString(@"Location Simulator is unavailable in this build.", nil));
             return;
         }
         if (settings_any_registered_live_loop_running()) {
             log_user("[LOCSIM] Location update deferred: a live SpringBoard tweak is running. Hit Apply Tweaks to serialize the process switch.\n");
             settings_notify_package_queue_changed_async();
-            settings_post_actions_complete_async(NO, @"Location refresh deferred while another live tweak is running.");
+            settings_post_actions_complete_async(NO, NSLocalizedString(@"Location refresh deferred while another live tweak is running.", nil));
             return;
         }
         dispatch_async(dispatch_get_global_queue(0, 0), ^{
             if (__sync_val_compare_and_swap(&g_settings_actions_running, kSettingsLockFree, kSettingsLockAction)) {
                 log_user("[LOCSIM] Location update deferred: Apply Tweaks is still running.\n");
-                settings_post_actions_complete_async(NO, @"Location refresh deferred while Apply Tweaks is running.");
+                settings_post_actions_complete_async(NO, NSLocalizedString(@"Location refresh deferred while Apply Tweaks is running.", nil));
                 settings_notify_package_queue_changed_async();
                 return;
             }
@@ -8856,13 +8845,13 @@ static void settings_schedule_live_apply_for_key(NSString *key)
                 if (!settings_ensure_kexploit()) {
                     printf("[LOCSIM] live target refresh failed to acquire KRW\n");
                     log_user("[LOCSIM] Target refresh failed: kernel primitives were not acquired. Please try running chain again.\n");
-                    settings_post_actions_complete_async(NO, @"Location refresh failed: kernel primitives were not acquired.");
+                    settings_post_actions_complete_async(NO, NSLocalizedString(@"Location refresh failed: kernel primitives were not acquired.", nil));
                     settings_notify_package_queue_changed_async();
                     return;
                 }
                 if (settings_any_registered_live_loop_running()) {
                     log_user("[LOCSIM] Location update deferred: a live SpringBoard tweak started while recovery was running. Hit Apply Tweaks to serialize the process switch.\n");
-                    settings_post_actions_complete_async(NO, @"Location refresh deferred while another live tweak is running.");
+                    settings_post_actions_complete_async(NO, NSLocalizedString(@"Location refresh deferred while another live tweak is running.", nil));
                     settings_notify_package_queue_changed_async();
                     return;
                 }
@@ -8877,7 +8866,7 @@ static void settings_schedule_live_apply_for_key(NSString *key)
                              ok ? "[OK]" : "[WARN]",
                              ok ? "target refreshed" : "did not apply cleanly");
                     settings_post_actions_complete_async(ok,
-                        ok ? @"Location target refreshed." : @"Location refresh failed. Check the log.");
+                        ok ? NSLocalizedString(@"Location target refreshed.", nil) : NSLocalizedString(@"Location refresh failed. Check the log.", nil));
                 }
                 settings_notify_package_queue_changed_async();
             } @finally {
@@ -9393,7 +9382,7 @@ void settings_register_defaults(void)
         settings_nicebar_key(kSettingsNiceBarLiteSlotWeatherLanguagePrefix, NiceBarLiteSlotBottomLeft): @"en",
         settings_nicebar_key(kSettingsNiceBarLiteSlotWeatherLanguagePrefix, NiceBarLiteSlotBottomRight): @"en",
         settings_nicebar_key(kSettingsNiceBarLiteSlotWeatherLanguagePrefix, NiceBarLiteSlotBottomCenter): @"en",
-        kSettingsNiceBarLiteWeatherCache: @"Weather --",
+        kSettingsNiceBarLiteWeatherCache: NSLocalizedString(@"Weather --", nil),
 
 
         kSettingsAxonLiteEnabled: @NO,
@@ -9588,7 +9577,7 @@ static void settings_run_actions_internal(BOOL pendingOnly)
                 (void)settings_take_run_preflight_failure();
                 printf("[SETTINGS] another (non-run) action holds the lock; run refused\n");
                 log_user("[RUN] Another action is running. Try again when it has finished.\n");
-                settings_post_actions_complete_async(NO, @"Another action is running. Try again when it has finished.");
+                settings_post_actions_complete_async(NO, NSLocalizedString(@"Another action is running. Try again when it has finished.", nil));
                 return;
             }
             __sync_lock_test_and_set(&g_settings_actions_rerun_requested, 1);
@@ -9610,7 +9599,7 @@ static void settings_run_actions_internal(BOOL pendingOnly)
         log_session_begin();
         BOOL runSucceeded = NO;
         BOOL runHadBlockingFailure = NO;
-        NSString *runCompletionMessage = @"Run failed. Check the log for details.";
+        NSString *runCompletionMessage = NSLocalizedString(@"Run failed. Check the log for details.", nil);
         // Stages that ran but did not apply. They keep their pending marker
         // (settings_mark_tweak_applied(..., NO)), so the next run retries them;
         // this only makes the final status say so instead of "All finished".
@@ -9755,7 +9744,7 @@ static void settings_run_actions_internal(BOOL pendingOnly)
                 if (!stageStripEnabled) settings_request_stagestrip_stop();
                 log_user("[DONE] No pending runtime changes to apply.\n");
                 runSucceeded = YES;
-                runCompletionMessage = @"Done. No pending runtime changes to apply.";
+                runCompletionMessage = NSLocalizedString(@"Done. No pending runtime changes to apply.", nil);
                 return;
             }
 
@@ -9820,7 +9809,7 @@ static void settings_run_actions_internal(BOOL pendingOnly)
                     settings_progress(&step, total, "Opening SpringBoard injection channel");
                     if (!settings_ensure_springboard_remote_call_locked()) {
                         log_user("[RUN] Failed: could not open the SpringBoard control session. Please try installing tweaks again.\n");
-                        runCompletionMessage = @"Failed: could not open the SpringBoard control session. Please try installing tweaks again.";
+                        runCompletionMessage = NSLocalizedString(@"Failed: could not open the SpringBoard control session. Please try installing tweaks again.", nil);
                         return;
                     }
                     log_user("[OK] SpringBoard channel open.\n");
@@ -9860,7 +9849,7 @@ static void settings_run_actions_internal(BOOL pendingOnly)
                         log_user("%s DarkSword tweaks %s. Continuing with remaining changes…\n",
                                  ok ? "[OK]" : "[WARN]",
                                  ok ? "applied" : "may need a refresh");
-                        if (!ok) [runWarnings addObject:@"DarkSword tweaks"];
+                        if (!ok) [runWarnings addObject:NSLocalizedString(@"DarkSword tweaks", nil)];
                     }
 
                     if (runThemer) {
@@ -9871,7 +9860,7 @@ static void settings_run_actions_internal(BOOL pendingOnly)
                         log_user("%s Icon Theme Engine %s.\n",
                                  ok ? "[OK]" : "[WARN]",
                                  ok ? "applied" : "did not apply cleanly");
-                        if (!ok) [runWarnings addObject:@"Icon Theme Engine"];
+                        if (!ok) [runWarnings addObject:NSLocalizedString(@"Icon Theme Engine", nil)];
                         if (ok) {
                             settings_start_themer_live_loop();
                         }
@@ -9886,7 +9875,7 @@ static void settings_run_actions_internal(BOOL pendingOnly)
                         log_user("%s SnowBoard Lite %s.\n",
                                  ok ? "[OK]" : "[WARN]",
                                  ok ? "theme applied" : "did not apply cleanly");
-                        if (!ok) [runWarnings addObject:@"SnowBoard Lite"];
+                        if (!ok) [runWarnings addObject:NSLocalizedString(@"SnowBoard Lite", nil)];
                         if (ok && !settings_themer_live_repair_enabled(d)) {
                             log_user("[SBL] Live repair is enabled; Cyanide will keep the SpringBoard channel open so repair ticks reuse it.\n");
                             settings_start_themer_live_loop();
@@ -9900,7 +9889,7 @@ static void settings_run_actions_internal(BOOL pendingOnly)
                         settings_mark_tweak_applied(kSettingsSBToolsWithTweaks, ok);
                         log_user("%s SpringBoard Tools %s.\n", ok ? "[OK]" : "[WARN]",
                                  ok ? "applied" : (why ?: @"did not apply cleanly").UTF8String);
-                        if (!ok) [runWarnings addObject:@"SpringBoard Tools"];
+                        if (!ok) [runWarnings addObject:NSLocalizedString(@"SpringBoard Tools", nil)];
                     }
 
                     if (runGravityLite) {
@@ -9923,7 +9912,7 @@ static void settings_run_actions_internal(BOOL pendingOnly)
                         } else {
                             log_user("[WARN] Gravity Lite did not start cleanly.\n");
                             runHadBlockingFailure = YES;
-                            runCompletionMessage = @"Gravity Lite did not start cleanly.";
+                            runCompletionMessage = NSLocalizedString(@"Gravity Lite did not start cleanly.", nil);
                         }
                     } else if (!gravityLiteEnabled) {
                         __sync_lock_test_and_set(&g_gravitylite_background_armed, 0);
@@ -9968,7 +9957,7 @@ static void settings_run_actions_internal(BOOL pendingOnly)
                         log_user("%s NiceBar Lite %s.\n",
                                  ok ? "[OK]" : "[WARN]",
                                  ok ? "labels active" : "did not start cleanly");
-                        if (!ok) [runWarnings addObject:@"NiceBar Lite"];
+                        if (!ok) [runWarnings addObject:NSLocalizedString(@"NiceBar Lite", nil)];
                     }
 
 
@@ -10018,7 +10007,7 @@ static void settings_run_actions_internal(BOOL pendingOnly)
                                  (ok || deferred) ? "[OK]" : "[WARN]",
                                  ok ? "hub active — watching for notifications" :
                                  (deferred ? "standing by — fires when notifications appear" : "did not start cleanly"));
-                        if (!ok && !deferred) [runWarnings addObject:@"Axon Lite"];
+                        if (!ok && !deferred) [runWarnings addObject:NSLocalizedString(@"Axon Lite", nil)];
                     }
 
 
@@ -10031,7 +10020,7 @@ static void settings_run_actions_internal(BOOL pendingOnly)
                         log_user("%s App Switcher Grid %s.\n",
                                  ok ? "[OK]" : "[WARN]",
                                  ok ? "enabled" : "did not apply cleanly");
-                        if (!ok) [runWarnings addObject:@"App Switcher Grid"];
+                        if (!ok) [runWarnings addObject:NSLocalizedString(@"App Switcher Grid", nil)];
                     } else if (!appSwitcherGridEnabled) {
                         appswitchergrid_stop_in_session();
                     }
@@ -10045,7 +10034,7 @@ static void settings_run_actions_internal(BOOL pendingOnly)
                         log_user("%s iPad Dock %s.\n",
                                  ok ? "[OK]" : "[WARN]",
                                  ok ? "created" : "did not apply");
-                        if (!ok) [runWarnings addObject:@"iPad Dock"];
+                        if (!ok) [runWarnings addObject:NSLocalizedString(@"iPad Dock", nil)];
                     } else if (!floatingDockEnabled) {
                         floatingdock_stop_in_session();
                     }
@@ -10075,7 +10064,7 @@ static void settings_run_actions_internal(BOOL pendingOnly)
                         log_user("%s FastLockX Lite Always On %s.\n",
                                  ok ? "[OK]" : "[WARN]",
                                  ok ? "enabled" : "did not install cleanly");
-                        if (!ok) [runWarnings addObject:@"FastLockX Lite"];
+                        if (!ok) [runWarnings addObject:NSLocalizedString(@"FastLockX Lite", nil)];
                     }
 
                     if (runStageStrip) {
@@ -10095,7 +10084,7 @@ static void settings_run_actions_internal(BOOL pendingOnly)
                         log_user("%s Dynamic Stage Lite %s.\n",
                                  ok ? "[OK]" : "[WARN]",
                                  ok ? "overlay active" : "did not install cleanly");
-                        if (!ok) [runWarnings addObject:@"Dynamic Stage Lite"];
+                        if (!ok) [runWarnings addObject:NSLocalizedString(@"Dynamic Stage Lite", nil)];
                     } else if (!stageStripEnabled) {
                         // Uninstall path: tear down the overlay if one survived
                         // from a prior Run. No-op when the strip was never up.
@@ -10117,7 +10106,7 @@ static void settings_run_actions_internal(BOOL pendingOnly)
                                  (long)[d integerForKey:kSettingsSBCDockIcons],
                                  (long)[d integerForKey:kSettingsSBCCols],
                                  (long)[d integerForKey:kSettingsSBCRows]);
-                        if (!ok) [runWarnings addObject:@"Home screen layout"];
+                        if (!ok) [runWarnings addObject:NSLocalizedString(@"Home screen layout", nil)];
                     }
 
                     // Layout Extras derives spacing and icon frames from the
@@ -10129,7 +10118,7 @@ static void settings_run_actions_internal(BOOL pendingOnly)
                         // (elapsed-time heartbeat), then reports page by page.
                         NSTimeInterval layoutStart = [NSDate timeIntervalSinceReferenceDate];
                         uint64_t layoutTrips = r_perf_round_trips();
-                        settings_apply_heartbeat_start(@"Waiting for SpringBoard to lay out the new grid");
+                        settings_apply_heartbeat_start(NSLocalizedString(@"Waiting for SpringBoard to lay out the new grid", nil));
                         darksword_layout_set_progress_handler(^(int pagesDone, int pagesTotal,
                                                                 int iconsDone, int iconsTotal) {
                             settings_apply_heartbeat_update(pagesDone == 0
@@ -10148,7 +10137,7 @@ static void settings_run_actions_internal(BOOL pendingOnly)
                         log_user("%s Home Layout Extras %s.\n",
                                  ok ? "[OK]" : "[WARN]",
                                  ok ? "applied to final layout" : "did not apply cleanly");
-                        if (!ok) [runWarnings addObject:@"Home Layout Extras"];
+                        if (!ok) [runWarnings addObject:NSLocalizedString(@"Home Layout Extras", nil)];
                     } else if (restoreLayoutExtras) {
                         settings_progress(&step, total, "Restoring stock Home Layout Extras");
                         bool ok = settings_restore_layout_extras_locked();
@@ -10162,7 +10151,7 @@ static void settings_run_actions_internal(BOOL pendingOnly)
                         log_user("%s Home Layout Extras restore %s.\n",
                                  ok ? "[OK]" : "[WARN]",
                                  ok ? "returned to stock layout" : "did not complete cleanly");
-                        if (!ok) [runWarnings addObject:@"Home Layout Extras restore"];
+                        if (!ok) [runWarnings addObject:NSLocalizedString(@"Home Layout Extras restore", nil)];
                     }
 
                     // SBCustomizer and Layout Extras change the Dock's icons after
@@ -10318,7 +10307,7 @@ static void settings_run_actions_internal(BOOL pendingOnly)
                 runCompletionMessage = [NSString stringWithFormat:NSLocalizedString(@"Finished with warnings. Did not apply: %@.", nil),
                                         [runWarnings componentsJoinedByString:@", "]];
             } else {
-                runCompletionMessage = @"Done. All requested changes finished.";
+                runCompletionMessage = NSLocalizedString(@"Done. All requested changes finished.", nil);
             }
         } @finally {
             settings_stage_close();
@@ -10437,7 +10426,7 @@ static NSArray<NSDictionary *> *settings_changelog_entries(void)
     static NSArray<NSDictionary *> *entries = nil;
     static dispatch_once_t once;
     dispatch_once(&once, ^{
-        NSString *path = [[NSBundle mainBundle] pathForResource:@"Changelog" ofType:@"plist"];
+        NSString *path = [[NSBundle mainBundle] pathForResource:NSLocalizedString(@"Changelog", nil) ofType:@"plist"];
         NSArray *raw = path ? [NSArray arrayWithContentsOfFile:path] : nil;
         NSMutableArray<NSDictionary *> *out = [NSMutableArray array];
         for (id obj in raw) {
@@ -10868,7 +10857,7 @@ static NSString * const kProcMgrAutoRefreshSecondsKey = @"procmgrAutoRefreshSeco
     self.searchCtrl = [[UISearchController alloc] initWithSearchResultsController:nil];
     self.searchCtrl.searchResultsUpdater = self;
     self.searchCtrl.obscuresBackgroundDuringPresentation = NO;
-    self.searchCtrl.searchBar.placeholder = @"Filter by name or PID";
+    self.searchCtrl.searchBar.placeholder = NSLocalizedString(@"Filter by name or PID", nil);
     self.navigationItem.searchController = self.searchCtrl;
     self.navigationItem.hidesSearchBarWhenScrolling = NO;
     self.definesPresentationContext = YES;
@@ -10882,7 +10871,7 @@ static NSString * const kProcMgrAutoRefreshSecondsKey = @"procmgrAutoRefreshSeco
     // had no prompt line and then grew one when the count appeared — the whole
     // view pushed down (iOS 17). Seeding a placeholder here fixes the bar height
     // up front; every later prompt change is text-only, same height, no jump.
-    self.navigationItem.prompt = @"Scanning processes…";
+    self.navigationItem.prompt = NSLocalizedString(@"Scanning processes…", nil);
 
     [self buildSummaryHeader];
     [self reloadProcs];
@@ -11079,7 +11068,7 @@ static NSString *pm_chip_name(NSString *machine) {
     });
     NSString *c = chips[machine];
     if (c) return c;
-    if ([machine hasPrefix:@"iPhone18,"]) return @"A19 family";
+    if ([machine hasPrefix:@"iPhone18,"]) return NSLocalizedString(@"A19 family", nil);
     return machine;
 }
 
@@ -11377,7 +11366,7 @@ static NSString *pm_chip_name(NSString *machine) {
 
     for (NSNumber *opt in options) {
         double seconds = opt.doubleValue;
-        NSString *title = (seconds <= 0) ? @"Off"
+        NSString *title = (seconds <= 0) ? NSLocalizedString(@"Off", nil)
                                          : [NSString stringWithFormat:NSLocalizedString(@"Every %d second%@", nil), (int)seconds,
                                             ((int)seconds == 1) ? @"" : @"s"];
         if (seconds == current) title = [title stringByAppendingString:@" ✓"];
@@ -11418,7 +11407,7 @@ static NSString *pm_chip_name(NSString *machine) {
         (krw_persistence_launchd_holds_krw() || krw_persistence_has_saved_recovery())) {
         printf("[PROCMGR] refresh: skipped (KRW detached, anchored in "
                "launchd — restoring)\n");
-        self.navigationItem.prompt = @"Restoring kernel access…";
+        self.navigationItem.prompt = NSLocalizedString(@"Restoring kernel access…", nil);
         [self.refreshControl endRefreshing];
         // Round 8: routine restore must NOT flash "Arming kernel access…" —
         // it goes through restoreKRWSilently (no arming state; the neutral
@@ -11434,7 +11423,7 @@ static NSString *pm_chip_name(NSString *machine) {
     // Round 51: keep the prompt line reserved (was nil) so the nav bar never
     // loses/regains a line on the gone→armed transition — that height change
     // is the "view pushed down when the active/suspended row appears" jump.
-    self.navigationItem.prompt = @"Kernel access needed";
+    self.navigationItem.prompt = NSLocalizedString(@"Kernel access needed", nil);
     [self updateSummaryHeader];
 }
 
@@ -11910,7 +11899,7 @@ static NSString *pm_chip_name(NSString *machine) {
             // again would just start a second full run. The hint stays.
             if (!settings_device_is_a18_above()) return;
             __weak typeof(self) weakSelf = self;
-            settings_tool_needs_exploit(self, self.tableView, @"The Process Viewer", ^{
+            settings_tool_needs_exploit(self, self.tableView, NSLocalizedString(@"The Process Viewer", nil), ^{
                 weakSelf.exploitNeeded = NO;
                 [weakSelf armKRW];
             });
@@ -12240,29 +12229,29 @@ static NSString *pm_chip_name(NSString *machine) {
                     NSString *msg;
                     switch (rc) {
                         case -3:
-                            msg = @"The process has already exited.";
+                            msg = NSLocalizedString(@"The process has already exited.", nil);
                             break;
                         case -6:
-                            msg = @"The system denied the force-quit signal, and killing it from launchd didn't take either, so it's left running.";
+                            msg = NSLocalizedString(@"The system denied the force-quit signal, and killing it from launchd didn't take either, so it's left running.", nil);
                             break;
                         case -7:
                             // Warm-up failure (launchd hijack didn't take) —
                             // NOT a dead process. Say so and invite a retry;
                             // round 13's arm-attempt retry makes the next tap
                             // very likely to succeed.
-                            msg = @"The kernel session into launchd couldn't be established (the warm-up hijack didn't take), so nothing was signalled. Try again.";
+                            msg = NSLocalizedString(@"The kernel session into launchd couldn't be established (the warm-up hijack didn't take), so nothing was signalled. Try again.", nil);
                             break;
                         case -9:
                             // Round 24: the lifecycle gate was closed (app
                             // backgrounded/locked mid-kill). Deterministic —
                             // retrying while backgrounded cannot work.
-                            msg = @"Cyanide was backgrounded or the screen locked mid-force-quit, so nothing was signalled and the process is still running. Reopen Cyanide and try again.";
+                            msg = NSLocalizedString(@"Cyanide was backgrounded or the screen locked mid-force-quit, so nothing was signalled and the process is still running. Reopen Cyanide and try again.", nil);
                             break;
                         case -10:
                             // Round 43: helper-wedge latch set (a kernel call
                             // stuck from an earlier backgrounding). Retrying
                             // CANNOT work while latched — say so honestly.
-                            msg = @"A kernel call is stuck from an earlier backgrounding, so Force Quit is disabled for this session — nothing was signalled and the process is still running. Restart Cyanide to re-enable Force Quit.";
+                            msg = NSLocalizedString(@"A kernel call is stuck from an earlier backgrounding, so Force Quit is disabled for this session — nothing was signalled and the process is still running. Restart Cyanide to re-enable Force Quit.", nil);
                             break;
                         default:
                             msg = [NSString stringWithFormat:NSLocalizedString(@"Error %d (the process may have already exited).", nil), rc];
@@ -12757,17 +12746,17 @@ static BOOL pm_with_launchd_session(const char *what, NSString **errorOut,
                                     void (^block)(RemoteCallSession *session))
 {
     NSString *error = nil;
-    if (!kexploit_krw_ready()) error = @"Kernel access is not active. Run the chain first.";
-    else if (excport_gate_blocked()) error = @"Cyanide is not in the foreground.";
+    if (!kexploit_krw_ready()) error = NSLocalizedString(@"Kernel access is not active. Run the chain first.", nil);
+    else if (excport_gate_blocked()) error = NSLocalizedString(@"Cyanide is not in the foreground.", nil);
     else if (remote_call_helper_unaccounted_count() > 0)
-        error = @"A kernel call is stuck from an earlier backgrounding. Restart Cyanide.";
+        error = NSLocalizedString(@"A kernel call is stuck from an earlier backgrounding. Restart Cyanide.", nil);
     if (error) { if (errorOut) *errorOut = error; return NO; }
 
     pm_idle_disarm_cancel(what);
     uint64_t settleUntil = g_activation_settle_until_ns;   // wait OUTSIDE the lock
     while (clock_gettime_nsec_np(CLOCK_MONOTONIC_RAW) < settleUntil) {
         if (g_app_in_background || excport_gate_blocked()) {
-            if (errorOut) *errorOut = @"Cyanide left the foreground.";
+            if (errorOut) *errorOut = NSLocalizedString(@"Cyanide left the foreground.", nil);
             return NO;
         }
         usleep(100000);
@@ -12776,7 +12765,7 @@ static BOOL pm_with_launchd_session(const char *what, NSString **errorOut,
     [lock lock];
     BOOL ran = NO;
     if (!remote_call_guard_acquire_external(what)) {
-        error = @"Cyanide is going to the background.";
+        error = NSLocalizedString(@"Cyanide is going to the background.", nil);
     } else {
         int rc = pm_launchd_session_ensure_locked(what);
         if (rc == 0 && gPMKillSession) {
@@ -12794,8 +12783,7 @@ static BOOL pm_with_launchd_session(const char *what, NSString **errorOut,
                 gPMKillSession = nil;
             }
         } else {
-            error = rc == -2 ? @"Cyanide was just activated. Try again in a moment."
-                             : @"Root access through launchd could not be opened.";
+            error = rc == -2 ? NSLocalizedString(@"Cyanide was just activated. Try again in a moment.", nil) : NSLocalizedString(@"Root access through launchd could not be opened.", nil);
         }
         remote_call_guard_release_external(what);
     }
@@ -12900,7 +12888,7 @@ NSArray<NSDictionary *> *settings_root_list_directory(NSString *path, BOOL *inco
 {
     if (incompleteOut) *incompleteOut = NO;
     if (!pm_root_path_ok(path)) {
-        if (errorOut) *errorOut = @"Path is not absolute or too long.";
+        if (errorOut) *errorOut = NSLocalizedString(@"Path is not absolute or too long.", nil);
         return nil;
     }
     __block NSArray *out = nil;
@@ -12917,7 +12905,7 @@ NSArray<NSDictionary *> *settings_root_list_directory(NSString *path, BOOL *inco
         } else if (src == 0) {
             error = pm_root_errno_text(s, "stat");
         } else if (!(S_ISDIR(lst.st_mode) || (S_ISLNK(lst.st_mode) && haveSt && S_ISDIR(st.st_mode)))) {
-            error = @"Not a folder.";
+            error = NSLocalizedString(@"Not a folder.", nil);
         } else if (![s remoteWriteString:buf value:path.fileSystemRepresentation]) {
             error = kPMRootTransportError;
         } else {
@@ -12982,14 +12970,14 @@ NSArray<NSDictionary *> *settings_root_list_directory(NSString *path, BOOL *inco
                     if (r > 0) [entries addObject:pm_root_entry_dict(n, &el, &es, eHave, link)];
                     else       [entries addObject:@{ @"name": n, @"statFailed": @YES }];
                 }
-                if (stopped)     error = @"Stopped: Cyanide left the foreground.";
+                if (stopped)     error = NSLocalizedString(@"Stopped: Cyanide left the foreground.", nil);
                 else if (failed) error = kPMRootTransportError;
                 else             out = entries;
             }
         }
         pm_root_call(s, 1000, "free", buf, 0, 0, &ok);
     });
-    if (!out && errorOut) *errorOut = error ?: @"The folder could not be read.";
+    if (!out && errorOut) *errorOut = error ?: NSLocalizedString(@"The folder could not be read.", nil);
     if (incompleteOut) *incompleteOut = incomplete;
     printf("[FILES] root list %s: %s (%lu entries%s)\n", path.fileSystemRepresentation,
            out ? "ok" : "failed", (unsigned long)out.count, incomplete ? ", INCOMPLETE" : "");
@@ -13000,7 +12988,7 @@ NSData *settings_root_read_file(NSString *path, NSUInteger maxBytes, BOOL *trunc
 {
     if (truncatedOut) *truncatedOut = NO;
     if (!pm_root_path_ok(path)) {
-        if (errorOut) *errorOut = @"Path is not absolute or too long.";
+        if (errorOut) *errorOut = NSLocalizedString(@"Path is not absolute or too long.", nil);
         return nil;
     }
     __block NSMutableData *out = nil;
@@ -13019,7 +13007,7 @@ NSData *settings_root_read_file(NSString *path, NSUInteger maxBytes, BOOL *trunc
         } else if (src == 0) {
             error = pm_root_errno_text(s, "stat");
         } else if (!(S_ISREG(lst.st_mode) || (S_ISLNK(lst.st_mode) && haveSt && S_ISREG(st.st_mode)))) {
-            error = @"Only regular files can be read as root.";   // never open FIFO/device/socket in launchd
+            error = NSLocalizedString(@"Only regular files can be read as root.", nil);   // never open FIFO/device/socket in launchd
         } else if (![s remoteWriteString:buf value:path.fileSystemRepresentation]) {
             error = kPMRootTransportError;
         } else {
@@ -13036,19 +13024,19 @@ NSData *settings_root_read_file(NSString *path, NSUInteger maxBytes, BOOL *trunc
                 BOOL regular = ok && frc == 0 &&
                     [s remoteRead:buf + PM_ROOT_STAT_OFF to:&fst size:sizeof(fst)] && S_ISREG(fst.st_mode);
                 if (!ok) error = kPMRootTransportError;
-                else if (!regular) error = @"Only regular files can be read as root.";
+                else if (!regular) error = NSLocalizedString(@"Only regular files can be read as root.", nil);
                 // An iCloud placeholder: read() would block launchd's thread
                 // while the file downloads, far past our client-side timeout.
                 // (fstat itself never blocks on it.)
                 if (regular && (fst.st_flags & SF_DATALESS)) {
-                    error = @"This file is not downloaded from iCloud.";
+                    error = NSLocalizedString(@"This file is not downloaded from iCloud.", nil);
                     regular = NO;
                 }
                 NSMutableData *acc = regular ? [NSMutableData data] : nil;
                 BOOL readOK = regular;
                 while (readOK && acc.length < maxBytes) {
                     if (pm_root_should_stop()) {
-                        error = @"Stopped: Cyanide left the foreground."; readOK = NO; break;
+                        error = NSLocalizedString(@"Stopped: Cyanide left the foreground.", nil); readOK = NO; break;
                     }
                     size_t want = MIN(chunk, maxBytes - acc.length);
                     int64_t n = (int64_t)pm_root_call(s, 2000, "read", (uint64_t)fd, data, want, &ok);
@@ -13074,7 +13062,7 @@ NSData *settings_root_read_file(NSString *path, NSUInteger maxBytes, BOOL *trunc
         }
         pm_root_call(s, 1000, "free", buf, 0, 0, &ok);
     });
-    if (!out && errorOut) *errorOut = error ?: @"The file could not be read.";
+    if (!out && errorOut) *errorOut = error ?: NSLocalizedString(@"The file could not be read.", nil);
     if (truncatedOut) *truncatedOut = truncated;
     return out;
 }
@@ -13085,7 +13073,7 @@ NSData *settings_root_read_file(NSString *path, NSUInteger maxBytes, BOOL *trunc
 BOOL settings_root_remove_xattr(NSString *path, const char *name, NSString **errorOut)
 {
     if (!pm_root_path_ok(path) || !name || !name[0] || strlen(name) >= 256) {
-        if (errorOut) *errorOut = @"Invalid path or attribute name.";
+        if (errorOut) *errorOut = NSLocalizedString(@"Invalid path or attribute name.", nil);
         return NO;
     }
     __block BOOL removed = NO;
@@ -13115,7 +13103,7 @@ BOOL settings_root_remove_xattr(NSString *path, const char *name, NSString **err
         }
         pm_root_call(s, 1000, "free", buf, 0, 0, &ok);
     });
-    if (!removed && errorOut) *errorOut = error ?: @"The attribute could not be removed.";
+    if (!removed && errorOut) *errorOut = error ?: NSLocalizedString(@"The attribute could not be removed.", nil);
     return removed;
 }
 
@@ -13444,9 +13432,9 @@ BOOL settings_root_remove_xattr(NSString *path, const char *name, NSString **err
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
     switch (section) {
-        case 0: return CYSectionHeaderView(@"Folder Theme");
-        case 1: return CYSectionHeaderView(@"Plist Theme");
-        case 2: return CYSectionHeaderView(@"Files");
+        case 0: return CYSectionHeaderView(NSLocalizedString(@"Folder Theme", nil));
+        case 1: return CYSectionHeaderView(NSLocalizedString(@"Plist Theme", nil));
+        case 2: return CYSectionHeaderView(NSLocalizedString(@"Files", nil));
         default: return nil;
     }
 }
@@ -13455,10 +13443,10 @@ BOOL settings_root_remove_xattr(NSString *path, const char *name, NSString **err
 - (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section
 {
     if (section == 0) {
-        return @"Only icons with matching bundle IDs change. Missing apps keep their stock icon.";
+        return NSLocalizedString(@"Only icons with matching bundle IDs change. Missing apps keep their stock icon.", nil);
     }
     if (section == 1) {
-        return @"Use a binary plist when you want one portable file instead of a folder of PNGs.";
+        return NSLocalizedString(@"Use a binary plist when you want one portable file instead of a folder of PNGs.", nil);
     }
     return nil;
 }
@@ -13560,7 +13548,7 @@ BOOL settings_root_remove_xattr(NSString *path, const char *name, NSString **err
         if (error) {
             *error = [NSError errorWithDomain:@"CyanideThemerGuide"
                                          code:1
-                                     userInfo:@{NSLocalizedDescriptionKey: @"Bundled iOS 6 plist was not found."}];
+                                     userInfo:@{NSLocalizedDescriptionKey: NSLocalizedString(@"Bundled iOS 6 plist was not found.", nil)}];
         }
         return nil;
     }
@@ -13615,7 +13603,7 @@ BOOL settings_root_remove_xattr(NSString *path, const char *name, NSString **err
 - (void)showExportError:(NSError *)error
 {
     UIAlertController *ac = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Export Failed", nil)
-                                                                message:error.localizedDescription ?: @"Could not write the plist."
+                                                                message:error.localizedDescription ?: NSLocalizedString(@"Could not write the plist.", nil)
                                                          preferredStyle:UIAlertControllerStyleAlert];
     [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil) style:UIAlertActionStyleDefault handler:nil]];
     [self presentViewController:ac animated:YES completion:nil];
@@ -13753,7 +13741,7 @@ BOOL settings_root_remove_xattr(NSString *path, const char *name, NSString **err
     BOOL applied = enabled && settings_tweak_is_applied(kSettingsQuickLoaderEnabled);
 
     if (filename) {
-        NSString *source = hasRepoTweak ? @"From source repo" : @"Local file";
+        NSString *source = hasRepoTweak ? NSLocalizedString(@"From source repo", nil) : NSLocalizedString(@"Local file", nil);
         [rows addObject:@{ @"kind": @"ql-loaded",
                            @"title": filename,
                            @"subtitle": source,
@@ -13834,7 +13822,7 @@ BOOL settings_root_remove_xattr(NSString *path, const char *name, NSString **err
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.title = self.detailMode ? (self.bundleTitle ?: @"Settings") : @"Settings";
+    self.title = self.detailMode ? (self.bundleTitle ?: NSLocalizedString(@"Settings", nil)) : NSLocalizedString(@"Settings", nil);
     self.tableView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentAlways;
     self.tableView.rowHeight                      = UITableViewAutomaticDimension;
     self.tableView.estimatedRowHeight             = 44.0;
@@ -13986,7 +13974,7 @@ BOOL settings_root_remove_xattr(NSString *path, const char *name, NSString **err
                 return;
             }
             NSString *msg = remove
-                ? @"Lock screen duration cleared. Respring now to apply?"
+                ? NSLocalizedString(@"Lock screen duration cleared. Respring now to apply?", nil)
                 : [NSString stringWithFormat:NSLocalizedString(@"Lock screen will stay awake for %lld seconds. Respring now to apply?", nil), seconds];
             [strongSelf presentRespringPromptWithTitle:@"Applied" message:msg];
         });
@@ -14002,10 +13990,10 @@ BOOL settings_root_remove_xattr(NSString *path, const char *name, NSString **err
             __strong typeof(weakSelf) strongSelf = weakSelf;
             if (!strongSelf) return;
             NSString *msg;
-            if (v == -3)      msg = @"Another action is running. Try again in a moment.";
-            else if (v == -2) msg = @"Kernel access isn't active. Run the chain first, then try again.";
-            else if (v < 0)   msg = @"Could not read the value — the SpringBoard channel wasn't available.";
-            else if (v == 0)  msg = @"No floor is set — the lock screen uses stock timing.";
+            if (v == -3)      msg = NSLocalizedString(@"Another action is running. Try again in a moment.", nil);
+            else if (v == -2) msg = NSLocalizedString(@"Kernel access isn't active. Run the chain first, then try again.", nil);
+            else if (v < 0)   msg = NSLocalizedString(@"Could not read the value — the SpringBoard channel wasn't available.", nil);
+            else if (v == 0)  msg = NSLocalizedString(@"No floor is set — the lock screen uses stock timing.", nil);
             else              msg = [NSString stringWithFormat:
                 NSLocalizedString(@"Configured floor: %lld seconds.\n\nThis is the value written to SpringBoard (SBMinimumLockscreenIdleTime). It takes effect after a respring.", nil), v];
             UIAlertController *ac = [UIAlertController
@@ -14027,12 +14015,12 @@ BOOL settings_root_remove_xattr(NSString *path, const char *name, NSString **err
             __strong typeof(weakSelf) strongSelf = weakSelf;
             if (!strongSelf) return;
             NSString *msg;
-            if (st == -3)      msg = @"Another action is running. Try again in a moment.";
-            else if (st == -2) msg = @"Kernel access isn't active. Run the chain first, then try again.";
-            else if (st < 0)   msg = @"Could not read OTA status — filesystem access was denied.";
-            else if (st == 0)  msg = @"OTA updates are ENABLED (stock). The update daemons are not blocked.";
-            else if (st == 1)  msg = @"OTA updates are DISABLED. All update daemons are blocked in launchd.";
-            else               msg = @"OTA updates are PARTIALLY disabled — some update daemons are blocked but not all. Tap “Disable OTA Updates” to finish.";
+            if (st == -3)      msg = NSLocalizedString(@"Another action is running. Try again in a moment.", nil);
+            else if (st == -2) msg = NSLocalizedString(@"Kernel access isn't active. Run the chain first, then try again.", nil);
+            else if (st < 0)   msg = NSLocalizedString(@"Could not read OTA status — filesystem access was denied.", nil);
+            else if (st == 0)  msg = NSLocalizedString(@"OTA updates are ENABLED (stock). The update daemons are not blocked.", nil);
+            else if (st == 1)  msg = NSLocalizedString(@"OTA updates are DISABLED. All update daemons are blocked in launchd.", nil);
+            else               msg = NSLocalizedString(@"OTA updates are PARTIALLY disabled — some update daemons are blocked but not all. Tap “Disable OTA Updates” to finish.", nil);
             UIAlertController *ac = [UIAlertController
                 alertControllerWithTitle:NSLocalizedString(@"OTA Updates", nil)
                                  message:msg
@@ -14223,7 +14211,7 @@ static NSUInteger settings_tab_index_for_title(UITabBarController *tab, NSString
             [weakSelf.tableView reloadData];
         }]];
     }
-    [alert addAction:[UIAlertAction actionWithTitle:alreadyNominal ? @"OK" : @"Keep Current"
+    [alert addAction:[UIAlertAction actionWithTitle:alreadyNominal ? NSLocalizedString(@"OK", nil) : NSLocalizedString(@"Keep Current", nil)
                                              style:UIAlertActionStyleCancel
                                            handler:^(UIAlertAction *_) {
         [d setBool:YES forKey:kSettingsPowercuffNominalNoticeShown];
@@ -14638,7 +14626,7 @@ static NSUInteger settings_tab_index_for_title(UITabBarController *tab, NSString
            @"subtitle": locationOn ? NSLocalizedString(@"On", nil) : NSLocalizedString(@"Off", nil) },
 
         @{ @"kind": @"button",
-           @"title": locationOn ? @"Turn Location Services Off" : @"Turn Location Services On",
+           @"title": locationOn ? NSLocalizedString(@"Turn Location Services Off", nil) : NSLocalizedString(@"Turn Location Services On", nil),
            @"subtitle": NSLocalizedString(@"The same system-wide switch as Settings → Privacy & Security → Location Services.", nil),
            @"action": @"locsvc-toggle",
            @"destructive": @(locationOn) },
@@ -14696,11 +14684,11 @@ static NSUInteger settings_tab_index_for_title(UITabBarController *tab, NSString
     NSMutableArray<NSDictionary *> *rows = [NSMutableArray arrayWithArray:@[
         @{ @"kind": @"info",
            @"title": NSLocalizedString(@"Selected Theme", nil),
-           @"subtitle": hasSelection ? selected : @"None selected. Pick a theme before running the icon theme engine." },
+           @"subtitle": hasSelection ? selected : NSLocalizedString(@"None selected. Pick a theme before running the icon theme engine.", nil) },
 
         @{ @"kind": @"button",
            @"title": [selected isEqualToString:@"iOS 6 Theme"]
-                ? @"iOS 6 Theme ✓" : @"Use iOS 6 Theme",
+                ? @"iOS 6 Theme ✓" : NSLocalizedString(@"Use iOS 6 Theme", nil),
            @"action": @"themer-select-ios6" },
 
         @{ @"kind": @"button",
@@ -14727,9 +14715,9 @@ static NSUInteger settings_tab_index_for_title(UITabBarController *tab, NSString
     NSMutableArray<NSDictionary *> *rows = [NSMutableArray arrayWithArray:@[
         @{ @"kind": @"info",
            @"title": NSLocalizedString(@"Selected Theme", nil),
-           @"subtitle": hasSelection ? selected : @"None selected. Pick or import a theme before running SnowBoard Lite." },
+           @"subtitle": hasSelection ? selected : NSLocalizedString(@"None selected. Pick or import a theme before running SnowBoard Lite.", nil) },
         @{ @"kind": @"button",
-           @"title": [selected isEqualToString:@"iOS 6 Theme"] ? @"iOS 6 Theme ✓" : @"Use iOS 6 Theme",
+           @"title": [selected isEqualToString:@"iOS 6 Theme"] ? @"iOS 6 Theme ✓" : NSLocalizedString(@"Use iOS 6 Theme", nil),
            @"action": @"sbl-select-ios6" },
         @{ @"kind": @"button",
            @"title": NSLocalizedString(@"Import Theme Folder…", nil),
@@ -14779,7 +14767,7 @@ static const NSInteger kPasscodePreviewRow = 1;
                                        settings_passcode_selected_theme_display_name(),
                                        (unsigned long)presentDigits.count,
                                        stateText]
-            : @"None selected. Import a style below, or tap a key in the preview.",
+            : NSLocalizedString(@"None selected. Import a style below, or tap a key in the preview.", nil),
     }];
 
     [rows addObject:@{ @"kind": @"passcode-preview" }];
@@ -14808,7 +14796,7 @@ static const NSInteger kPasscodePreviewRow = 1;
         @"subtitle": backups > 0
             ? [NSString stringWithFormat:NSLocalizedString(@"%lu file(s) across %lu digit(s) saved", nil),
                                          (unsigned long)backups, (unsigned long)backupDigits]
-            : @"None saved yet. Restore needs a saved original to write back.",
+            : NSLocalizedString(@"None saved yet. Restore needs a saved original to write back.", nil),
     }];
 
     [rows addObject:@{ @"kind": @"button",
@@ -14901,7 +14889,7 @@ static const NSInteger kPasscodePreviewRow = 1;
     BOOL applied = settings_tweak_is_applied(kSettingsAppSwitcherGridEnabled);
     return @[
         @{ @"kind": @"info",
-           @"title": applied ? @"Current Style: Grid" : @"Current Style: Stock",
+           @"title": applied ? NSLocalizedString(@"Current Style: Grid", nil) : NSLocalizedString(@"Current Style: Stock", nil),
            @"subtitle": NSLocalizedString(@"This is a runtime SpringBoard method patch. It does not write system files; respring restores the stock app switcher.", nil) },
         @{ @"kind": @"info",
            @"title": NSLocalizedString(@"Session note", nil),
@@ -14919,7 +14907,7 @@ static const NSInteger kPasscodePreviewRow = 1;
     BOOL applied = settings_tweak_is_applied(kSettingsFloatingDockEnabled);
     return @[
         @{ @"kind": @"info",
-           @"title": applied ? @"Dock: iPad" : @"Dock: Stock",
+           @"title": applied ? NSLocalizedString(@"Dock: iPad", nil) : NSLocalizedString(@"Dock: Stock", nil),
            @"subtitle": NSLocalizedString(@"Turn it off in the Installer to bring the stock Dock back; a respring always does.", nil) },
     ];
 }
@@ -14928,7 +14916,7 @@ static const NSInteger kPasscodePreviewRow = 1;
 {
     return @[
         @{ @"kind": @"info",
-           @"title": @"FastLockX Lite",
+           @"title": NSLocalizedString(@"FastLockX Lite", nil),
            @"subtitle": NSLocalizedString(@"Always On keeps the Face ID retry pulse and unlock request armed in SpringBoard until Disable, Clean Up, or respring.", nil) },
         @{ @"kind": @"button",
            @"title": NSLocalizedString(@"Enable Always On", nil),
@@ -15017,11 +15005,11 @@ static const NSInteger kPasscodePreviewRow = 1;
         BOOL alwaysOnIntent = [d boolForKey:kSettingsFastLockXLiteEnabled];
         BOOL alwaysOnApplied = settings_tweak_is_applied(kSettingsFastLockXLiteEnabled);
         [out addObject:@{@"title": NSLocalizedString(@"Always On", nil),
-                         @"value": alwaysOnApplied ? @"Enabled" : (alwaysOnIntent ? @"Queued" : @"Off")}];
+                         @"value": alwaysOnApplied ? @"Enabled" : (alwaysOnIntent ? @"Queued" : NSLocalizedString(@"Off", nil))}];
         [out addObject:@{@"title": NSLocalizedString(@"Retry interval", nil),
                          @"value": [NSString stringWithFormat:@"%.1fs", settings_fastlockx_lite_retry_interval(d)]}];
         [out addObject:@{@"title": NSLocalizedString(@"Blockers", nil),
-                         @"value": @"In progress"}];
+                         @"value": NSLocalizedString(@"In progress", nil)}];
     } else if (section == SectionPowercuff) {
         NSString *lvl = [d stringForKey:kSettingsPowercuffLevel] ?: @"nominal";
         [out addObject:@{@"title": NSLocalizedString(@"Level", nil), @"value": lvl}];
@@ -15043,7 +15031,7 @@ static const NSInteger kPasscodePreviewRow = 1;
     } else if (section == SectionPasscodeTheme) {
         NSDictionary *passcodeTheme = settings_passcode_selected_theme();
         [out addObject:@{@"title": NSLocalizedString(@"Style", nil),
-                         @"value": passcodeTheme ? settings_passcode_selected_theme_display_name() : @"None selected"}];
+                         @"value": passcodeTheme ? settings_passcode_selected_theme_display_name() : NSLocalizedString(@"None selected", nil)}];
         if (passcodeTheme) {
             [out addObject:@{@"title": NSLocalizedString(@"Digits in style", nil),
                              @"value": [NSString stringWithFormat:@"%lu/10",
@@ -15056,7 +15044,7 @@ static const NSInteger kPasscodePreviewRow = 1;
     } else if (section == SectionLocationSim) {
         [out addObject:@{@"title": NSLocalizedString(@"Target", nil), @"value": settings_location_sim_target_summary(d)}];
     } else if (section == SectionGravityLite) {
-        [out addObject:@{@"title": NSLocalizedString(@"Dock", nil),         @"value": [d boolForKey:kSettingsGravityLiteDockEnabled] ? @"Included" : @"Home only"}];
+        [out addObject:@{@"title": NSLocalizedString(@"Dock", nil),         @"value": [d boolForKey:kSettingsGravityLiteDockEnabled] ? NSLocalizedString(@"Included", nil) : NSLocalizedString(@"Home only", nil)}];
         [out addObject:@{@"title": NSLocalizedString(@"Strength", nil),     @"value": [NSString stringWithFormat:@"%ld%%", (long)[d integerForKey:kSettingsGravityLiteMagnitudePct]]}];
         [out addObject:@{@"title": NSLocalizedString(@"Bounce", nil),       @"value": [NSString stringWithFormat:@"%ld%%", (long)[d integerForKey:kSettingsGravityLiteBouncePct]]}];
         [out addObject:@{@"title": NSLocalizedString(@"Friction", nil),     @"value": [NSString stringWithFormat:@"%ld%%", (long)[d integerForKey:kSettingsGravityLiteFrictionPct]]}];
@@ -15111,16 +15099,16 @@ static const NSInteger kPasscodePreviewRow = 1;
         @{ @"title": @"SBCustomizer",       @"icon": @"square.grid.3x3.fill",                @"color": [UIColor systemBlueColor],   @"section": @(SectionSBC) },
         @{ @"title": @"StatBar",            @"icon": @"thermometer.medium",                  @"color": [UIColor systemRedColor],    @"section": @(SectionStatBar) },
         @{ @"title": @"NSBar",              @"icon": @"network",                             @"color": [UIColor systemBlueColor],   @"section": @(SectionNSBar) },
-        @{ @"title": @"NiceBar Lite",       @"icon": @"textformat.size",                     @"color": [UIColor systemTealColor],   @"section": @(SectionNiceBarLite) },
-        @{ @"title": @"Axon Lite",          @"icon": @"bell.badge.fill",                     @"color": [UIColor systemRedColor],    @"section": @(SectionAxonLite) },
+        @{ @"title": NSLocalizedString(@"NiceBar Lite", nil),       @"icon": @"textformat.size",                     @"color": [UIColor systemTealColor],   @"section": @(SectionNiceBarLite) },
+        @{ @"title": NSLocalizedString(@"Axon Lite", nil),          @"icon": @"bell.badge.fill",                     @"color": [UIColor systemRedColor],    @"section": @(SectionAxonLite) },
 #if CYANIDE_EXPERIMENTAL_TWEAKS_AVAILABLE
-        @{ @"title": @"FastLockX Lite",     @"icon": @"lock.open.fill",                      @"color": [UIColor systemGreenColor],  @"section": @(SectionFastLockXLite) },
+        @{ @"title": NSLocalizedString(@"FastLockX Lite", nil),     @"icon": @"lock.open.fill",                      @"color": [UIColor systemGreenColor],  @"section": @(SectionFastLockXLite) },
 #endif
-        @{ @"title": @"Gravity Lite",       @"icon": @"arrow.down.circle.fill",              @"color": [UIColor systemGreenColor],  @"section": @(SectionGravityLite) },
+        @{ @"title": NSLocalizedString(@"Gravity Lite", nil),       @"icon": @"arrow.down.circle.fill",              @"color": [UIColor systemGreenColor],  @"section": @(SectionGravityLite) },
         @{ @"title": NSLocalizedString(@"App Switcher Grid", nil),  @"icon": @"square.grid.2x2.fill",                @"color": [UIColor systemOrangeColor], @"section": @(SectionAppSwitcherGrid) },
         @{ @"title": NSLocalizedString(@"iPad Dock", nil),          @"icon": @"dock.rectangle",                      @"color": [UIColor systemBlueColor],   @"section": @(SectionFloatingDock) },
         @{ @"title": NSLocalizedString(@"Location Simulator", nil), @"icon": @"location.fill",                       @"color": [UIColor systemGreenColor],  @"section": @(SectionLocationSim) },
-        @{ @"title": @"SnowBoard Lite",     @"icon": @"square.stack.3d.up.fill",             @"color": [UIColor systemCyanColor],   @"section": @(SectionSnowBoardLite) },
+        @{ @"title": NSLocalizedString(@"SnowBoard Lite", nil),     @"icon": @"square.stack.3d.up.fill",             @"color": [UIColor systemCyanColor],   @"section": @(SectionSnowBoardLite) },
         @{ @"title": @"LiveWP",             @"icon": @"play.rectangle.fill",                 @"color": [UIColor systemPurpleColor], @"section": @(SectionLiveWP) },
         @{ @"title": @"QuickLoader",        @"icon": @"bolt.fill",                           @"color": [UIColor systemYellowColor], @"section": @(SectionQuickLoader) },
         @{ @"title": @"RepoTweaks",         @"icon": @"tray.and.arrow.down.fill",            @"color": [UIColor systemBlueColor],   @"section": @(SectionRepoTweaks) },
@@ -15188,7 +15176,7 @@ UIViewController *settings_make_daemons_viewer(void)
     for (NSDictionary *bundle in bundles) {
         if ([bundle[@"indev"] boolValue]) continue;
         if ([bundle[@"experimental"] boolValue] && !experimentalOn) continue;
-        if (bundle[@"custom"]) { [out addObject:bundle]; continue; }  // opens a custom screen, no config section
+        if (bundle[NSLocalizedString(@"custom", nil)]) { [out addObject:bundle]; continue; }  // opens a custom screen, no config section
         NSInteger sec = [bundle[@"section"] integerValue];
         if ([self rowsForSection:sec].count > 0) {
             [out addObject:bundle];
@@ -15262,11 +15250,11 @@ UIViewController *settings_make_daemons_viewer(void)
 {
     if (self.detailMode) return nil;
     switch ((RootSection)section) {
-        case RootSectionChangelog:      return self.changelogExpanded ? @"What's New" : nil;
-        case RootSectionActions:        return @"Quick Actions";
+        case RootSectionChangelog:      return self.changelogExpanded ? NSLocalizedString(@"What's New", nil) : nil;
+        case RootSectionActions:        return NSLocalizedString(@"Quick Actions", nil);
         case RootSectionTweakBundles:   return self.tweakBundleRows.count   > 0 ? @"Tweaks" : nil;
-        case RootSectionInDev:         return self.inDevBundleRows.count   > 0 ? @"In Development" : nil;
-        case RootSectionSystemBundles:  return self.systemBundleRows.count  > 0 ? @"System" : nil;
+        case RootSectionInDev:         return self.inDevBundleRows.count   > 0 ? NSLocalizedString(@"In Development", nil) : nil;
+        case RootSectionSystemBundles:  return self.systemBundleRows.count  > 0 ? NSLocalizedString(@"System", nil) : nil;
         case RootSectionLara:           return settings_device_supported() ? @"Lara" : nil;
         case RootSectionAbout:          return @"About";
         default:                        return nil;
@@ -15298,13 +15286,13 @@ UIViewController *settings_make_daemons_viewer(void)
                 (long)kSBCDefaultFirstPageIcons, (long)kSBCDefaultOtherPageIcons];
     }
     if (s == SectionDarkSwordTweaks) {
-        return @"Imported from DarkSword-Tweaks. These are SpringBoard memory patches: one you turn off stays active until the next respring.";
+        return NSLocalizedString(@"Imported from DarkSword-Tweaks. These are SpringBoard memory patches: one you turn off stays active until the next respring.", nil);
     }
     if (s == SectionDragCoefficient) {
         return @"Overrides _UIAnimationDragCoefficient in SpringBoard. Type the raw coefficient: 1.00 = stock, 0.50 = 2× faster, 0.25 = 4× faster, minimum 0.01. Imported from kolbicz/DarkSword-Tweaks.";
     }
     if (s == SectionLockScreenDuration) {
-        return @"Extends the lock screen's own dim-then-sleep timer (separate from Settings > Auto-Lock) so you get more time to read notifications. Type the exact seconds, then tap Apply — it writes the SpringBoard preference SBMinimumLockscreenIdleTime (a global floor) and offers a respring to apply it. Like OTA Updates it is a manual action; the value persists across respring and reboot. Tap Remove to restore stock. Run the chain at least once first so kernel access is active.";
+        return NSLocalizedString(@"Extends the lock screen's own dim-then-sleep timer (separate from Settings > Auto-Lock) so you get more time to read notifications. Type the exact seconds, then tap Apply — it writes the SpringBoard preference SBMinimumLockscreenIdleTime (a global floor) and offers a respring to apply it. Like OTA Updates it is a manual action; the value persists across respring and reboot. Tap Remove to restore stock. Run the chain at least once first so kernel access is active.", nil);
     }
     if (s == SectionLayoutExtras) {
         NSInteger major = [[NSProcessInfo processInfo] operatingSystemVersion].majorVersion;
@@ -15347,19 +15335,19 @@ UIViewController *settings_make_daemons_viewer(void)
         return @"Underclocks the CPU/GPU via thermalmonitord by simulating thermal pressure. Nominal is the daily-use default. Light, Moderate, and Heavy intentionally underclock the CPU more and can make the device feel laggy, especially on older hardware.";
     }
     if (s == SectionStatBar) {
-        return @"Live overlay. When enabled, StatBar keeps a SpringBoard RemoteCall session open. Refresh rate applies when Cyanide is minimized but the screen is still awake; StatBar pauses while the screen is locked or asleep.";
+        return NSLocalizedString(@"Live overlay. When enabled, StatBar keeps a SpringBoard RemoteCall session open. Refresh rate applies when Cyanide is minimized but the screen is still awake; StatBar pauses while the screen is locked or asleep.", nil);
     }
     if (s == SectionNSBar) {
         return @"Network speed overlay ported from d1y/cyanide-ios. When enabled, NSBar keeps a SpringBoard RemoteCall session open and refreshes roughly once per second.";
     }
     if (s == SectionNiceBarLite) {
-        return @"Tap a box to choose what it shows. NiceBar Lite places plain text in the configured status-bar slots around the notch or Dynamic Island, including the bottom center position. Weather is fetched from your current location through Open-Meteo and follows the Celsius toggle.";
+        return NSLocalizedString(@"Tap a box to choose what it shows. NiceBar Lite places plain text in the configured status-bar slots around the notch or Dynamic Island, including the bottom center position. Weather is fetched from your current location through Open-Meteo and follows the Celsius toggle.", nil);
     }
     if (s == SectionAxonLite) {
-        return @"RemoteCall-only Axon port. It uses a live app-side loop rather than substrate hooks, so it lasts for the active Cyanide SpringBoard session.";
+        return NSLocalizedString(@"RemoteCall-only Axon port. It uses a live app-side loop rather than substrate hooks, so it lasts for the active Cyanide SpringBoard session.", nil);
     }
     if (s == SectionAppSwitcherGrid) {
-        return @"Runtime patch. It changes SpringBoard's app switcher style in memory, writes no system files, and a respring restores stock. Unsupported builds may glitch the app switcher or crash SpringBoard.";
+        return NSLocalizedString(@"Runtime patch. It changes SpringBoard's app switcher style in memory, writes no system files, and a respring restores stock. Unsupported builds may glitch the app switcher or crash SpringBoard.", nil);
     }
     if (s == SectionFloatingDock) {
         return @"SpringBoard's own iPad-style Dock with the App Library button, created in memory for the current SpringBoard session. Writes no system files; it turns on SpringBoard's \"App Library in Dock\" preference while active and off again when you turn the tweak off. Works together with Disable App Library: the App Library is then only in the Dock.\n\nPorted from hxhlb/cyanide (Banana).";
@@ -15383,7 +15371,7 @@ UIViewController *settings_make_daemons_viewer(void)
         return @"Video wallpaper ported from d1y/cyanide-ios. Select an MP4, MOV, or M4V; Cyanide copies it into Documents/LiveWP and plays it in SpringBoard while the RemoteCall session stays alive.";
     }
     if (s == SectionPasscodeTheme) {
-        return @"Replaces the Lock Screen keypad artwork with a style you import here. Every write is verified, and each keypad original is saved before the first change so Restore Original Digits can put the stock art back. Run the chain at least once first so kernel access is active. Lock and unlock (or respring) to see the change; touch and hold Import Originals to erase the saved originals.";
+        return NSLocalizedString(@"Replaces the Lock Screen keypad artwork with a style you import here. Every write is verified, and each keypad original is saved before the first change so Restore Original Digits can put the stock art back. Run the chain at least once first so kernel access is active. Lock and unlock (or respring) to see the change; touch and hold Import Originals to erase the saved originals.", nil);
     }
     return nil;
 }
@@ -15675,7 +15663,7 @@ UIViewController *settings_make_daemons_viewer(void)
         case 2:
             cell.imageView.image = [SettingsViewController iconBadgeWithSymbol:@"app.fill" color:UIColor.systemTealColor size:29.0];
             cell.textLabel.text = NSLocalizedString(@"App Icon", nil);
-            cell.detailTextLabel.text = [[self currentAppIconStyle] isEqualToString:@"classic"] ? @"Classic" : @"Modern";
+            cell.detailTextLabel.text = [[self currentAppIconStyle] isEqualToString:@"classic"] ? NSLocalizedString(@"Classic", nil) : NSLocalizedString(@"Modern", nil);
             break;
         case 3:
             cell.imageView.image = [SettingsViewController iconBadgeWithSymbol:@"doc.text.magnifyingglass" color:UIColor.systemGrayColor size:29.0];
@@ -15829,7 +15817,7 @@ UIViewController *settings_make_daemons_viewer(void)
                  error.localizedDescription.UTF8String ?: "unknown");
         UIAlertController *ac = [UIAlertController
             alertControllerWithTitle:NSLocalizedString(@"Could Not Pack Originals", nil)
-                             message:(error.localizedDescription ?: @"The originals could not be read.")
+                             message:(error.localizedDescription ?: NSLocalizedString(@"The originals could not be read.", nil))
                       preferredStyle:UIAlertControllerStyleAlert];
         [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil) style:UIAlertActionStyleDefault handler:nil]];
         [self presentViewController:ac animated:YES completion:nil];
@@ -15977,9 +15965,9 @@ UIViewController *settings_make_daemons_viewer(void)
     NSString *message = removed > 0
         ? [NSString stringWithFormat:NSLocalizedString(@"%lu original(s) deleted. Restore Original Digits has nothing to write back now.", nil),
                                      (unsigned long)removed]
-        : @"No original files were found to delete.";
+        : NSLocalizedString(@"No original files were found to delete.", nil);
     UIAlertController *ac = [UIAlertController
-        alertControllerWithTitle:(removed > 0 ? @"Originals Deleted" : @"Nothing Deleted")
+        alertControllerWithTitle:(removed > 0 ? NSLocalizedString(@"Originals Deleted", nil) : NSLocalizedString(@"Nothing Deleted", nil))
                          message:message
                   preferredStyle:UIAlertControllerStyleAlert];
     [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil) style:UIAlertActionStyleDefault handler:nil]];
@@ -16009,7 +15997,7 @@ UIViewController *settings_make_daemons_viewer(void)
     progress.cancellable = YES;
     UIAlertController *progressAlert = [UIAlertController
         alertControllerWithTitle:NSLocalizedString(@"Importing Originals", nil)
-                         message:archives.count > 0 ? @"Reading the selected archive(s)…" : @"Reading the selected files…"
+                         message:archives.count > 0 ? NSLocalizedString(@"Reading the selected archive(s)…", nil) : NSLocalizedString(@"Reading the selected files…", nil)
                   preferredStyle:UIAlertControllerStyleAlert];
     [progressAlert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil)
                                                         style:UIAlertActionStyleCancel
@@ -16064,7 +16052,7 @@ UIViewController *settings_make_daemons_viewer(void)
             if (!strongSelf) return;
             NSString *message;
             if (progress.isCancelled && added == 0 && skipped == 0 && failed == 0) {
-                message = @"Import cancelled. Nothing was imported.";
+                message = NSLocalizedString(@"Import cancelled. Nothing was imported.", nil);
             } else if (progress.isCancelled) {
                 message = [NSString stringWithFormat:
                     NSLocalizedString(@"Import cancelled after it had started: %lu original(s) were already imported and were kept.", nil),
@@ -16098,7 +16086,7 @@ UIViewController *settings_make_daemons_viewer(void)
                     [parts addObject:[NSString stringWithFormat:NSLocalizedString(@"%lu archive(s) could not be opened.", nil),
                                                                 (unsigned long)unzipFailures.count]];
                 }
-                [parts addObject:@"Tap Restore Original Digits to write the imported originals back."];
+                [parts addObject:NSLocalizedString(@"Tap Restore Original Digits to write the imported originals back.", nil)];
                 message = [parts componentsJoinedByString:@"\n\n"];
             }
 
@@ -16205,11 +16193,9 @@ UIViewController *settings_make_daemons_viewer(void)
         return;
     }
 
-    NSString *title = apply ? @"Apply Passcode Style?"
-                            : @"Restore Original Digits?";
+    NSString *title = apply ? NSLocalizedString(@"Apply Passcode Style?", nil) : NSLocalizedString(@"Restore Original Digits?", nil);
     NSString *message = apply
-        ? @"Applies the selected digits to the Lock Screen keypad and verifies every write.\n\nLock and unlock (or respring) afterwards to see the change."
-        : @"Writes the saved originals back over the keypad art and verifies each restore.";
+        ? @"Applies the selected digits to the Lock Screen keypad and verifies every write.\n\nLock and unlock (or respring) afterwards to see the change." : NSLocalizedString(@"Writes the saved originals back over the keypad art and verifies each restore.", nil);
 
     if (apply && settings_passcode_theme_backup_count() == 0 &&
         settings_passcode_originals_were_discarded()) {
@@ -16225,7 +16211,7 @@ UIViewController *settings_make_daemons_viewer(void)
     UIAlertController *confirm = [UIAlertController alertControllerWithTitle:title
                                                                      message:message
                                                               preferredStyle:UIAlertControllerStyleAlert];
-    [confirm addAction:[UIAlertAction actionWithTitle:(apply ? @"Apply" : @"Restore")
+    [confirm addAction:[UIAlertAction actionWithTitle:(apply ? NSLocalizedString(@"Apply", nil) : @"Restore")
                                                 style:(apply ? UIAlertActionStyleDefault : UIAlertActionStyleDestructive)
                                               handler:^(UIAlertAction *a) {
         (void)a;
@@ -16262,7 +16248,7 @@ UIViewController *settings_make_daemons_viewer(void)
         dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
             BOOL ok = settings_apply_passcode_theme_now(apply);
             NSString *summary = settings_passcode_last_result_summary()
-                ?: (apply ? @"Passcode style finished." : @"Original digits restored.");
+                ?: (apply ? NSLocalizedString(@"Passcode style finished.", nil) : NSLocalizedString(@"Original digits restored.", nil));
 
             dispatch_async(dispatch_get_main_queue(), ^{
                 typeof(self) strongSelf = weakSelf;
@@ -16368,7 +16354,7 @@ UIViewController *settings_make_daemons_viewer(void)
         if (error) {
             *error = [NSError errorWithDomain:@"LiveWP"
                                          code:1
-                                     userInfo:@{NSLocalizedDescriptionKey: @"Choose an MP4, MOV, or M4V video."}];
+                                     userInfo:@{NSLocalizedDescriptionKey: NSLocalizedString(@"Choose an MP4, MOV, or M4V video.", nil)}];
         }
         return NO;
     }
@@ -16450,14 +16436,14 @@ UIViewController *settings_make_daemons_viewer(void)
     NSError *err = nil;
     BOOL ok = [self importLiveWPVideoAtURL:url error:&err];
     BOOL liveReady = settings_tweak_is_applied(kSettingsLiveWPEnabled) && g_springboard_rc_ready;
-    NSString *name = displayName.length ? displayName : (url.lastPathComponent ?: @"Video");
+    NSString *name = displayName.length ? displayName : (url.lastPathComponent ?: NSLocalizedString(@"Video", nil));
     NSString *successMessage = liveReady
         ? [NSString stringWithFormat:NSLocalizedString(@"%@ was imported and will swap into the running LiveWP session.", nil), name]
         : [NSString stringWithFormat:NSLocalizedString(@"%@ is ready. Toggle LiveWP on and tap Run to apply.", nil), name];
 
     dispatch_async(dispatch_get_main_queue(), ^{
         if (!ok) {
-            NSString *msg = err.localizedDescription ?: @"The selected video could not be imported.";
+            NSString *msg = err.localizedDescription ?: NSLocalizedString(@"The selected video could not be imported.", nil);
             UIAlertController *ac = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Import Failed", nil)
                                                                          message:msg
                                                                   preferredStyle:UIAlertControllerStyleAlert];
@@ -16503,12 +16489,12 @@ didFinishPicking:(NSArray<PHPickerResult *> *)results
         return;
     }
 
-    NSString *displayName = provider.suggestedName ?: @"Video";
+    NSString *displayName = provider.suggestedName ?: NSLocalizedString(@"Video", nil);
     [provider loadFileRepresentationForTypeIdentifier:identifier
                                     completionHandler:^(NSURL *url, NSError *error) {
         if (!url || error) {
             dispatch_async(dispatch_get_main_queue(), ^{
-                NSString *msg = error.localizedDescription ?: @"The selected video could not be opened.";
+                NSString *msg = error.localizedDescription ?: NSLocalizedString(@"The selected video could not be opened.", nil);
                 UIAlertController *ac = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Import Failed", nil)
                                                                              message:msg
                                                                       preferredStyle:UIAlertControllerStyleAlert];
@@ -16548,8 +16534,7 @@ didFinishPicking:(NSArray<PHPickerResult *> *)results
                 UIAlertController *ac = [UIAlertController
                     alertControllerWithTitle:NSLocalizedString(@"Import Failed", nil)
                                      message:(error.localizedDescription ?:
-                                              (image ? @"The selected photo is too wide or too large for keypad art. Crop it closer to the digit and try again."
-                                                     : @"The selected photo could not be read."))
+                                              (image ? NSLocalizedString(@"The selected photo is too wide or too large for keypad art. Crop it closer to the digit and try again.", nil) : NSLocalizedString(@"The selected photo could not be read.", nil)))
                               preferredStyle:UIAlertControllerStyleAlert];
                 [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil) style:UIAlertActionStyleDefault handler:nil]];
                 [strongSelf presentViewController:ac animated:YES completion:nil];
@@ -16562,7 +16547,7 @@ didFinishPicking:(NSArray<PHPickerResult *> *)results
             if (!ok) {
                 UIAlertController *ac = [UIAlertController
                     alertControllerWithTitle:NSLocalizedString(@"Digit Not Saved", nil)
-                                     message:(err.localizedDescription ?: @"The digit image could not be saved.")
+                                     message:(err.localizedDescription ?: NSLocalizedString(@"The digit image could not be saved.", nil))
                               preferredStyle:UIAlertControllerStyleAlert];
                 [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil) style:UIAlertActionStyleDefault handler:nil]];
                 [strongSelf presentViewController:ac animated:YES completion:nil];
@@ -16608,11 +16593,11 @@ didFinishPicking:(NSArray<PHPickerResult *> *)results
         }
     }
     if (pngs.count == 0) {
-        settings_themer_import_fail(error, @"The folder contains no PNG icons.");
+        settings_themer_import_fail(error, NSLocalizedString(@"The folder contains no PNG icons.", nil));
         return NO;
     }
     if (pngs.count > SBLMaxImportFileCount) {
-        settings_themer_import_fail(error, @"The folder contains too many files to import.");
+        settings_themer_import_fail(error, NSLocalizedString(@"The folder contains too many files to import.", nil));
         return NO;
     }
 
@@ -16629,13 +16614,13 @@ didFinishPicking:(NSArray<PHPickerResult *> *)results
         }
         totalBytes += size;
         if (totalBytes > SBLMaxImportTotalBytes) {
-            settings_themer_import_fail(error, @"The theme is too large to import.");
+            settings_themer_import_fail(error, NSLocalizedString(@"The theme is too large to import.", nil));
             return NO;
         }
         [accepted addObject:png];
     }
     if (accepted.count == 0) {
-        settings_themer_import_fail(error, @"None of the PNG icons could be used (too large or unreadable).");
+        settings_themer_import_fail(error, NSLocalizedString(@"None of the PNG icons could be used (too large or unreadable).", nil));
         return NO;
     }
 
@@ -16668,7 +16653,7 @@ didFinishPicking:(NSArray<PHPickerResult *> *)results
     NSUserDefaults *d = [NSUserDefaults standardUserDefaults];
     [d setObject:kThemerThemeCustom forKey:kSettingsThemerThemeID];
     [d setObject:target forKey:kSettingsThemerCustomThemePath];
-    [d setObject:url.lastPathComponent.length ? url.lastPathComponent : @"Imported Theme"
+    [d setObject:url.lastPathComponent.length ? url.lastPathComponent : NSLocalizedString(@"Imported Theme", nil)
           forKey:kSettingsThemerCustomThemeName];
     [d synchronize];
     log_user("[THEMER] Imported custom folder theme: %lu PNG file(s).\n",
@@ -16684,7 +16669,7 @@ didFinishPicking:(NSArray<PHPickerResult *> *)results
 {
     NSDictionary *dict = settings_themer_load_plist_theme(url.path);
     if (dict.count == 0) {
-        settings_themer_import_fail(error, @"The plist contains no usable icon entries.");
+        settings_themer_import_fail(error, NSLocalizedString(@"The plist contains no usable icon entries.", nil));
         return NO;
     }
 
@@ -16716,7 +16701,7 @@ didFinishPicking:(NSArray<PHPickerResult *> *)results
     NSUserDefaults *d = [NSUserDefaults standardUserDefaults];
     [d setObject:kThemerThemeCustom forKey:kSettingsThemerThemeID];
     [d setObject:target forKey:kSettingsThemerCustomThemePath];
-    [d setObject:url.lastPathComponent.length ? url.lastPathComponent : @"Imported Theme"
+    [d setObject:url.lastPathComponent.length ? url.lastPathComponent : NSLocalizedString(@"Imported Theme", nil)
           forKey:kSettingsThemerCustomThemeName];
     [d synchronize];
     log_user("[THEMER] Imported custom plist theme: %lu icon entries.\n",
@@ -16840,18 +16825,18 @@ didPickDocumentsAtURLs:(NSArray<NSURL *> *)urls
     dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
         NSError *err = nil;
         BOOL ok = NO;
-        NSString *successTitle = @"Theme Imported";
+        NSString *successTitle = NSLocalizedString(@"Theme Imported", nil);
         NSString *successMessage = nil;
 
         if ([mode isEqualToString:@"livewp"]) {
             ok = [self importLiveWPVideoAtURL:url error:&err];
-            successTitle = @"Video Selected";
+            successTitle = NSLocalizedString(@"Video Selected", nil);
             BOOL liveReady = settings_tweak_is_applied(kSettingsLiveWPEnabled) && g_springboard_rc_ready;
             successMessage = liveReady
                 ? [NSString stringWithFormat:NSLocalizedString(@"%@ was imported and will swap into the running LiveWP session.", nil),
-                                             url.lastPathComponent ?: @"Video"]
+                                             url.lastPathComponent ?: NSLocalizedString(@"Video", nil)]
                 : [NSString stringWithFormat:NSLocalizedString(@"%@ is ready. Toggle LiveWP on and tap Run to apply.", nil),
-                                             url.lastPathComponent ?: @"Video"];
+                                             url.lastPathComponent ?: NSLocalizedString(@"Video", nil)];
         } else if ([mode isEqualToString:@"snowboardlite"]) {
             if (isDir) {
                 ok = settings_sbl_import_folder_theme(url, &err);
@@ -16860,7 +16845,7 @@ didPickDocumentsAtURLs:(NSArray<NSURL *> *)urls
                     [NSString stringWithFormat:@"SnowBoardLite-%@", NSUUID.UUID.UUIDString]];
                 ok = SBLExtractArchiveToDirectory(url, tmpRoot, &err);
                 if (ok) {
-                    NSString *displayName = url.URLByDeletingPathExtension.lastPathComponent ?: @"Imported Theme";
+                    NSString *displayName = url.URLByDeletingPathExtension.lastPathComponent ?: NSLocalizedString(@"Imported Theme", nil);
                     ok = settings_sbl_import_folder_theme_named([NSURL fileURLWithPath:tmpRoot],
                                                                displayName,
                                                                @"archive",
@@ -16868,7 +16853,7 @@ didPickDocumentsAtURLs:(NSArray<NSURL *> *)urls
                 }
                 [[NSFileManager defaultManager] removeItemAtPath:tmpRoot error:nil];
             }
-            successTitle = @"SnowBoard Theme Imported";
+            successTitle = NSLocalizedString(@"SnowBoard Theme Imported", nil);
             NSString *name = settings_snowboardlite_selected_theme_display_name();
             successMessage = [NSString stringWithFormat:NSLocalizedString(@"\"%@\" is now selected. Toggle SnowBoard Lite on and tap Run to apply.", nil), name];
         } else if ([mode isEqualToString:@"passcode"]) {
@@ -16879,14 +16864,14 @@ didPickDocumentsAtURLs:(NSArray<NSURL *> *)urls
                     [NSString stringWithFormat:@"PasscodeTheme-%@", NSUUID.UUID.UUIDString]];
                 ok = SBLExtractArchiveToDirectory(url, tmpRoot, &err);
                 if (ok) {
-                    NSString *displayName = url.URLByDeletingPathExtension.lastPathComponent ?: @"Imported Style";
+                    NSString *displayName = url.URLByDeletingPathExtension.lastPathComponent ?: NSLocalizedString(@"Imported Style", nil);
                     ok = settings_passcode_import_folder_named([NSURL fileURLWithPath:tmpRoot],
                                                                displayName,
                                                                &err);
                 }
                 [[NSFileManager defaultManager] removeItemAtPath:tmpRoot error:nil];
             }
-            successTitle = @"Passcode Style Imported";
+            successTitle = NSLocalizedString(@"Passcode Style Imported", nil);
             successMessage = [NSString stringWithFormat:
                 NSLocalizedString(@"\"%@\" is now selected. Use Apply Style Now below to write it to the keypad.", nil),
                 settings_passcode_selected_theme_display_name()];
@@ -16900,7 +16885,7 @@ didPickDocumentsAtURLs:(NSArray<NSURL *> *)urls
 
         dispatch_async(dispatch_get_main_queue(), ^{
             if (!ok) {
-                NSString *msg = err.localizedDescription ?: @"The selected item could not be imported.";
+                NSString *msg = err.localizedDescription ?: NSLocalizedString(@"The selected item could not be imported.", nil);
                 UIAlertController *ac = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Import Failed", nil)
                                                                              message:msg
                                                                       preferredStyle:UIAlertControllerStyleAlert];
@@ -17218,7 +17203,7 @@ didPickDocumentsAtURLs:(NSArray<NSURL *> *)urls
     if (!settings_nicebar_has_weather_slots(d)) return;
     NSString *cached = [d stringForKey:kSettingsNiceBarLiteWeatherCache] ?: @"";
     if (!cached.length || force) {
-        settings_nicebar_store_weather_result(d, nil, nil, @"Weather...", NO);
+        settings_nicebar_store_weather_result(d, nil, nil, NSLocalizedString(@"Weather...", nil), NO);
         [self reloadSectionOrAll:SectionNiceBarLite];
     }
 
@@ -17436,7 +17421,9 @@ didPickDocumentsAtURLs:(NSArray<NSURL *> *)urls
         return;
     }
 
-    NSString *altName = [style isEqualToString:@"classic"] ? @"Classic" : nil;
+    // 这里是资源目录里的图标名，不是界面文字，不能走本地化。
+    NSString *altName = nil;
+    if ([style isEqualToString:@"classic"]) altName = @"Classic";   // loc-skip：资源目录图标名
     [[UIApplication sharedApplication] setAlternateIconName:altName completionHandler:^(NSError * _Nullable error) {
         if (error) {
             printf("[SETTINGS] app icon switch to '%s' failed: %s\n",
@@ -17468,8 +17455,8 @@ didPickDocumentsAtURLs:(NSArray<NSURL *> *)urls
         alertControllerWithTitle:NSLocalizedString(@"App Icon", nil)
                          message:nil
                   preferredStyle:UIAlertControllerStyleActionSheet];
-    NSString *modernTitle = [current isEqualToString:@"modern"] ? @"Modern ✓" : @"Modern";
-    NSString *classicTitle = [current isEqualToString:@"classic"] ? @"Classic ✓" : @"Classic";
+    NSString *modernTitle = [current isEqualToString:@"modern"] ? NSLocalizedString(@"Modern ✓", nil) : NSLocalizedString(@"Modern", nil);
+    NSString *classicTitle = [current isEqualToString:@"classic"] ? NSLocalizedString(@"Classic ✓", nil) : NSLocalizedString(@"Classic", nil);
     [ac addAction:[UIAlertAction actionWithTitle:modernTitle style:UIAlertActionStyleDefault handler:^(UIAlertAction *_) {
         [self selectAppIconAtRow:0 inTableView:self.tableView];
     }]];
@@ -17495,7 +17482,7 @@ didPickDocumentsAtURLs:(NSArray<NSURL *> *)urls
     NSString *logPath = log_most_recent_session_path();
     NSString *text;
     if (!logPath) {
-        text = @"No log yet. Run a chain at least once.";
+        text = NSLocalizedString(@"No log yet. Run a chain at least once.", nil);
     } else {
         NSError *err = nil;
         text = [NSString stringWithContentsOfFile:logPath encoding:NSUTF8StringEncoding error:&err];
@@ -17585,7 +17572,7 @@ void cyanide_present_contact(UIViewController *host)
     NSString *signature = [NSString stringWithFormat:@"—— Cyanide %@ · iOS %@ · %@ ——",
                            appVersion, iosVersion, machine];
 
-    NSString *subject = [NSString stringWithFormat:@"Cyanide %@ — Contact", appVersion];
+    NSString *subject = [NSString stringWithFormat:NSLocalizedString(@"Cyanide %@ — Contact", nil), appVersion];
 
     // CRLF rather than LF so iOS Mail, Gmail, Outlook, and the mailto: URL
     // path all preserve line breaks. Plain LF is fine in MFMailCompose but
@@ -17724,8 +17711,8 @@ void cyanide_present_contact(UIViewController *host)
             BOOL running = g_settings_cleanup_running;
             symbol = @"xmark.circle.fill";
             color  = UIColor.systemRedColor;
-            cell.textLabel.text = running ? @"Cleaning Up…" : @"Clean Up";
-            cell.detailTextLabel.text = cleanupEnabled ? nil : @"No active session";
+            cell.textLabel.text = running ? NSLocalizedString(@"Cleaning Up…", nil) : NSLocalizedString(@"Clean Up", nil);
+            cell.detailTextLabel.text = cleanupEnabled ? nil : NSLocalizedString(@"No active session", nil);
             if (running) {
                 UIActivityIndicatorView *spin = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleMedium];
                 spin.color = color;
@@ -17736,7 +17723,7 @@ void cyanide_present_contact(UIViewController *host)
             BOOL running = g_settings_respring_cleanup_running;
             symbol = @"arrow.clockwise.circle.fill";
             color  = UIColor.systemOrangeColor;
-            cell.textLabel.text = running ? @"Preparing…" : @"Respring";
+            cell.textLabel.text = running ? NSLocalizedString(@"Preparing…", nil) : NSLocalizedString(@"Respring", nil);
             if (running) {
                 UIActivityIndicatorView *spin = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleMedium];
                 spin.color = color;
@@ -17747,7 +17734,7 @@ void cyanide_present_contact(UIViewController *host)
             BOOL running = g_settings_reboot_running;
             symbol = @"power.circle.fill";
             color  = UIColor.systemPurpleColor;
-            cell.textLabel.text = running ? @"Preparing…" : @"Reboot";
+            cell.textLabel.text = running ? NSLocalizedString(@"Preparing…", nil) : NSLocalizedString(@"Reboot", nil);
             if (running) {
                 UIActivityIndicatorView *spin = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleMedium];
                 spin.color = color;
@@ -17759,7 +17746,7 @@ void cyanide_present_contact(UIViewController *host)
             symbol = @"trash.fill";
             color  = UIColor.systemRedColor;
             cell.textLabel.text = NSLocalizedString(@"Reset All Packages", nil);
-            cell.detailTextLabel.text = anyInstalledOrQueued ? nil : @"Nothing active";
+            cell.detailTextLabel.text = anyInstalledOrQueued ? nil : NSLocalizedString(@"Nothing active", nil);
         } else {
             rowEnabled = YES;
             symbol = @"arrow.down.circle.fill";
@@ -17927,7 +17914,7 @@ void cyanide_present_contact(UIViewController *host)
         cell.textLabel.text = [NSString stringWithFormat:@"%@: %@", row[@"title"], valueText];
         cell.textLabel.textAlignment = NSTextAlignmentNatural;
         cell.textLabel.textColor = supported ? UIColor.labelColor : UIColor.tertiaryLabelColor;
-        cell.detailTextLabel.text = row[@"subtitle"] ?: @"Tap to enter an exact value.";
+        cell.detailTextLabel.text = row[@"subtitle"] ?: NSLocalizedString(@"Tap to enter an exact value.", nil);
         cell.detailTextLabel.textColor = supported ? UIColor.secondaryLabelColor : UIColor.tertiaryLabelColor;
         cell.detailTextLabel.font = [UIFont systemFontOfSize:12];
         return cell;
@@ -18103,7 +18090,7 @@ void cyanide_present_contact(UIViewController *host)
         title.translatesAutoresizingMaskIntoConstraints = NO;
 
         UISegmentedControl *seg =
-            [[UISegmentedControl alloc] initWithItems:@[@"Off", @"Dynamic", @"3 GB"]];
+            [[UISegmentedControl alloc] initWithItems:@[NSLocalizedString(@"Off", nil), @"Dynamic", @"3 GB"]];
         seg.translatesAutoresizingMaskIntoConstraints = NO;
         seg.selectedSegmentIndex = [d integerForKey:kSettingsA18MemoryShaping];
         [seg addTarget:self
@@ -18151,7 +18138,7 @@ void cyanide_present_contact(UIViewController *host)
         title.translatesAutoresizingMaskIntoConstraints = NO;
 
         UISegmentedControl *seg =
-            [[UISegmentedControl alloc] initWithItems:@[@"Compatible", @"Fast", @"Fastest"]];
+            [[UISegmentedControl alloc] initWithItems:@[NSLocalizedString(@"Compatible", nil), @"Fast", @"Fastest"]];
         seg.translatesAutoresizingMaskIntoConstraints = NO;
         seg.selectedSegmentIndex = [d integerForKey:kSettingsRemoteSettleMode];
         [seg addTarget:self
@@ -18241,8 +18228,7 @@ void cyanide_present_contact(UIViewController *host)
         config.text = NSLocalizedString(@"No tweak loaded", nil);
         config.textProperties.font = [UIFont systemFontOfSize:17.0 weight:UIFontWeightMedium];
         config.textProperties.color = UIColor.tertiaryLabelColor;
-        config.secondaryText = repotweaks_sources_enabled() ? @"Select a .js file or install from Sources"
-                                                            : @"Select a .js file to run";
+        config.secondaryText = repotweaks_sources_enabled() ? @"Select a .js file or install from Sources" : @"Select a .js file to run";
         config.secondaryTextProperties.color = UIColor.tertiaryLabelColor;
         config.textToSecondaryTextVerticalPadding = 2.0;
         NSDirectionalEdgeInsets m = config.directionalLayoutMargins;
@@ -18485,8 +18471,8 @@ void cyanide_present_contact(UIViewController *host)
     printf("[SETTINGS] toggle %s=%d\n", key.UTF8String, sender.isOn);
     if (darkPatchStillLive) {
         log_user("[DST] %s stays active until SpringBoard restarts.\n", key.UTF8String);
-        [self presentRespringPromptWithTitle:@"Respring to Turn It Off?"
-                                     message:[NSString stringWithFormat:NSLocalizedString(@"%@ is still active in SpringBoard. It stays on until a respring.", nil), row[@"title"] ?: @"This tweak"]];
+        [self presentRespringPromptWithTitle:NSLocalizedString(@"Respring to Turn It Off?", nil)
+                                     message:[NSString stringWithFormat:NSLocalizedString(@"%@ is still active in SpringBoard. It stays on until a respring.", nil), row[@"title"] ?: NSLocalizedString(@"This tweak", nil)]];
     }
     settings_note_package_configuration_changed(key);
     if ([key isEqualToString:kSettingsKeepAlive]) {
@@ -18741,10 +18727,10 @@ void cyanide_present_contact(UIViewController *host)
             typeof(self) me = weakSelf;
             if (!me) return;
             if (ok || !message) {
-                if (state == SupervisionStateCyanide) message = @"Supervised by " @SUPERVISION_ORGANIZATION_NAME @" (set by Cyanide).";
-                else if (state == SupervisionStateOther) message = @"Supervised by an organization, not by Cyanide. Cyanide leaves it alone.";
-                else if (state == SupervisionStateOff) message = @"Not supervised (stock).";
-                else message = @"Could not read the supervision state — filesystem access was denied.";
+                if (state == SupervisionStateCyanide) message = NSLocalizedString(@"Supervised by ", nil) @SUPERVISION_ORGANIZATION_NAME @" (set by Cyanide).";
+                else if (state == SupervisionStateOther) message = NSLocalizedString(@"Supervised by an organization, not by Cyanide. Cyanide leaves it alone.", nil);
+                else if (state == SupervisionStateOff) message = NSLocalizedString(@"Not supervised (stock).", nil);
+                else message = NSLocalizedString(@"Could not read the supervision state — filesystem access was denied.", nil);
             }
             UIAlertController *ac = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Supervision", nil)
                                                                         message:message
@@ -18766,7 +18752,7 @@ void cyanide_present_contact(UIViewController *host)
                 void (^offer)(void) = ^{
                     typeof(self) owner = weakSelf;
                     if (!owner) return;
-                    settings_tool_needs_exploit(owner, owner.tableView, @"Supervision", ^{
+                    settings_tool_needs_exploit(owner, owner.tableView, NSLocalizedString(@"Supervision", nil), ^{
                         [weakSelf runSupervisionAction:action];
                     });
                 };
@@ -18819,7 +18805,7 @@ void cyanide_present_contact(UIViewController *host)
                 void (^offer)(void) = ^{
                     typeof(self) owner = weakSelf;
                     if (!owner) return;
-                    settings_tool_needs_exploit(owner, owner.tableView, @"Gravity Lite", ^{
+                    settings_tool_needs_exploit(owner, owner.tableView, NSLocalizedString(@"Gravity Lite", nil), ^{
                         [weakSelf runGravityLiteToggle:activate];
                     });
                 };
@@ -18827,8 +18813,8 @@ void cyanide_present_contact(UIViewController *host)
                 else offer();
                 return;
             }
-            settings_post_actions_complete_async(ok, ok ? (activate ? @"Gravity Lite active." : @"Gravity Lite deactivated.")
-                                                        : (message ?: @"Gravity Lite did not start. Check the log."));
+            settings_post_actions_complete_async(ok, ok ? (activate ? NSLocalizedString(@"Gravity Lite active.", nil) : NSLocalizedString(@"Gravity Lite deactivated.", nil))
+                                                        : (message ?: NSLocalizedString(@"Gravity Lite did not start. Check the log.", nil)));
             [me reloadSectionOrAll:SectionGravityLite];
         });
     }];
@@ -18851,18 +18837,17 @@ void cyanide_present_contact(UIViewController *host)
             __block BOOL actionOK = NO;
             BOOL actionLockAcquired = NO;
             NSString *completionMessage = restore
-                ? @"Gravity Lite restore failed. Check the log."
-                : @"Gravity Lite explosion failed. Check the log.";
+                ? NSLocalizedString(@"Gravity Lite restore failed. Check the log.", nil) : NSLocalizedString(@"Gravity Lite explosion failed. Check the log.", nil);
             @try {
                 actionLockAcquired = settings_try_claim_actions_lock("Gravity Lite action",
                                                                      "[GRAVITY] Another action is already running.");
                 if (!actionLockAcquired) {
-                    completionMessage = @"Gravity Lite blocked: Apply Tweaks is still running.";
+                    completionMessage = NSLocalizedString(@"Gravity Lite blocked: Apply Tweaks is still running.", nil);
                     return;
                 }
                 if (!settings_ensure_kexploit()) {
                     log_user("[GRAVITY] Failed: kernel primitives not acquired. Please try running chain again.\n");
-                    completionMessage = @"Gravity Lite failed: kernel primitives were not acquired. Please try running chain again.";
+                    completionMessage = NSLocalizedString(@"Gravity Lite failed: kernel primitives were not acquired. Please try running chain again.", nil);
                     return;
                 }
 
@@ -18894,15 +18879,13 @@ void cyanide_present_contact(UIViewController *host)
                     settings_stop_gravity_motion();
                     settings_mark_tweak_applied(kSettingsGravityLiteEnabled, NO);
                     completionMessage = actionOK
-                        ? @"Gravity Lite restored the icon layout."
-                        : @"Gravity Lite restore found no active state.";
+                        ? NSLocalizedString(@"Gravity Lite restored the icon layout.", nil) : NSLocalizedString(@"Gravity Lite restore found no active state.", nil);
                     log_user("%s Gravity Lite restore %s.\n",
                              actionOK ? "[OK]" : "[WARN]",
                              actionOK ? "completed" : "found no active state");
                 } else {
                     completionMessage = actionOK
-                        ? @"Gravity Lite explosion pulse sent."
-                        : @"Gravity Lite explosion found no active state.";
+                        ? NSLocalizedString(@"Gravity Lite explosion pulse sent.", nil) : NSLocalizedString(@"Gravity Lite explosion found no active state.", nil);
                     log_user("%s Gravity Lite explosion %s.\n",
                              actionOK ? "[OK]" : "[WARN]",
                              actionOK ? "sent" : "found no active state");
@@ -18940,18 +18923,17 @@ void cyanide_present_contact(UIViewController *host)
             BOOL actionOK = NO;
             BOOL actionLockAcquired = NO;
             NSString *completionMessage = apply
-                ? @"Location Simulator applied."
-                : @"Restore request sent. Real location may take a few minutes.";
+                ? NSLocalizedString(@"Location Simulator applied.", nil) : NSLocalizedString(@"Restore request sent. Real location may take a few minutes.", nil);
             @try {
                 actionLockAcquired = settings_try_claim_actions_lock("Location Simulator action",
                                                                      "[LOCSIM] Another action is already running.");
                 if (!actionLockAcquired) {
-                    completionMessage = @"Location Simulator blocked: Apply Tweaks is still running.";
+                    completionMessage = NSLocalizedString(@"Location Simulator blocked: Apply Tweaks is still running.", nil);
                     return;
                 }
                 if (!settings_ensure_kexploit()) {
                     log_user("[LOCSIM] Failed: kernel primitives not acquired. Please try running chain again.\n");
-                    completionMessage = @"Location Simulator failed: kernel primitives were not acquired. Please try running chain again.";
+                    completionMessage = NSLocalizedString(@"Location Simulator failed: kernel primitives were not acquired. Please try running chain again.", nil);
                     return;
                 }
 
@@ -18972,8 +18954,8 @@ void cyanide_present_contact(UIViewController *host)
                 }
                 actionOK = ok;
                 completionMessage = apply
-                    ? (ok ? @"Location Simulator applied." : @"Location Simulator failed. Check the log.")
-                    : (ok ? @"Restore request sent. Real location may take a few minutes." : @"Restore failed. Check the log.");
+                    ? (ok ? NSLocalizedString(@"Location Simulator applied.", nil) : NSLocalizedString(@"Location Simulator failed. Check the log.", nil))
+                    : (ok ? NSLocalizedString(@"Restore request sent. Real location may take a few minutes.", nil) : NSLocalizedString(@"Restore failed. Check the log.", nil));
                 log_user("%s Location Simulator %s.\n",
                          ok ? "[OK]" : "[WARN]",
                          apply ? (ok ? "applied" : "did not apply cleanly")
@@ -19022,18 +19004,17 @@ void cyanide_present_contact(UIViewController *host)
             BOOL actionOK = NO;
             BOOL actionLockAcquired = NO;
             NSString *completionMessage = enable
-                ? @"Strict App Mode failed. Check the log."
-                : @"Strict App Mode disable failed. Check the log.";
+                ? NSLocalizedString(@"Strict App Mode failed. Check the log.", nil) : NSLocalizedString(@"Strict App Mode disable failed. Check the log.", nil);
             @try {
                 actionLockAcquired = settings_try_claim_actions_lock("Location Simulator strict mode",
                                                                      "[LOCSIM] Another action is already running.");
                 if (!actionLockAcquired) {
-                    completionMessage = @"Strict App Mode blocked: Apply Tweaks is still running.";
+                    completionMessage = NSLocalizedString(@"Strict App Mode blocked: Apply Tweaks is still running.", nil);
                     return;
                 }
                 if (!settings_ensure_kexploit()) {
                     log_user("[LOCSIM] Strict App Mode failed: kernel primitives not acquired. Please try running chain again.\n");
-                    completionMessage = @"Strict App Mode failed: kernel primitives were not acquired. Please try running chain again.";
+                    completionMessage = NSLocalizedString(@"Strict App Mode failed: kernel primitives were not acquired. Please try running chain again.", nil);
                     return;
                 }
 
@@ -19051,12 +19032,10 @@ void cyanide_present_contact(UIViewController *host)
                 actionOK = stealthOK;
                 if (enable) {
                     completionMessage = stealthOK
-                        ? @"Strict mode host sweep finished. Force quit and reopen strict apps before testing."
-                        : @"Strict App Mode failed. Check the log.";
+                        ? NSLocalizedString(@"Strict mode host sweep finished. Force quit and reopen strict apps before testing.", nil) : NSLocalizedString(@"Strict App Mode failed. Check the log.", nil);
                 } else {
                     completionMessage = stealthOK
-                        ? @"Strict mode simulation stop request sent."
-                        : @"Strict App Mode disable failed. Check the log.";
+                        ? NSLocalizedString(@"Strict mode simulation stop request sent.", nil) : NSLocalizedString(@"Strict App Mode disable failed. Check the log.", nil);
                 }
 
                 log_user("%s Strict App Mode %s (hosts=%s).\n",
@@ -19122,13 +19101,13 @@ void cyanide_present_contact(UIViewController *host)
                                                                 message:NSLocalizedString(@"Enter decimal degrees, or paste a pair like 40.7128, -74.0060 or 北纬39.9042，东经116.4074.", nil)
                                                          preferredStyle:UIAlertControllerStyleAlert];
     [ac addTextFieldWithConfigurationHandler:^(UITextField *field) {
-        field.placeholder = @"Latitude or lat, lon";
+        field.placeholder = NSLocalizedString(@"Latitude or lat, lon", nil);
         field.text = [NSString stringWithFormat:@"%.8f", [d doubleForKey:kSettingsLocationSimLatitude]];
         field.keyboardType = UIKeyboardTypeNumbersAndPunctuation;
         field.clearButtonMode = UITextFieldViewModeWhileEditing;
     }];
     [ac addTextFieldWithConfigurationHandler:^(UITextField *field) {
-        field.placeholder = @"Longitude";
+        field.placeholder = NSLocalizedString(@"Longitude", nil);
         field.text = [NSString stringWithFormat:@"%.8f", [d doubleForKey:kSettingsLocationSimLongitude]];
         field.keyboardType = UIKeyboardTypeNumbersAndPunctuation;
         field.clearButtonMode = UITextFieldViewModeWhileEditing;
@@ -19174,8 +19153,8 @@ void cyanide_present_contact(UIViewController *host)
 - (void)presentLocationSimCityPicker
 {
     NSArray<NSDictionary *> *cities = @[
-        @{ @"name": @"New York City", @"lat": @40.7128, @"lon": @(-74.0060) },
-        @{ @"name": @"Los Angeles", @"lat": @34.0522, @"lon": @(-118.2437) },
+        @{ @"name": NSLocalizedString(@"New York City", nil), @"lat": @40.7128, @"lon": @(-74.0060) },
+        @{ @"name": NSLocalizedString(@"Los Angeles", nil), @"lat": @34.0522, @"lon": @(-118.2437) },
         @{ @"name": @"Chicago", @"lat": @41.8781, @"lon": @(-87.6298) },
         @{ @"name": @"Miami", @"lat": @25.7617, @"lon": @(-80.1918) },
         @{ @"name": @"London", @"lat": @51.5074, @"lon": @(-0.1278) },
@@ -19183,7 +19162,7 @@ void cyanide_present_contact(UIViewController *host)
         @{ @"name": @"Tokyo", @"lat": @35.6762, @"lon": @139.6503 },
         @{ @"name": @"Sydney", @"lat": @(-33.8688), @"lon": @151.2093 },
         @{ @"name": @"Dubai", @"lat": @25.2048, @"lon": @55.2708 },
-        @{ @"name": @"Singapore", @"lat": @1.3521, @"lon": @103.8198 },
+        @{ @"name": NSLocalizedString(@"Singapore", nil), @"lat": @1.3521, @"lon": @103.8198 },
     ];
 
     UIAlertController *ac = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Major Cities", nil)
@@ -19351,24 +19330,24 @@ void cyanide_present_contact(UIViewController *host)
                         ? self.tweakBundleRows
                         : self.systemBundleRows);
                 NSDictionary *bundle = bundles[indexPath.row];
-                if ([bundle[@"custom"] isEqualToString:@"procmgr"]) {
+                if ([bundle[NSLocalizedString(@"custom", nil)] isEqualToString:@"procmgr"]) {
                     ProcessManagerViewController *pm = [[ProcessManagerViewController alloc] initWithStyle:UITableViewStylePlain];
                     [self.navigationController pushViewController:pm animated:YES];
                     return;
                 }
-                if ([bundle[@"custom"] isEqualToString:@"sysinfo"]) {
+                if ([bundle[NSLocalizedString(@"custom", nil)] isEqualToString:@"sysinfo"]) {
                     [self.navigationController pushViewController:settings_make_system_info_viewer() animated:YES];
                     return;
                 }
-                if ([bundle[@"custom"] isEqualToString:@"cleaner"]) {
+                if ([bundle[NSLocalizedString(@"custom", nil)] isEqualToString:@"cleaner"]) {
                     [self.navigationController pushViewController:settings_make_cleaner_viewer() animated:YES];
                     return;
                 }
-                if ([bundle[@"custom"] isEqualToString:@"daemons"]) {
+                if ([bundle[NSLocalizedString(@"custom", nil)] isEqualToString:@"daemons"]) {
                     [self.navigationController pushViewController:settings_make_daemons_viewer() animated:YES];
                     return;
                 }
-                if ([bundle[@"custom"] isEqualToString:@"filebrowser"]) {
+                if ([bundle[NSLocalizedString(@"custom", nil)] isEqualToString:@"filebrowser"]) {
                     FileBrowserViewController *fb = [[FileBrowserViewController alloc] initWithPath:@"/"];
                     [self.navigationController pushViewController:fb animated:YES];
                     return;
@@ -19740,21 +19719,21 @@ void cyanide_present_contact(UIViewController *host)
         dispatch_async(dispatch_get_global_queue(0, 0), ^{
             // Result for the progress sheet: a bare completion reads as success.
             __block BOOL flxOK = NO;
-            __block NSString *flxMessage = @"FastLockX Lite request failed. Check the log for details.";
+            __block NSString *flxMessage = NSLocalizedString(@"FastLockX Lite request failed. Check the log for details.", nil);
             BOOL actionLockAcquired = settings_try_claim_actions_lock("FastLockX Lite",
                                                                      "[FLX] Another action is already running.");
             if (!actionLockAcquired) {
                 if (bgTask != UIBackgroundTaskInvalid) {
                     [[UIApplication sharedApplication] endBackgroundTask:bgTask];
                 }
-                settings_post_actions_complete_async(NO, @"Another action is already running. Try again when it has finished.");
+                settings_post_actions_complete_async(NO, NSLocalizedString(@"Another action is already running. Try again when it has finished.", nil));
                 return;
             }
 
             @try {
                 if (!settings_ensure_kexploit()) {
                     log_user("[FLX] Failed: kernel primitives not acquired. Run the chain, then try again.\n");
-                    flxMessage = @"Kernel primitives not acquired. Run the chain, then try again.";
+                    flxMessage = NSLocalizedString(@"Kernel primitives not acquired. Run the chain, then try again.", nil);
                     return;
                 }
 
@@ -19762,7 +19741,7 @@ void cyanide_present_contact(UIViewController *host)
                 @synchronized (settings_rc_lock()) {
                     if (!settings_ensure_springboard_remote_call_locked()) {
                         log_user("[FLX] SpringBoard not reachable; cannot send FastLockX Lite request.\n");
-                        flxMessage = @"SpringBoard not reachable; cannot send FastLockX Lite request.";
+                        flxMessage = NSLocalizedString(@"SpringBoard not reachable; cannot send FastLockX Lite request.", nil);
                         return;
                     }
 
@@ -19772,8 +19751,7 @@ void cyanide_present_contact(UIViewController *host)
                                  ok ? "[OK]" : "[WARN]",
                                  ok ? "found usable primitives" : "did not find enough primitives");
                         flxOK = ok;
-                        flxMessage = ok ? @"FastLockX Lite probe found usable primitives."
-                                        : @"FastLockX Lite probe did not find enough primitives.";
+                        flxMessage = ok ? NSLocalizedString(@"FastLockX Lite probe found usable primitives.", nil) : NSLocalizedString(@"FastLockX Lite probe did not find enough primitives.", nil);
                         return;
                     }
 
@@ -19791,8 +19769,7 @@ void cyanide_present_contact(UIViewController *host)
                                  ok ? "[OK]" : "[WARN]",
                                  ok ? "disabled" : "could not be disabled; respring will stop it");
                         flxOK = ok;
-                        flxMessage = ok ? @"FastLockX Lite Always On disabled."
-                                        : @"FastLockX Lite Always On could not be disabled; respring will stop it.";
+                        flxMessage = ok ? NSLocalizedString(@"FastLockX Lite Always On disabled.", nil) : NSLocalizedString(@"FastLockX Lite Always On could not be disabled; respring will stop it.", nil);
                     } else if (enableAlways) {
                         [d setBool:YES forKey:kSettingsFastLockXLiteEnabled];
                         [d synchronize];
@@ -19820,8 +19797,7 @@ void cyanide_present_contact(UIViewController *host)
                                  ok ? "[OK]" : "[WARN]",
                                  ok ? "enabled" : "failed to enable");
                         flxOK = ok;
-                        flxMessage = ok ? @"FastLockX Lite Always On enabled."
-                                        : @"FastLockX Lite Always On failed to enable.";
+                        flxMessage = ok ? NSLocalizedString(@"FastLockX Lite Always On enabled.", nil) : NSLocalizedString(@"FastLockX Lite Always On failed to enable.", nil);
                     } else if (window) {
                         NSTimeInterval deadline = [NSDate timeIntervalSinceReferenceDate] + 15.0;
                         int tick = 0;
@@ -19847,8 +19823,7 @@ void cyanide_present_contact(UIViewController *host)
                         }
                         log_user("[FLX] 15s auto-unlock window stopped.\n");
                         flxOK = !stoppedForCleanup;
-                        flxMessage = stoppedForCleanup ? @"Auto-unlock window stopped: cleanup started."
-                                                       : @"15s auto-unlock window finished.";
+                        flxMessage = stoppedForCleanup ? NSLocalizedString(@"Auto-unlock window stopped: cleanup started.", nil) : @"15s auto-unlock window finished.";
                     } else {
                         FastLockXLiteConfig config = settings_fastlockx_lite_config_from_defaults(d, pulse, unlock);
                         bool ok = fastlockx_lite_run_in_session(config);
@@ -19856,8 +19831,7 @@ void cyanide_present_contact(UIViewController *host)
                                  ok ? "[OK]" : "[WARN]",
                                  ok ? "completed" : "did not complete");
                         flxOK = ok;
-                        flxMessage = ok ? @"FastLockX Lite request completed."
-                                        : @"FastLockX Lite request did not complete.";
+                        flxMessage = ok ? NSLocalizedString(@"FastLockX Lite request completed.", nil) : NSLocalizedString(@"FastLockX Lite request did not complete.", nil);
                     }
                 }
             } @finally {

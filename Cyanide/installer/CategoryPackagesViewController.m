@@ -44,10 +44,10 @@ static NSString * const kCatPkgCellID = @"CatPkgCell";
 {
     NSString *reason = nil;
     if ([[PackageQueue sharedQueue] canQueueIntent:intent forPackage:pkg reason:&reason]) return NO;
-    BOOL hideHomeBarReason = [reason containsString:@"Hide Home Bar"];
+    BOOL hideHomeBarReason = [reason containsString:NSLocalizedString(@"Hide Home Bar", nil)];
     UIAlertController *alert =
-        [UIAlertController alertControllerWithTitle:(hideHomeBarReason ? @"Run Hide Home Bar Alone" : @"Cannot Queue Install")
-                                            message:reason ?: @"This package cannot be queued yet."
+        [UIAlertController alertControllerWithTitle:(hideHomeBarReason ? NSLocalizedString(@"Run Hide Home Bar Alone", nil) : NSLocalizedString(@"Cannot Queue Install", nil))
+                                            message:reason ?: NSLocalizedString(@"This package cannot be queued yet.", nil)
                                      preferredStyle:UIAlertControllerStyleAlert];
     [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil) style:UIAlertActionStyleDefault handler:nil]];
     [self presentViewController:alert animated:YES completion:nil];
@@ -57,7 +57,7 @@ static NSString * const kCatPkgCellID = @"CatPkgCell";
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.title = self.categoryName ?: @"Packages";
+    self.title = self.categoryName ? NSLocalizedString(self.categoryName, nil) : NSLocalizedString(@"Packages", nil);
     self.searchText = @"";
 
     [self refreshPackages];
@@ -212,46 +212,46 @@ static NSString * const kCatPkgCellID = @"CatPkgCell";
 {
     PackageQueueIntent intent = [[PackageQueue sharedQueue] intentForPackage:pkg];
     if (pkg.isInstallDisabled && !pkg.isInstalled) {
-        return [self pillWithText:@"DISABLED" background:[[UIColor systemRedColor] colorWithAlphaComponent:0.16] textColor:UIColor.systemRedColor];
+        return [self pillWithText:NSLocalizedString(@"DISABLED", nil) background:[[UIColor systemRedColor] colorWithAlphaComponent:0.16] textColor:UIColor.systemRedColor];
     }
     if (pkg.kind == PackageInstallKindDirectTool ||
         pkg.kind == PackageInstallKindNanoRegistry ||
         pkg.kind == PackageInstallKindCallRecordingSound ||
         pkg.kind == PackageInstallKindHideHomeBar) {
         if (intent != PackageQueueIntentNone) {
-            return [self pillWithText:@"PENDING" background:[self.view.tintColor colorWithAlphaComponent:0.18] textColor:self.view.tintColor];
+            return [self pillWithText:NSLocalizedString(@"PENDING", nil) background:[self.view.tintColor colorWithAlphaComponent:0.18] textColor:self.view.tintColor];
         }
         if (pkg.kind == PackageInstallKindHideHomeBar && pkg.isInstalled) {
-            return [self pillWithText:@"HIDDEN" background:[UIColor colorWithRed:0.16 green:0.55 blue:0.32 alpha:0.18] textColor:UIColor.systemGreenColor];
+            return [self pillWithText:NSLocalizedString(@"HIDDEN", nil) background:[UIColor colorWithRed:0.16 green:0.55 blue:0.32 alpha:0.18] textColor:UIColor.systemGreenColor];
         }
-        return [self pillWithText:@"MANUAL" background:[UIColor.secondaryLabelColor colorWithAlphaComponent:0.14] textColor:UIColor.secondaryLabelColor];
+        return [self pillWithText:NSLocalizedString(@"MANUAL", nil) background:[UIColor.secondaryLabelColor colorWithAlphaComponent:0.14] textColor:UIColor.secondaryLabelColor];
     }
     if (pkg.kind == PackageInstallKindRepoTweak) {
         if (intent != PackageQueueIntentNone) {
-            NSString *t = (intent == PackageQueueIntentInstall) ? @"WILL INSTALL" : @"WILL REMOVE";
+            NSString *t = (intent == PackageQueueIntentInstall) ? NSLocalizedString(@"WILL INSTALL", nil) : NSLocalizedString(@"WILL REMOVE", nil);
             return [self pillWithText:t background:[self.view.tintColor colorWithAlphaComponent:0.18] textColor:self.view.tintColor];
         }
         if (pkg.isInstalled)
-            return [self pillWithText:@"INSTALLED" background:[UIColor colorWithRed:0.16 green:0.55 blue:0.32 alpha:0.18] textColor:UIColor.systemGreenColor];
+            return [self pillWithText:NSLocalizedString(@"INSTALLED", nil) background:[UIColor colorWithRed:0.16 green:0.55 blue:0.32 alpha:0.18] textColor:UIColor.systemGreenColor];
         if (pkg.isInstallDisabled) {
-            NSString *label = [pkg.installDisabledReason containsString:@"Refresh"] ? @"REFRESH" : @"DISABLED";
+            NSString *label = [pkg.installDisabledReason containsString:@"Refresh"] ? @"REFRESH" : NSLocalizedString(@"DISABLED", nil);
             return [self pillWithText:label background:[[UIColor systemOrangeColor] colorWithAlphaComponent:0.16] textColor:UIColor.systemOrangeColor];
         }
     }
     if (intent != PackageQueueIntentNone) {
-        NSString *t = (intent == PackageQueueIntentInstall) ? @"WILL ACTIVATE" : @"WILL DEACTIVATE";
+        NSString *t = (intent == PackageQueueIntentInstall) ? NSLocalizedString(@"WILL ACTIVATE", nil) : NSLocalizedString(@"WILL DEACTIVATE", nil);
         return [self pillWithText:t background:[self.view.tintColor colorWithAlphaComponent:0.18] textColor:self.view.tintColor];
     }
     if (pkg.isInstalled)
-        return [self pillWithText:@"INSTALLED" background:[UIColor colorWithRed:0.16 green:0.55 blue:0.32 alpha:0.18] textColor:UIColor.systemGreenColor];
+        return [self pillWithText:NSLocalizedString(@"INSTALLED", nil) background:[UIColor colorWithRed:0.16 green:0.55 blue:0.32 alpha:0.18] textColor:UIColor.systemGreenColor];
     if (pkg.isInstallDisabled)
-        return [self pillWithText:@"DISABLED" background:[[UIColor systemRedColor] colorWithAlphaComponent:0.16] textColor:UIColor.systemRedColor];
+        return [self pillWithText:NSLocalizedString(@"DISABLED", nil) background:[[UIColor systemRedColor] colorWithAlphaComponent:0.16] textColor:UIColor.systemRedColor];
     if (pkg.creatorOnly)
-        return [self pillWithText:@"IN DEV" background:[[UIColor systemPurpleColor] colorWithAlphaComponent:0.16] textColor:UIColor.systemPurpleColor];
+        return [self pillWithText:NSLocalizedString(@"IN DEV", nil) background:[[UIColor systemPurpleColor] colorWithAlphaComponent:0.16] textColor:UIColor.systemPurpleColor];
     if (pkg.experimental)
-        return [self pillWithText:@"EXPERIMENTAL" background:[[UIColor systemRedColor] colorWithAlphaComponent:0.18] textColor:UIColor.systemRedColor];
+        return [self pillWithText:NSLocalizedString(@"EXPERIMENTAL", nil) background:[[UIColor systemRedColor] colorWithAlphaComponent:0.18] textColor:UIColor.systemRedColor];
     if ([pkg.category caseInsensitiveCompare:@"Beta"] == NSOrderedSame)
-        return [self pillWithText:@"BETA" background:[[UIColor systemPurpleColor] colorWithAlphaComponent:0.18] textColor:UIColor.systemPurpleColor];
+        return [self pillWithText:NSLocalizedString(@"BETA", nil) background:[[UIColor systemPurpleColor] colorWithAlphaComponent:0.18] textColor:UIColor.systemPurpleColor];
     return nil;
 }
 
@@ -308,20 +308,20 @@ static NSString * const kCatPkgCellID = @"CatPkgCell";
     UIColor *color;
     NSString *symbol;
     if (intent != PackageQueueIntentNone) {
-        title = @"Cancel"; color = UIColor.systemGrayColor; symbol = @"xmark.circle";
+        title = NSLocalizedString(@"Cancel", nil); color = UIColor.systemGrayColor; symbol = @"xmark.circle";
     } else if (pkg.kind == PackageInstallKindHideHomeBar) {
-        title = pkg.isInstalled ? @"Restore" : @"Hide";
+        title = pkg.isInstalled ? @"Restore" : NSLocalizedString(@"Hide", nil);
         color = pkg.isInstalled ? UIColor.systemRedColor : self.view.tintColor;
         symbol = pkg.isInstalled ? @"arrow.clockwise" : @"line.3.horizontal";
     } else if (pkg.isInstalled) {
-        title = (pkg.kind == PackageInstallKindRepoTweak) ? @"Remove" : @"Deactivate";
+        title = (pkg.kind == PackageInstallKindRepoTweak) ? NSLocalizedString(@"Remove", nil) : NSLocalizedString(@"Deactivate", nil);
         color = UIColor.systemRedColor; symbol = @"power";
     } else if ([self packageNeedsThemeBeforeInstall:pkg]) {
-        title = @"Select Theme"; color = self.view.tintColor; symbol = @"paintpalette";
+        title = NSLocalizedString(@"Select Theme", nil); color = self.view.tintColor; symbol = @"paintpalette";
     } else if ([self packageNeedsLiveWPVideoBeforeInstall:pkg]) {
-        title = @"Select Video"; color = self.view.tintColor; symbol = @"photo.badge.plus";
+        title = NSLocalizedString(@"Select Video", nil); color = self.view.tintColor; symbol = @"photo.badge.plus";
     } else {
-        title = (pkg.kind == PackageInstallKindRepoTweak) ? @"Install" : @"Activate";
+        title = (pkg.kind == PackageInstallKindRepoTweak) ? @"Install" : NSLocalizedString(@"Activate", nil);
         color = self.view.tintColor; symbol = @"play.circle";
     }
 

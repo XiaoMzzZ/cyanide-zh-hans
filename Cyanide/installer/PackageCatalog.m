@@ -91,9 +91,9 @@ static BOOL catalog_repo_script_requires_native_bridge(NSString *rawScript)
                 pkg.installDisabledReason = unsupportedReason;
                 pkg.unstableWarning = unsupportedReason;
             } else if (rawScript.length == 0) {
-                pkg.installDisabledReason = @"Refresh this source from the Sources tab before installing.";
+                pkg.installDisabledReason = NSLocalizedString(@"Refresh this source from the Sources tab before installing.", nil);
             } else if (pkg.repoTweakUsesQuickLoader && catalog_repo_script_requires_native_bridge(rawScript)) {
-                pkg.installDisabledReason = @"This repo tweak needs a dedicated Cyanide native backend before it can install.";
+                pkg.installDisabledReason = NSLocalizedString(@"This repo tweak needs a dedicated Cyanide native backend before it can install.", nil);
             }
             [packages addObject:pkg];
         }
@@ -177,7 +177,7 @@ static const NSInteger kSecOTA              = SectionOTA;
         nsBar.settingsSection = kSecNSBar;
 
         Package *niceBarLite = [[Package alloc] initWithIdentifier:@"com.darksword.nicebarlite"
-                                           name:@"NiceBar Lite"
+                                           name:NSLocalizedString(@"NiceBar Lite", nil)
                                shortDescription:NSLocalizedString(@"NiceBar-style status labels", nil)
                                 longDescription:NSLocalizedString(@"Adds configurable text labels around the status bar. Slots can show custom text, date/time formats, and system values such as battery, memory, network speed, uptime, IP address, disk space, thermal state, and traffic counters.\n\nPorted from d1y/cyanide-ios.", nil)
                                         version:version
@@ -219,7 +219,7 @@ static const NSInteger kSecOTA              = SectionOTA;
         powercuff.settingsSection = kSecPowercuff;
 
         Package *axon = [[Package alloc] initWithIdentifier:@"com.darksword.axonlite"
-                                           name:@"Axon Lite"
+                                           name:NSLocalizedString(@"Axon Lite", nil)
                                shortDescription:NSLocalizedString(@"Group Notification Center requests by app", nil)
                                 longDescription:NSLocalizedString(@"Groups visible Notification Center requests by app in a SpringBoard overlay and filters duplicates while Cyanide keeps the RemoteCall session alive.\n\nNo extra configuration.", nil)
                                         version:version
@@ -266,7 +266,7 @@ static const NSInteger kSecOTA              = SectionOTA;
         locationSim.unstableWarning = @"Beta: requires Apple Maps installed and set up. Changes CoreLocation's active simulation state — may affect time zone, date/time, and other location-tied behavior. Some apps and services prohibit or detect simulated locations. Only use this if you know what you're doing.";
 
         Package *snowboardLite = [[Package alloc] initWithIdentifier:@"com.darksword.snowboardlite"
-                                           name:@"SnowBoard Lite"
+                                           name:NSLocalizedString(@"SnowBoard Lite", nil)
                                shortDescription:NSLocalizedString(@"Local SnowBoard-style icon themes", nil)
                                 longDescription:NSLocalizedString(@"Imports SnowBoard/IconBundles themes into a local library and applies the selected theme through Cyanide's icon replacement pipeline. Supports the bundled iOS 6 theme and local folder imports.\n\nSnowBoard Lite is the main icon-theme entry point in Cyanide.\n\nPorted from d1y/cyanide-ios.", nil)
                                         version:version
@@ -277,7 +277,7 @@ static const NSInteger kSecOTA              = SectionOTA;
                                      enabledKey:kSettingsSnowBoardLiteEnabled
                                           isNew:NO];
         snowboardLite.settingsSection = kSecSnowBoardLite;
-        snowboardLite.unstableWarning = @"Preview: import or select a SnowBoard Lite theme before applying.";
+        snowboardLite.unstableWarning = NSLocalizedString(@"Preview: import or select a SnowBoard Lite theme before applying.", nil);
 
         Package *liveWP = [[Package alloc] initWithIdentifier:@"com.darksword.livewp"
                                            name:@"LiveWP"
@@ -341,7 +341,7 @@ static const NSInteger kSecOTA              = SectionOTA;
                                      enabledKey:kSettingsAppSwitcherGridEnabled
                                           isNew:NO];
         appSwitcherGrid.settingsSection = kSecAppSwitcherGrid;
-        appSwitcherGrid.unstableWarning = @"Beta: patches SpringBoard runtime methods in memory. Respring restores stock, but unsupported builds may glitch the app switcher or crash SpringBoard. Re-run after any respring.";
+        appSwitcherGrid.unstableWarning = NSLocalizedString(@"Beta: patches SpringBoard runtime methods in memory. Respring restores stock, but unsupported builds may glitch the app switcher or crash SpringBoard. Re-run after any respring.", nil);
 
         Package *floatingDock = [[Package alloc] initWithIdentifier:@"com.darksword.floatingdock"
                                            name:NSLocalizedString(@"iPad Dock", nil)
@@ -355,7 +355,7 @@ static const NSInteger kSecOTA              = SectionOTA;
                                      enabledKey:kSettingsFloatingDockEnabled
                                           isNew:YES];
         floatingDock.settingsSection = kSecFloatingDock;
-        floatingDock.unstableWarning = @"Uses SpringBoard's private Dock controllers in memory. If the Dock looks wrong, turn it off or respring.";
+        floatingDock.unstableWarning = NSLocalizedString(@"Uses SpringBoard's private Dock controllers in memory. If the Dock looks wrong, turn it off or respring.", nil);
 
         Package *quickLoader = [[Package alloc] initWithIdentifier:@"com.darksword.quickloader"
                                            name:@"QuickLoader"
@@ -369,11 +369,11 @@ static const NSInteger kSecOTA              = SectionOTA;
                                      enabledKey:kSettingsQuickLoaderEnabled
                                           isNew:NO];
         quickLoader.settingsSection = kSecQuickLoader;
-        quickLoader.unstableWarning = @"Runs user-selected JavaScript with access to Cyanide's RemoteCall helpers. Only use scripts you trust; bad scripts can crash SpringBoard.";
+        quickLoader.unstableWarning = NSLocalizedString(@"Runs user-selected JavaScript with access to Cyanide's RemoteCall helpers. Only use scripts you trust; bad scripts can crash SpringBoard.", nil);
 
 #if CYANIDE_EXPERIMENTAL_TWEAKS_AVAILABLE
         Package *fastLockXLite = [[Package alloc] initWithIdentifier:@"com.darksword.fastlockx-lite"
-                                           name:@"FastLockX Lite"
+                                           name:NSLocalizedString(@"FastLockX Lite", nil)
                                shortDescription:NSLocalizedString(@"Face ID retry + unlock controls", nil)
                                 longDescription:NSLocalizedString(@"RemoteCall-only port of the usable FastLockX primitives recovered from the iOS 15 tweak by Artem Kasper.\n\nCredits: original FastLockX by Artem Kasper; Cyanide FastLockX Lite port by zeroxjf.\n\nIt can pulse SpringBoard's biometric retry path, ask the iOS 26 biometric coordinator to start a Mesa/Face ID unlock, and send the original Lock Screen unlock request as a fallback. Installing it through Apply Tweaks keeps those retry/unlock requests armed with SpringBoard timers so pickup-to-unlock can work after Cyanide closes. The pulse loop pauses again after unlock.\n\nUse Disable, Clean Up, or a respring to stop the timers.", nil)
                                         version:version
@@ -413,7 +413,7 @@ static const NSInteger kSecOTA              = SectionOTA;
                                      enabledKey:nil
                                           isNew:NO];
         callRecordingSound.experimental = NO;
-        callRecordingSound.unstableWarning = @"Beta: persistent CallServices system-file replacement. Disclosure sounds may be legally required where you live; you are responsible for your use and apply this at your own risk. Use Restore Original Sounds before removing Cyanide if you want Cyanide's backups written back.";
+        callRecordingSound.unstableWarning = NSLocalizedString(@"Beta: persistent CallServices system-file replacement. Disclosure sounds may be legally required where you live; you are responsible for your use and apply this at your own risk. Use Restore Original Sounds before removing Cyanide if you want Cyanide's backups written back.", nil);
 
         Package *passcodeTheme = [[Package alloc] initWithIdentifier:@"com.darksword.passcode-theme"
                                            name:NSLocalizedString(@"Passcode Style", nil)
@@ -427,7 +427,7 @@ static const NSInteger kSecOTA              = SectionOTA;
                                      enabledKey:nil
                                           isNew:YES];
         passcodeTheme.settingsSection = kSecPasscodeTheme;
-        passcodeTheme.unstableWarning = @"Warning: rewrites the system keypad artwork the Lock Screen uses. Cyanide verifies every write, but edits can still fail or partially apply. Restore Original Digits puts the saved originals back.";
+        passcodeTheme.unstableWarning = NSLocalizedString(@"Warning: rewrites the system keypad artwork the Lock Screen uses. Cyanide verifies every write, but edits can still fail or partially apply. Restore Original Digits puts the saved originals back.", nil);
 
         Package *hideHomeBar = [[Package alloc] initWithIdentifier:@"com.darksword.hide-home-bar"
                                            name:NSLocalizedString(@"Hide Home Bar", nil)
@@ -440,7 +440,7 @@ static const NSInteger kSecOTA              = SectionOTA;
                                            kind:PackageInstallKindHideHomeBar
                                      enabledKey:nil
                                           isNew:NO];
-        hideHomeBar.unstableWarning = @"Beta: system asset page zeroing. Run by itself, then respring after hiding. To restore the home indicator, choose Restore Home Bar and respring.";
+        hideHomeBar.unstableWarning = NSLocalizedString(@"Beta: system asset page zeroing. Run by itself, then respring after hiding. To restore the home indicator, choose Restore Home Bar and respring.", nil);
 
         // Manual tool (DirectTool), same shape as Lock Screen Duration: the
         // detail view offers Open Controls, which opens the OTA Updates
@@ -603,15 +603,15 @@ static const NSInteger kSecOTA              = SectionOTA;
 + (NSArray<NSString *> *)categoriesInOrder
 {
     NSArray<NSString *> *preferred = @[
-        @"In Development",
-        @"Beta",
-        @"Experimental",
-        @"Status Bar",
-        @"Home Screen",
-        @"Theming",
+        NSLocalizedString(@"In Development", nil),
+        NSLocalizedString(@"Beta", nil),
+        NSLocalizedString(@"Experimental", nil),
+        NSLocalizedString(@"Status Bar", nil),
+        NSLocalizedString(@"Home Screen", nil),
+        NSLocalizedString(@"Theming", nil),
         @"SpringBoard",
-        @"System",
-        @"JavaScript Tweaks",
+        NSLocalizedString(@"System", nil),
+        NSLocalizedString(@"JavaScript Tweaks", nil),
     ];
     NSMutableArray<NSString *> *all = [NSMutableArray array];
     for (Package *p in [self allPackages]) {

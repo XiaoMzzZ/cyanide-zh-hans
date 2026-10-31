@@ -1846,7 +1846,7 @@ NSDictionary *settings_passcode_selected_theme(void)
 NSString *settings_passcode_selected_theme_display_name(void)
 {
     NSDictionary *theme = settings_passcode_selected_theme();
-    if (!theme) return @"None selected";
+    if (!theme) return NSLocalizedString(@"None selected", nil);
     NSString *name = theme[@"name"];
     return name.length > 0 ? name : NSLocalizedString(@"Imported Style", nil);
 }
@@ -2376,7 +2376,7 @@ BOOL settings_passcode_import_folder_named(NSURL *url,
         [fm removeItemAtPath:[styleDir stringByAppendingPathComponent:entry] error:nil];
     }
 
-    NSString *name = displayName.length > 0 ? displayName : @"Imported Style";
+    NSString *name = displayName.length > 0 ? displayName : NSLocalizedString(@"Imported Style", nil);
     pt_set_style_name(name);
     settings_passcode_invalidate_caches();
     log_user("[PASSCODE] Imported style \"%s\" with %lu digit(s).\n",

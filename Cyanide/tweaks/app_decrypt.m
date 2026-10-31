@@ -1023,7 +1023,7 @@ NSString *app_decrypt_make_ipa(NSDictionary *app, BOOL useSpringBoard,
         if (errorOut) *errorOut = @"The finished IPA couldn't be saved.";
         return nil;
     }
-    report(@"Done", 1.0);
+    report(NSLocalizedString(@"Done", nil), 1.0);
     if (droppedBundles.count && errorOut) {   // not an error: tells the caller what was left out
         NSMutableArray<NSString *> *names = [NSMutableArray array];
         for (NSString *bundle in droppedBundles)

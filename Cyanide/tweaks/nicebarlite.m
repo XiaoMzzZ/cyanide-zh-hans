@@ -845,7 +845,7 @@ static NSString *nbl_lunar_date_text(void)
 {
     NSCalendar *cal = [NSCalendar calendarWithIdentifier:NSCalendarIdentifierChinese];
     NSDateComponents *c = [cal components:NSCalendarUnitMonth | NSCalendarUnitDay fromDate:[NSDate date]];
-    if (c.month <= 0 || c.day <= 0) return @"Lunar --";
+    if (c.month <= 0 || c.day <= 0) return NSLocalizedString(@"Lunar --", nil);
     return [NSString stringWithFormat:@"L%02ld/%02ld", (long)c.month, (long)c.day];
 }
 
@@ -923,13 +923,13 @@ static NSString *nbl_text_for_slot(NiceBarLiteSlotConfig slot, bool celsius)
 {
     switch (slot.kind) {
         case NiceBarLiteContentCustomText:
-            return slot.customText && slot.customText[0] ? @(slot.customText) : @"Text";
+            return slot.customText && slot.customText[0] ? @(slot.customText) : NSLocalizedString(@"Text", nil);
         case NiceBarLiteContentSystem:
             return nbl_system_text(slot.systemItem, celsius, slot.systemLanguage);
         case NiceBarLiteContentTimeFormat:
             return nbl_date_with_format(slot.timeFormat && slot.timeFormat[0] ? @(slot.timeFormat) : @"HH:mm");
         case NiceBarLiteContentWeather:
-            return slot.weatherText && slot.weatherText[0] ? @(slot.weatherText) : @"Weather --";
+            return slot.weatherText && slot.weatherText[0] ? @(slot.weatherText) : NSLocalizedString(@"Weather --", nil);
         case NiceBarLiteContentOff:
         default:
             return @"";

@@ -642,7 +642,7 @@ bool darksword_layout_home_scale_in_session(double scale)
     uint64_t clsInv = r_class("NSInvocation");
     if (!clsInv) return false;
 
-    RC_SBIconImageInfo info = rc_scaled_icon_info(cfg, scale, @"Home", "HSSCALE");
+    RC_SBIconImageInfo info = rc_scaled_icon_info(cfg, scale, NSLocalizedString(@"Home", nil), "HSSCALE");
 
     // Set the size on the root layout config (async, for persistence + future
     // relayouts), then eagerly resize the live icon views so the change shows
@@ -724,7 +724,7 @@ bool darksword_layout_dock_scale_in_session(double scale)
     uint64_t clsInv = r_class("NSInvocation");
     if (!clsInv) return false;
 
-    RC_SBIconImageInfo info = rc_scaled_icon_info(dockCfg, scale, @"Dock", "DOCKSCALE");
+    RC_SBIconImageInfo info = rc_scaled_icon_info(dockCfg, scale, NSLocalizedString(@"Dock", nil), "DOCKSCALE");
 
     // Set the dock's icon size on its layout config (async), then eagerly resize
     // the live dock icon views so it shows during the run.

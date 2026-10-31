@@ -6,6 +6,7 @@ by cleaner_helpers.py for app roots. This file guards the CrashReporter
 allowlist, the synthetic row, and the publication rule.
 """
 from pathlib import Path
+import re
 
 ROOT = Path(__file__).resolve().parents[2]
 SOURCE = (ROOT / "Cyanide/CleanerViewController.m").read_text()
@@ -26,7 +27,8 @@ assert "cleaner_clear_directory(root" in SOURCE
 assert "item.logRoots" in SOURCE
 
 # Synthetic row and section.
-assert 'crashLogs.name = @"Crash Logs"' in SOURCE
+# 本地化后这里可能被包成 NSLocalizedString(@"Crash Logs", nil)，两种写法都接受
+assert re.search(r'crashLogs\.name = (NSLocalizedString\()?@"Crash Logs"', SOURCE)
 assert "CYCleanerSectionLogs" in SOURCE
 assert "isCrashLogs" in SOURCE
 assert "cleaner_published_crash_logs" in SOURCE

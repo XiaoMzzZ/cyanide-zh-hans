@@ -16,7 +16,7 @@ typedef NS_ENUM(NSInteger, PLType) {
 
 static NSArray<NSString *> *pl_type_names(void)
 {
-    return @[ @"Dictionary", @"Array", @"String", @"Integer", @"Real", @"Boolean", @"Date", @"Data" ];
+    return @[ NSLocalizedString(@"Dictionary", nil), @"Array", @"String", @"Integer", @"Real", @"Boolean", NSLocalizedString(@"Date", nil), @"Data" ];
 }
 
 static PLType pl_type_of(id v)
@@ -170,7 +170,7 @@ static const NSUInteger kPLMaxDataEditBytes = 64 * 1024;
                                                         options:NSPropertyListMutableContainers
                                                          format:&fmt
                                                           error:&err];
-    if (!root) { if (message) *message = err.localizedDescription ?: @"Not a property list."; return NO; }
+    if (!root) { if (message) *message = err.localizedDescription ?: NSLocalizedString(@"Not a property list.", nil); return NO; }
     self.root = root;
     self.format = fmt;
     self.original = data;
@@ -184,10 +184,10 @@ static const NSUInteger kPLMaxDataEditBytes = 64 * 1024;
 // Any thread.
 - (BOOL)loadWithError:(NSString **)message
 {
-    if (self.readOnly && !self.original) { if (message) *message = @"Nothing to reload."; return NO; }
+    if (self.readOnly && !self.original) { if (message) *message = NSLocalizedString(@"Nothing to reload.", nil); return NO; }
     if (self.readOnly) return [self parseData:self.original error:message];
     int fd = filebrowser_open_regular(self.path);
-    if (fd < 0) { if (message) *message = @"The file could not be read."; return NO; }
+    if (fd < 0) { if (message) *message = NSLocalizedString(@"The file could not be read.", nil); return NO; }
     FBFileIdentity ident = filebrowser_identity_fd(fd);
     BOOL tooBig = NO;
     int rerr = 0;
@@ -197,7 +197,7 @@ static const NSUInteger kPLMaxDataEditBytes = 64 * 1024;
         if (message) *message = [NSString stringWithFormat:NSLocalizedString(@"Reading the file failed: %s.", nil), strerror(rerr)];
         return NO;
     }
-    if (tooBig) { if (message) *message = @"The plist is larger than 10 MB."; return NO; }
+    if (tooBig) { if (message) *message = NSLocalizedString(@"The plist is larger than 10 MB.", nil); return NO; }
     if (![self parseData:data error:message]) return NO;
     self.identity = ident;
     return YES;
@@ -209,7 +209,7 @@ static const NSUInteger kPLMaxDataEditBytes = 64 * 1024;
     NSError *err = nil;
     NSPropertyListFormat fmt = self.format == NSPropertyListOpenStepFormat ? NSPropertyListXMLFormat_v1_0 : self.format;
     NSData *data = [NSPropertyListSerialization dataWithPropertyList:self.root format:fmt options:0 error:&err];
-    if (!data && message) *message = err.localizedDescription ?: @"The plist could not be serialized.";
+    if (!data && message) *message = err.localizedDescription ?: NSLocalizedString(@"The plist could not be serialized.", nil);
     return data;
 }
 
@@ -306,14 +306,14 @@ static const NSUInteger kPLMaxDataEditBytes = 64 * 1024;
             NSScanner *sc = [NSScanner scannerWithString:trimmed];
             long long v;
             if ([sc scanLongLong:&v] && sc.isAtEnd) result = @(v);
-            else error = @"Enter a whole number.";
+            else error = NSLocalizedString(@"Enter a whole number.", nil);
             break;
         }
         case PLTypeReal: {
             NSScanner *sc = [NSScanner scannerWithString:trimmed];
             double v;
             if ([sc scanDouble:&v] && sc.isAtEnd) result = @(v);
-            else error = @"Enter a number, for example 1.5.";
+            else error = NSLocalizedString(@"Enter a number, for example 1.5.", nil);
             break;
         }
         default: break;
@@ -400,7 +400,7 @@ static const NSUInteger kPLMaxDataEditBytes = 64 * 1024;
     UISearchController *sc = [[UISearchController alloc] initWithSearchResultsController:nil];
     sc.searchResultsUpdater = self;
     sc.obscuresBackgroundDuringPresentation = NO;
-    sc.searchBar.placeholder = @"Filter keys and values";
+    sc.searchBar.placeholder = NSLocalizedString(@"Filter keys and values", nil);
     self.navigationItem.searchController = sc;
     self.navigationItem.hidesSearchBarWhenScrolling = YES;
     self.definesPresentationContext = YES;
@@ -467,7 +467,7 @@ static const NSUInteger kPLMaxDataEditBytes = 64 * 1024;
 - (BOOL)ensureWritable
 {
     if (self.writable && !self.saving) return YES;
-    [self showMessage:@"Changes are locked. Unlock them in the File Browser to edit."
+    [self showMessage:NSLocalizedString(@"Changes are locked. Unlock them in the File Browser to edit.", nil)
                 title:NSLocalizedString(@"Not Changed", nil)];
     [self reloadRows];   // e.g. flip a switch back
     return NO;
@@ -509,10 +509,10 @@ static const NSUInteger kPLMaxDataEditBytes = 64 * 1024;
             }]];
         }
         NSMutableArray<UIMenuElement *> *menu = [NSMutableArray arrayWithObject:
-            [UIMenu menuWithTitle:self.isDict ? @"Add Key" : @"Add Item" image:nil identifier:nil
+            [UIMenu menuWithTitle:self.isDict ? @"Add Key" : NSLocalizedString(@"Add Item", nil) image:nil identifier:nil
                           options:UIMenuOptionsDisplayInline children:adds]];
         if (!self.isDict && [(NSArray *)self.container count] > 1) {
-            [menu addObject:[UIAction actionWithTitle:self.tableView.editing ? @"Done Reordering" : @"Reorder Items"
+            [menu addObject:[UIAction actionWithTitle:self.tableView.editing ? NSLocalizedString(@"Done Reordering", nil) : NSLocalizedString(@"Reorder Items", nil)
                                                 image:[UIImage systemImageNamed:@"arrow.up.arrow.down"]
                                            identifier:nil handler:^(UIAction *a) {
                 [weakSelf.tableView setEditing:!weakSelf.tableView.editing animated:YES];
@@ -539,7 +539,7 @@ static const NSUInteger kPLMaxDataEditBytes = 64 * 1024;
             // without that lock could otherwise observe a torn version.
             NSData *snapshot = [me.doc.original copy];
             if (!snapshot) {
-                [me showMessage:@"The loaded plist has no shareable snapshot." title:NSLocalizedString(@"Couldn't Share", nil)];
+                [me showMessage:NSLocalizedString(@"The loaded plist has no shareable snapshot.", nil) title:NSLocalizedString(@"Couldn't Share", nil)];
                 return;
             }
             weakShare.enabled = NO;
@@ -569,7 +569,7 @@ static const NSUInteger kPLMaxDataEditBytes = 64 * 1024;
 {
     if (self.saving) return;
     if (self.doc.readOnly || !filebrowser_write_enabled()) {
-        [self showMessage:@"Changes are locked." title:NSLocalizedString(@"Not Saved", nil)];
+        [self showMessage:NSLocalizedString(@"Changes are locked.", nil) title:NSLocalizedString(@"Not Saved", nil)];
         return;
     }
     NSString *message = nil;
@@ -610,11 +610,11 @@ static const NSUInteger kPLMaxDataEditBytes = 64 * 1024;
             if (r == FBSaveUncertain) {
                 // Written but unverified: keep the document dirty with its old
                 // identity, so a later plain save reports a conflict.
-                [self showMessage:msg ?: @"The file was written, but the result couldn't be verified."
+                [self showMessage:msg ?: NSLocalizedString(@"The file was written, but the result couldn't be verified.", nil)
                             title:NSLocalizedString(@"Save Not Verified", nil)];
                 return;
             }
-            [self showMessage:msg ?: @"The file could not be written." title:NSLocalizedString(@"Not Saved", nil)];
+            [self showMessage:msg ?: NSLocalizedString(@"The file could not be written.", nil) title:NSLocalizedString(@"Not Saved", nil)];
         });
     });
 }
@@ -712,7 +712,7 @@ static const NSUInteger kPLMaxDataEditBytes = 64 * 1024;
     if (![self ensureWritable]) return;
     id value = pl_default_value(t);
     if (self.isDict) {
-        [self promptForKey:@"New Key" initial:@"" then:^(NSString *key) {
+        [self promptForKey:NSLocalizedString(@"New Key", nil) initial:@"" then:^(NSString *key) {
             if (![self ensureWritable]) return;
             self.container[key] = value;
             [self markDirty];
@@ -734,7 +734,7 @@ static const NSUInteger kPLMaxDataEditBytes = 64 * 1024;
 - (void)renameRow:(id)row
 {
     if (!self.isDict || ![self ensureWritable]) return;
-    [self promptForKey:@"Rename Key" initial:[row description] then:^(NSString *key) {
+    [self promptForKey:NSLocalizedString(@"Rename Key", nil) initial:[row description] then:^(NSString *key) {
         if ([key isEqualToString:[row description]] || ![self ensureWritable]) return;
         id v = self.container[row];
         [(NSMutableDictionary *)self.container removeObjectForKey:row];
@@ -756,7 +756,7 @@ static const NSUInteger kPLMaxDataEditBytes = 64 * 1024;
         if ((PLType)t == current) a.state = UIMenuElementStateOn;
         [actions addObject:a];
     }
-    return [UIMenu menuWithTitle:@"Change Type" image:[UIImage systemImageNamed:@"arrow.triangle.2.circlepath"]
+    return [UIMenu menuWithTitle:NSLocalizedString(@"Change Type", nil) image:[UIImage systemImageNamed:@"arrow.triangle.2.circlepath"]
                       identifier:nil options:0 children:actions];
 }
 
@@ -776,7 +776,7 @@ static const NSUInteger kPLMaxDataEditBytes = 64 * 1024;
     cell.accessoryView = nil;
 
     if (!self.rows.count) {
-        cell.textLabel.text = self.filter.length ? @"No matches." : @"Empty.";
+        cell.textLabel.text = self.filter.length ? NSLocalizedString(@"No matches.", nil) : @"Empty.";
         cell.textLabel.textColor = UIColor.secondaryLabelColor;
         cell.detailTextLabel.text = nil;
         cell.accessoryType = UITableViewCellAccessoryNone;

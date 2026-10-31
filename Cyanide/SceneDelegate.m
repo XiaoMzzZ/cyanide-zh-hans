@@ -234,7 +234,7 @@ static CYLocationRequestCompletion g_scene_intent_completion = nil;
     if (linkURL && ![self acceptLinkURL:linkURL]) linkURL = nil;
     if (linkURL) {
         [self setPendingURL:linkURL completion:nil coldLaunched:scene_request_launched_app()];
-        if (g_scene_intent_completion) g_scene_intent_completion(NO, @"Another Location Services request came first.");
+        if (g_scene_intent_completion) g_scene_intent_completion(NO, NSLocalizedString(@"Another Location Services request came first.", nil));
     } else {
         // (No request yet when g_scene_intent_url is nil: don't count one.)
         BOOL launched = g_scene_intent_url ? scene_request_launched_app() : NO;
@@ -273,7 +273,7 @@ static CYLocationRequestCompletion g_scene_intent_completion = nil;
 - (void)showBlockedLinkNoticeIfNeeded {
     if (!self.blockedLinkNotice) return;
     self.blockedLinkNotice = NO;
-    [self showAlertTitle:@"Location Services Link"
+    [self showAlertTitle:NSLocalizedString(@"Location Services Link", nil)
                  message:NSLocalizedString(@"A link asked Cyanide to change Location Services. Links are off, so nothing was changed. Use the Control Center toggle or the Shortcuts action instead, or turn on Settings → Launch Options → Location Services links.", nil)];
 }
 
@@ -286,7 +286,7 @@ static CYLocationRequestCompletion g_scene_intent_completion = nil;
     self.pendingActionCompletion = completion;
     self.pendingActionCold = cold;
     self.pendingActionBroughtToFront = cold || !g_scene_visit_user_owned;
-    if (replaced && replaced != completion) replaced(NO, @"A newer Location Services request replaced this one.");
+    if (replaced && replaced != completion) replaced(NO, NSLocalizedString(@"A newer Location Services request replaced this one.", nil));
 }
 
 - (void)receiveActionURL:(NSURL *)url scene:(UIScene *)scene completion:(CYLocationRequestCompletion)completion coldLaunched:(BOOL)cold {
@@ -312,7 +312,7 @@ static CYLocationRequestCompletion g_scene_intent_completion = nil;
         called = YES;
         completion(ok, message ?: @"");
     };
-    if (![url isKindOfClass:NSURL.class]) { once(NO, @"Invalid request."); return; }
+    if (![url isKindOfClass:NSURL.class]) { once(NO, NSLocalizedString(@"Invalid request.", nil)); return; }
     for (UIScene *scene in UIApplication.sharedApplication.connectedScenes) {
         if ([scene.delegate isKindOfClass:SceneDelegate.class]) {
             // A live scene means Cyanide was already open (in front or
@@ -324,7 +324,7 @@ static CYLocationRequestCompletion g_scene_intent_completion = nil;
             return;
         }
     }
-    if (g_scene_intent_completion) g_scene_intent_completion(NO, @"A newer Location Services request replaced this one.");
+    if (g_scene_intent_completion) g_scene_intent_completion(NO, NSLocalizedString(@"A newer Location Services request replaced this one.", nil));
     g_scene_intent_url = url;
     g_scene_intent_completion = once;
 }
@@ -348,7 +348,7 @@ static BOOL scene_parse_location_url(NSURL *url, int *desiredOut, BOOL *keepCard
     NSURLComponents *c = [NSURLComponents componentsWithURL:url resolvingAgainstBaseURL:NO];
     NSString *scheme = c.scheme.lowercaseString;
     if (!c || !([scheme isEqualToString:@"cyanide"] || [scheme isEqualToString:@"com.zeroxjf.ios-cyanide1"])) {
-        *error = @"Unsupported link.";
+        *error = NSLocalizedString(@"Unsupported link.", nil);
         return NO;
     }
     NSString *path = c.path ?: @"";
@@ -631,7 +631,7 @@ static const double kQuietMinPhase = 0.35;   // a phase stays readable at least 
         // cleanup before it leaves.
         [self applyQuietTarget:self.quietTarget done:YES];
         BOOL noChange = [text hasPrefix:@"Already"];
-        self.quietStatus.text = noChange ? @"No change needed" : @"Finishing up…";
+        self.quietStatus.text = noChange ? NSLocalizedString(@"No change needed", nil) : NSLocalizedString(@"Finishing up…", nil);
         scene_announce(self.quietTitle.text);
     } else {
         self.quietStatus.text = [text stringByAppendingString:@"…"];
@@ -709,15 +709,15 @@ static const double kQuietMinPhase = 0.35;   // a phase stays readable at least 
          broughtToFront:(BOOL)broughtToFront {
     if (![url.host.lowercaseString isEqualToString:@"location-services"]) {
         NSLog(@"[URL] unhandled %@", url);
-        if (requester) requester(NO, @"Unsupported link.");
+        if (requester) requester(NO, NSLocalizedString(@"Unsupported link.", nil));
         return;
     }
     if (self.actionInProgress) {
         // The running request owns the screen: no alert over its progress
         // or log, just tell the requester and VoiceOver.
         NSLog(@"[URL] rejected while a change is in progress: %@", url);
-        scene_announce(@"A Location Services change is already in progress.");
-        if (requester) requester(NO, @"A Location Services change is already in progress.");
+        scene_announce(NSLocalizedString(@"A Location Services change is already in progress.", nil));
+        if (requester) requester(NO, NSLocalizedString(@"A Location Services change is already in progress.", nil));
         return;
     }
     if (settings_switcher_removal_pending()) {
@@ -732,10 +732,10 @@ static const double kQuietMinPhase = 0.35;   // a phase stays readable at least 
         // killed mid-flight — so fail fast instead of letting the caller
         // watch a progress screen that is about to disappear.
         NSLog(@"[URL] rejected: an App Switcher card removal is still pending: %@", url);
-        NSString *busy = @"Cyanide is closing from the previous run. Try again in a few seconds.";
+        NSString *busy = NSLocalizedString(@"Cyanide is closing from the previous run. Try again in a few seconds.", nil);
         scene_announce(busy);
         if (requester) requester(NO, busy);
-        else [self showAlertTitle:@"Location Services" message:busy];
+        else [self showAlertTitle:NSLocalizedString(@"Location Services", nil) message:busy];
         return;
     }
     int desired = -1;
@@ -743,7 +743,7 @@ static const double kQuietMinPhase = 0.35;   // a phase stays readable at least 
     NSString *parseError = nil;
     if (!scene_parse_location_url(url, &desired, &keepCard, &showLog, &parseError)) {
         [self hideQuietCover];   // an early cover for this link must not stay
-        [self showAlertTitle:@"Location Services Link" message:parseError];
+        [self showAlertTitle:NSLocalizedString(@"Location Services Link", nil) message:parseError];
         if (requester) requester(NO, parseError);
         return;
     }
@@ -812,12 +812,12 @@ static const double kQuietMinPhase = 0.35;   // a phase stays readable at least 
             if (operationCallbackHandled) return;
             operationCallbackHandled = YES;
             NSString *message = [rawMessage isEqualToString:kSettingsFullExploitRequiredMessage]
-                ? @"Cyanide has no saved kernel access (for example after a restart). Open Cyanide and run it once, then try again."
+                ? NSLocalizedString(@"Cyanide has no saved kernel access (for example after a restart). Open Cyanide and run it once, then try again.", nil)
                 : rawMessage;
             if (observer) [NSNotificationCenter.defaultCenter removeObserver:observer];
             typeof(self) me = weakSelf;
             if (!me || generation != me.actionGeneration) {
-                finish(NO, @"The Location Services request was superseded before it finished.");
+                finish(NO, NSLocalizedString(@"The Location Services request was superseded before it finished.", nil));
                 return;
             }
             if (!ok && [rawMessage isEqualToString:kSettingsFullExploitRequiredMessage]) {
@@ -829,18 +829,18 @@ static const double kQuietMinPhase = 0.35;   // a phase stays readable at least 
                     typeof(self) retryOwner = weakSelf;
                     if (!retryOwner || generation != retryOwner.actionGeneration ||
                         !retryOwner.actionInProgress) {
-                        finish(NO, @"The Location Services retry was superseded before it finished.");
+                        finish(NO, NSLocalizedString(@"The Location Services retry was superseded before it finished.", nil));
                         return;
                     }
                     if (!ready) {
                         retryOwner.actionInProgress = NO;
                         NSString *retryMessage =
-                            @"Location Services request cancelled: kernel access was not acquired.";
+                            NSLocalizedString(@"Location Services request cancelled: kernel access was not acquired.", nil);
                         finish(NO, retryMessage);
                         if (!showLog) {
                             UIViewController *top = [retryOwner topViewController];
                             if (![top isKindOfClass:UIAlertController.class]) {
-                                [retryOwner showAlertTitle:@"Location Services" message:retryMessage];
+                                [retryOwner showAlertTitle:NSLocalizedString(@"Location Services", nil) message:retryMessage];
                             }
                         } else {
                             scene_announce(retryMessage);
@@ -862,7 +862,7 @@ static const double kQuietMinPhase = 0.35;   // a phase stays readable at least 
             if (!ok) {
                 if (!showLog) {
                     [me hideQuietCover];
-                    [me showAlertTitle:@"Location Services" message:message];
+                    [me showAlertTitle:NSLocalizedString(@"Location Services", nil) message:message];
                 }
                 return;   // the log (log=1) already shows the failure
             }
