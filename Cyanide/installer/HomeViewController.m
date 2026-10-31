@@ -771,7 +771,7 @@ static const CGFloat kMargin = 20.0;
     UITabBarController *tab = self.tabBarController;
     if (!tab) return;
     for (NSUInteger i = 0; i < tab.viewControllers.count; i++) {
-        if ([tab.viewControllers[i].tabBarItem.title isEqualToString:@"Packages"]) {
+        if ([tab.viewControllers[i].tabBarItem.title isEqualToString:NSLocalizedString(@"Packages", nil)]) {
             tab.selectedIndex = i;
             return;
         }
@@ -784,7 +784,7 @@ static const CGFloat kMargin = 20.0;
     if (!tab) return;
     for (NSUInteger i = 0; i < tab.viewControllers.count; i++) {
         UIViewController *vc = tab.viewControllers[i];
-        if ([vc.tabBarItem.title isEqualToString:@"Settings"]) {
+        if ([vc.tabBarItem.title isEqualToString:NSLocalizedString(@"Settings", nil)]) {
             UINavigationController *nav = [vc isKindOfClass:UINavigationController.class] ? (UINavigationController *)vc : nil;
             if (!nav) return;
             [nav popToRootViewControllerAnimated:NO];
@@ -793,7 +793,7 @@ static const CGFloat kMargin = 20.0;
             // QuickLoader has no package page to return to. It belongs with the
             // JS-tweak sources flow, so the back button goes to the Sources front
             // page instead of back to Home -- unless Sources is switched off.
-            ql.installerReturnTabTitle = repotweaks_sources_enabled() ? @"Sources" : @"Home";
+            ql.installerReturnTabTitle = repotweaks_sources_enabled() ? NSLocalizedString(@"Sources", nil) : NSLocalizedString(@"Home", nil);
             ql.installerReturnResetsTargetTab = YES;
             [nav pushViewController:ql animated:NO];
             tab.selectedIndex = i;
@@ -848,7 +848,7 @@ static const CGFloat kMargin = 20.0;
     if (!tab) return;
     for (NSUInteger i = 0; i < tab.viewControllers.count; i++) {
         UIViewController *vc = tab.viewControllers[i];
-        if (![vc.tabBarItem.title isEqualToString:@"Settings"]) continue;
+        if (![vc.tabBarItem.title isEqualToString:NSLocalizedString(@"Settings", nil)]) continue;
         UINavigationController *nav = [vc isKindOfClass:UINavigationController.class] ? (UINavigationController *)vc : nil;
         [nav popToRootViewControllerAnimated:NO];
         tab.selectedIndex = i;
@@ -860,12 +860,12 @@ static const CGFloat kMargin = 20.0;
 
 - (void)openSourcesTab
 {
-    [self openTabNamed:@"Sources"];
+    [self openTabNamed:NSLocalizedString(@"Sources", nil)];
 }
 
 - (void)openSettingsTab
 {
-    [self openTabNamed:@"Settings"];
+    [self openTabNamed:NSLocalizedString(@"Settings", nil)];
 }
 
 - (void)openTabNamed:(NSString *)title

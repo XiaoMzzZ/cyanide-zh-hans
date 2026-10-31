@@ -14100,8 +14100,8 @@ static NSUInteger settings_tab_index_for_title(UITabBarController *tab, NSString
     // same Settings bundle as Packages, and always unwinding to Packages
     // dropped those users out of the browse path they were in.
     NSUInteger installerIdx = settings_tab_index_for_title(tab, self.installerReturnTabTitle);
-    if (installerIdx == NSNotFound) installerIdx = settings_tab_index_for_title(tab, @"Packages");
-    if (installerIdx == NSNotFound) installerIdx = settings_tab_index_for_title(tab, @"Installer");
+    if (installerIdx == NSNotFound) installerIdx = settings_tab_index_for_title(tab, NSLocalizedString(@"Packages", nil));
+    if (installerIdx == NSNotFound) installerIdx = settings_tab_index_for_title(tab, NSLocalizedString(@"Installer", nil));
 
     // Switch tabs; unwind the Settings stack later, from viewDidDisappear.
     //
@@ -20019,7 +20019,7 @@ void cyanide_present_contact(UIViewController *host)
             [self presentViewController:dp animated:YES completion:nil];
             return;
         } else if ([action isEqualToString:@"quickloader-open-sources"]) {
-            [self selectBottomTabNamed:@"Sources"];
+            [self selectBottomTabNamed:NSLocalizedString(@"Sources", nil)];
             return;
         } else if ([action isEqualToString:@"quickloader-clear"]) {
             NSUserDefaults *d = [NSUserDefaults standardUserDefaults];
@@ -20069,7 +20069,7 @@ void cyanide_present_contact(UIViewController *host)
         NSString *action = row[@"action"];
 
         if ([action isEqualToString:@"repotweaks-open-manager"]) {
-            [self selectBottomTabNamed:@"Sources"];
+            [self selectBottomTabNamed:NSLocalizedString(@"Sources", nil)];
         }
         return;
     }
