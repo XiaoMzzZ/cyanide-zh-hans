@@ -64,7 +64,7 @@
                                       credit:@"JavaScript engine contributed by @MinePlayer16"]];
 
     [stack addArrangedSubview:[self docCard:@"Writing a Tweak"
-        body:NSLocalizedString(@"A tweak is a plain .js file that runs inside JavaScriptCore. 64-bit pointers are passed as hex strings (e.g. \"0x105f2a000\"). Wrap your code in an IIFE:\n\n", nil)
+        body:@"A tweak is a plain .js file that runs inside JavaScriptCore. 64-bit pointers are passed as hex strings (e.g. \"0x105f2a000\"). Wrap your code in an IIFE:\n\n"
               "(() => {\n"
               "  log(\"Hello from my tweak!\");\n"
               "  var app = r_msg2(\n"
@@ -76,7 +76,7 @@
               "Use log() to print to Cyanide's Log tab. Use r_msg2_main() instead of r_msg2() for anything that touches UIKit views."]];
 
     [stack addArrangedSubview:[self docCard:@"Parameter Declaration"
-        body:NSLocalizedString(@"Add @param comments at the top of your script. Cyanide parses them and generates native UI controls in Settings.\n\n", nil)
+        body:@"Add @param comments at the top of your script. Cyanide parses them and generates native UI controls in Settings.\n\n"
               "Syntax:\n"
               "// @param: type | varName | Label | default | range\n\n"
               "Types:\n\n"
@@ -91,7 +91,7 @@
               "Default values auto-populate on first install. The slider shows a \"(Def)\" indicator when at the declared default."]];
 
     [stack addArrangedSubview:[self docCard:@"RemoteCall API"
-        body:NSLocalizedString(@"These functions are injected into every JS context:\n\n", nil)
+        body:@"These functions are injected into every JS context:\n\n"
               "log(message)\n"
               "  Print to Cyanide's log console.\n\n"
               "r_class(name) → pointer\n"
@@ -111,14 +111,14 @@
               "  Check if an object responds to a selector."]];
 
     [stack addArrangedSubview:[self docCard:@"Reading Parameters (QuickLoader)"
-        body:NSLocalizedString(@"QuickLoader scripts can read their @param values at runtime:\n\n", nil)
+        body:@"QuickLoader scripts can read their @param values at runtime:\n\n"
               "r_pref_num(\"blurRadius\")   → float\n"
               "r_pref_bool(\"enableBlur\")  → boolean\n"
               "r_pref_str(\"tintColor\")    → string\n\n"
               "RepoTweaks scripts receive their parameters as pre-injected global variables instead."]];
 
     [stack addArrangedSubview:[self docCard:@"Timers"
-        body:NSLocalizedString(@"Standard timer functions are mapped to GCD background queues so they never block the UI:\n\n", nil)
+        body:@"Standard timer functions are mapped to GCD background queues so they never block the UI:\n\n"
               "setInterval(fn, ms) → id\n"
               "clearInterval(id)\n"
               "setTimeout(fn, ms) → id\n"
@@ -126,7 +126,7 @@
               "All active timers are automatically cancelled when the tweak is disabled or Cyanide cleans up."]];
 
     [stack addArrangedSubview:[self docCard:@"Color Allocation Example"
-        body:NSLocalizedString(@"64-bit IPC can't pass CGFloat arrays directly. Allocate colors through CIColor:\n\n", nil)
+        body:@"64-bit IPC can't pass CGFloat arrays directly. Allocate colors through CIColor:\n\n"
               "var hex = \"#00FFCC\".replace('#','');\n"
               "var r = parseInt(hex.substring(0,2),16)/255;\n"
               "var g = parseInt(hex.substring(2,4),16)/255;\n"
@@ -142,7 +142,7 @@
               "r_msg2(str, \"release\");"]];
 
     [stack addArrangedSubview:[self docCard:@"Tips"
-        body:NSLocalizedString(@"• Always use r_msg2_main for view manipulation — r_msg2 on a background thread can crash SpringBoard.\n", nil)
+        body:@"• Always use r_msg2_main for view manipulation — r_msg2 on a background thread can crash SpringBoard.\n"
               "• Release r_nsstr allocations to avoid leaking memory in the SpringBoard process.\n"
               "• Use r_responds to check selectors before calling them — iOS versions differ.\n"
               "• Test locally with QuickLoader before publishing to a repo.\n"
@@ -158,7 +158,7 @@
                                       credit:nil]];
 
     [stack addArrangedSubview:[self docCard:@"Repository JSON Format"
-        body:NSLocalizedString(@"Create a JSON file with this structure:\n\n", nil)
+        body:@"Create a JSON file with this structure:\n\n"
               "{\n"
               "  \"repoName\": \"My Repo\",\n"
               "  \"author\": \"yourname\",\n"
@@ -209,7 +209,7 @@
               "but are planned for a future update."]];
 
     [stack addArrangedSubview:[self docCard:@"Hosting with GitHub Pages"
-        body:NSLocalizedString(@"1. Create a public GitHub repo\n", nil)
+        body:@"1. Create a public GitHub repo\n"
               "2. Add your .js tweak files\n"
               "3. Add a JSON file (e.g. tweaks.json)\n"
               "   pointing scriptURLs to the raw files:\n\n"
@@ -221,14 +221,14 @@
               "   https://yourname.github.io/repo/tweaks.json"]];
 
     [stack addArrangedSubview:[self docCard:@"Updating Tweaks"
-        body:NSLocalizedString(@"To push an update:\n\n", nil)
+        body:@"To push an update:\n\n"
               "1. Update the .js file at the same URL\n"
               "2. Bump the version string in the JSON\n"
               "3. Commit and push\n\n"
               "Cyanide checks for updates every few hours. When the repo version is newer than the installed version, the Sources tab shows an update badge. Users tap the tweak to reinstall the latest version."]];
 
     [stack addArrangedSubview:[self docCard:@"Multiple Tweaks"
-        body:NSLocalizedString(@"Add more entries to the tweaks array:\n\n", nil)
+        body:@"Add more entries to the tweaks array:\n\n"
               "\"tweaks\": [\n"
               "  { \"id\": \"me.hidedock\", … },\n"
               "  { \"id\": \"me.colordock\", … },\n"
@@ -237,7 +237,7 @@
               "Each tweak needs its own unique id and scriptURL. They all share the repo's author and repoName."]];
 
     [stack addArrangedSubview:[self docCard:@"Tips"
-        body:NSLocalizedString(@"• Use descriptive ids like \"yourname.tweakname\" to avoid collisions with other repos.\n", nil)
+        body:@"• Use descriptive ids like \"yourname.tweakname\" to avoid collisions with other repos.\n"
               "• Keep descriptions short — they show as one or two lines in the package list.\n"
               "• Bump the version on every change so users get the update badge.\n"
               "• Test scripts locally with QuickLoader before adding them to your repo.\n"
