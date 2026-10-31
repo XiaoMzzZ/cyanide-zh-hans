@@ -725,7 +725,6 @@
 "Repository" = "软件源";
 "Could not refresh that repository." = "无法刷新该软件源。";
 "All Tweaks" = "所有 tweak";
-"Failed: kernel primitives were not acquired. Please try running chain again." = "失败：未能获取内核原语。请重新运行链式利用。";
 "SpringBoard restarted during the run — run it again." = "运行过程中 SpringBoard 重启了 — 请重新运行。";
 "Not supported on this device: Memory Integrity Enforcement (iPhone 17 and newer, M5 iPad Pro) blocks the kernel exploit this relies on." = "此设备不受支持：内存完整性保护（Memory Integrity Enforcement，iPhone 17 及更新机型、M5 iPad Pro）会阻止它所依赖的内核漏洞利用。";
 "Top Left" = "左上";
@@ -762,14 +761,12 @@
 "Trying another way" = "正在尝试其他方式";
 "Location Services did not change. Opening the Settings app once and trying again lets Cyanide use it as a fallback." = "定位服务未改变。先打开一次“设置”App 再试，可让 Cyanide 使用备用方案。";
 "Location Services did not change. Check the log." = "定位服务未改变。请查看日志。";
-"No saved kernel access — this needs a full exploit run first." = "没有已保存的内核访问 — 需要先运行一次完整漏洞利用。";
 "Kernel access could not be acquired. Run the chain, then try again." = "无法获取内核访问。请运行链式利用后再试。";
 "SpringBoard could not be reached." = "无法连接到 SpringBoard。";
 "Filesystem sandbox lifted — File Browser ready." = "文件系统沙盒已解除 — 文件浏览器就绪。";
 "The sandbox could not be lifted. Check the log." = "无法解除沙盒。请查看日志。";
 "Already Running" = "已在运行";
 "Another run is in progress. Try again when it has finished." = "另一个运行正在进行中。请等它完成后再试。";
-"No kernel access. Run the exploit from Home, or open this screen again." = "没有内核访问。请从主页运行漏洞利用，或重新打开此页面。";
 "Kernel access could not be acquired. Check the log." = "无法获取内核访问。请查看日志。";
 "It didn't work on this device. Check the log." = "在此设备上未生效。请查看日志。";
 "Kernel access is live in Cyanide." = "Cyanide 中的内核访问已生效。";

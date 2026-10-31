@@ -1215,7 +1215,7 @@ static NSString * const kSettingsFastLockXLiteRetryInterval = @"FastLockXLiteRet
 // acquire KRW. Shared between the run loop and the progress UI's retry button
 // so the two can never drift apart.
 NSString * const kSettingsRunKRWFailedMessage =
-    NSLocalizedString(@"Failed: kernel primitives were not acquired. Please try running chain again.", nil);
+    @"Failed: kernel primitives were not acquired. Please try running chain again.";
 
 // Auto-retry: when On, a chain run that fails to acquire KRW re-enters itself
 // instead of reporting failure, up to the attempt cap. Each attempt is an
@@ -5585,7 +5585,7 @@ static void settings_nano_load_from_plist_into_defaults(BOOL logResult)
 }
 
 static NSString * const kSettingsNanoCachePushFailedMessage =
-    NSLocalizedString(@"Watch pairing override was written. Respring before pairing so the system reloads it — until then the old values are still cached and may overwrite it.", nil);
+    @"Watch pairing override was written. Respring before pairing so the system reloads it — until then the old values are still cached and may overwrite it.";
 
 // Synchronous entry point used by both the Settings UI buttons and the
 // Installer's PackageQueue commit path. Logs progress to the in-app log so
@@ -7497,7 +7497,7 @@ BOOL settings_filesystem_access_available(void)
 
 NSString * const kSettingsLocationServicesLinksEnabled = @"LocationServicesLinksEnabled";
 NSString * const kSettingsFullExploitRequiredMessage =
-    NSLocalizedString(@"No saved kernel access — this needs a full exploit run first.", nil);
+    @"No saved kernel access — this needs a full exploit run first.";
 
 // Lifts the sandbox for the File Browser if it isn't already. `completion`
 // runs on the main queue. See the header for allowFullExploit.
@@ -7687,7 +7687,7 @@ BOOL settings_kernel_access_available(void)
 }
 
 NSString * const kSettingsNoKernelAccessHint =
-    NSLocalizedString(@"No kernel access. Run the exploit from Home, or open this screen again.", nil);
+    @"No kernel access. Run the exploit from Home, or open this screen again.";
 
 // One behaviour for every tool without kernel access (A18/M4 only; other
 // devices run the exploit by themselves): a "Run Exploit?" popup, once per
