@@ -1318,6 +1318,8 @@
 "Swipe left to remove a source." = "左滑可移除软件源。";
 "Dock" = "Dock";
 "Twitter" = "Twitter";
+"on" = "开启";
+"off" = "关闭";
 "%lu app%@" = "%lu 个应用";
 "Remove the selected disposable data (%@ in logical file sizes)? Documents, settings and app data are not touched." = "要移除所选的可清理数据（按逻辑文件大小计 %@）吗？文稿、设置与应用数据不会被动到。";
 "Removed %@ (logical size)." = "已移除 %@（逻辑大小）。";

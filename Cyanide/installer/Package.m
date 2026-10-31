@@ -149,7 +149,7 @@ static BOOL PackageRepoScriptRequiresNativeBridge(NSString *rawScript)
         [d setBool:NO forKey:kSettingsStatBarNetworkOnly];
     } else if ([self.repoTweakID isEqualToString:@"lightsaber.powercuff"]) {
         NSString *level = PackageStringValue(values, @"__powercuff_level", @"nominal").lowercaseString;
-        NSSet<NSString *> *valid = [NSSet setWithArray:@[@"off", @"nominal", @"light", @"moderate", @"heavy"]];
+        NSSet<NSString *> *valid = [NSSet setWithArray:@[@"off", @"nominal", @"light", @"moderate", @"heavy"]];   // loc-skip：档位取值
         if (![valid containsObject:level]) level = @"nominal";
         [d setObject:level forKey:kSettingsPowercuffLevel];
     }

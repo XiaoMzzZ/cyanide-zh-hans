@@ -3259,7 +3259,7 @@ static void settings_show_respring_overlay(UIViewController *fallback)
 }
 
 static NSArray<NSString *> *powercuff_levels(void) {
-    return @[ @"off", @"nominal", @"light", @"moderate", @"heavy" ];
+    return @[ @"off", @"nominal", @"light", @"moderate", @"heavy" ];   // loc-skip：档位取值
 }
 
 // The window tint is the real accent colour: while a modal (the activity log)
@@ -7294,12 +7294,12 @@ void settings_location_services_set_async(int desired, BOOL allowFullExploit,
             settings_post_actions_complete_async(ok, message ?: @"");
         };
         NSString *(^doneText)(void) = ^NSString *{
-            return [NSString stringWithFormat:NSLocalizedString(@"Location Services %@.", nil), enable ? NSLocalizedString(@"On", nil) : NSLocalizedString(@"Off", nil)];
+            return [NSString stringWithFormat:NSLocalizedString(@"Location Services %@.", nil), enable ? NSLocalizedString(@"on", nil) : NSLocalizedString(@"off", nil)];
         };
         @try {
             if (locationservices_enabled_local() == (enable ? 1 : 0)) {
                 ok = YES;
-                message = [NSString stringWithFormat:NSLocalizedString(@"Location Services already %@.", nil), enable ? NSLocalizedString(@"On", nil) : NSLocalizedString(@"Off", nil)];
+                message = [NSString stringWithFormat:NSLocalizedString(@"Location Services already %@.", nil), enable ? NSLocalizedString(@"on", nil) : NSLocalizedString(@"off", nil)];
                 step(1.0f, enable ? NSLocalizedString(@"Already on", nil) : NSLocalizedString(@"Already off", nil), 0);
                 doneSent = YES;
                 return;
@@ -9777,7 +9777,7 @@ static void settings_run_actions_internal(BOOL pendingOnly)
                     // not run SpringBoard tweak stop paths or clear applied
                     // package state; enabled tweaks are reapplied below.
                     settings_destroy_springboard_remote_call_locked_internal("switching to thermalmonitord", NO);
-                    NSString *lvl = resetPowercuff ? @"off" : ([d stringForKey:kSettingsPowercuffLevel] ?: @"nominal");
+                    NSString *lvl = resetPowercuff ? @"off" : ([d stringForKey:kSettingsPowercuffLevel] ?: @"nominal");   // loc-skip：档位取值
                     bool ok = powercuff_apply(lvl.UTF8String);
                     settings_mark_tweak_applied(kSettingsPowercuffEnabled,
                                                 ok && [d boolForKey:kSettingsPowercuffEnabled]);
