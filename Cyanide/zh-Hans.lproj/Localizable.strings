@@ -1,4 +1,4 @@
-/* Cyanide 1.16.0 — 简体中文（zh-Hans）
+/* Cyanide 1.17.0 — 简体中文（zh-Hans）
    由 tools/gen_strings.py 从 zh_map.json + zh_fmt.json 生成，请勿手工编辑。
    键名即英文原文：未在此文件中的字符串自动回退为英文。 */
 
@@ -1541,3 +1541,24 @@
 "%@ is saved in Decrypted IPAs.%@" = "%@ 已保存到“已解密的 IPA”。%@";
 "%lu file(s) written, %lu failed in %.1fs%@.%@ Failures: %@." = "已写入 %lu 个文件，%lu 个失败，耗时 %.1fs%@。%@ 失败详情：%@。";
 "Supervised by %@ (set by Cyanide)." = "由 %@ 监管（由 Cyanide 设置）。";
+
+/* ---- 1.17.0 新增 ---- */
+"Locked App Previews" = "锁定应用预览";
+"Notification previews for Face ID-locked apps" = "为 Face ID 锁定应用显示通知预览";
+"Apps locked with \"Require Face ID\" (iOS 18) show their notifications without content, whatever the preview setting says. This lets the normal preview setting apply to them again: Always, When Unlocked or Never, per app or globally. Opening a locked app still asks for Face ID.\n\nThe restored setting is saved by iOS and stays after a respring. Turning this off hides the previews of locked apps again. iOS 18 and later." = "用“需要 Face ID”锁定的应用（iOS 18）无论预览设置如何，都会以不含内容的方式显示通知。此功能让常规预览设置重新对它们生效：始终、解锁时或从不，可按应用或全局设置。打开被锁定的应用仍会要求 Face ID。\n\n恢复后的设置由 iOS 保存，重新载入后依然有效。关闭此项会重新隐藏被锁定应用的通知预览。iOS 18 及以上。";
+"Respring and reboot links" = "重新载入与重启链接";
+"Lets cyanide://respring and cyanide://reboot links (for example Open URL in Shortcuts) respring or reboot the device. Any app can open these links without asking, so this is off by default. The Control Center buttons and the Shortcuts actions work without it." = "允许通过 cyanide://respring 和 cyanide://reboot 链接（例如“快捷指令”中的“打开 URL”）重新载入或重启设备。任何应用都能直接打开这类链接且不会询问，因此默认关闭。控制中心按钮和快捷指令操作不依赖此项。";
+"Apply Installer changes right away" = "立即应用安装器改动";
+"With saved kernel access, activating or deactivating a tweak in the Installer applies just that tweak at once instead of adding it to the queue. Without kernel access, and for OTA, Hide Home Bar and repo tweaks, the queue works as before." = "在已保存内核访问权限时，在安装器中启用或停用某个 tweak 会立即只应用该 tweak，而不再加入队列。没有内核访问权限时，以及对于 OTA、“隐藏 Home 指示条”和仓库 tweak，仍沿用原来的队列方式。";
+"Respring / Reboot Link" = "重新载入 / 重启链接";
+"A link asked Cyanide to respring or reboot. These links are off, so nothing happened. Use the Control Center buttons or the Shortcuts actions instead, or turn on Settings → Launch Options → Respring and reboot links." = "有链接请求 Cyanide 重新载入或重启。这类链接已关闭，因此没有执行任何操作。请改用控制中心按钮或快捷指令操作，或开启“设置 → 启动选项 → 重新载入与重启链接”。";
+"Rebooting" = "正在重启";
+"Respringing" = "正在重新载入";
+"The device restarts in a moment…" = "设备即将重启…";
+"SpringBoard restarts in a moment…" = "SpringBoard 即将重新载入…";
+"Another Cyanide request is in progress." = "另一个 Cyanide 请求正在进行中。";
+"Another Cyanide action is still running. Try again in a moment." = "另一个 Cyanide 操作仍在运行，请稍后再试。";
+"Stopping live tweaks" = "正在停止实时 tweak";
+"Asking SpringBoard to restart" = "正在请求 SpringBoard 重新载入";
+"Asking the system to reboot" = "正在请求系统重启";
+"turning off DarkSword tweaks" = "关闭 DarkSword tweak";

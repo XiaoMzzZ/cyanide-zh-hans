@@ -11,6 +11,7 @@
 #import "../tweaks/RepoTweaks.h"
 
 NSString * const PackageQueueDidChangeNotification = @"PackageQueueDidChangeNotification";
+NSString * const PackageQueueDidEnqueueNotification = @"PackageQueueDidEnqueueNotification";
 
 @interface PackageQueue ()
 @property (nonatomic, strong) NSMutableArray<Package *> *installs;
@@ -22,6 +23,8 @@ NSString * const PackageQueueDidChangeNotification = @"PackageQueueDidChangeNoti
 // YES until that run posts its completion (or the handoff timeout expires), so
 // isCommitting really means "until its run finishes".
 @property (nonatomic, assign) BOOL awaitingRunCompletion;
+// Set by -commitOnlyQueuedPackages for the run it hands off to.
+@property (nonatomic, copy, nullable) NSSet<NSString *> *runOnlyKeys;
 @end
 
 static BOOL PackageIsThemer(Package *package)
@@ -330,6 +333,7 @@ static BOOL PackageShouldAutoQueueForApply(Package *package)
         [self.installs addObject:package];
     }
     [self notifyChange];
+    [self notifyEnqueue];
 }
 
 - (void)queueIntent:(PackageQueueIntent)intent forPackage:(Package *)package
@@ -343,6 +347,7 @@ static BOOL PackageShouldAutoQueueForApply(Package *package)
         [self.uninstalls addObject:package];
     }
     [self notifyChange];
+    if (intent != PackageQueueIntentNone) [self notifyEnqueue];
 }
 
 - (void)removePackage:(Package *)package
@@ -381,7 +386,45 @@ static BOOL PackageShouldAutoQueueForApply(Package *package)
     [self notifyChange];
 }
 
+- (nullable NSSet<NSString *> *)rightAwayKeys
+{
+    if (self.installs.count + self.uninstalls.count == 0) return nil;
+    NSMutableSet<NSString *> *keys = [NSMutableSet set];
+    for (NSArray<Package *> *list in @[self.installs, self.uninstalls]) {
+        for (Package *pkg in list) {
+            if (pkg.kind != PackageInstallKindToggle || pkg.enabledKey.length == 0) return nil;
+            [keys addObject:pkg.enabledKey];
+        }
+    }
+    return keys;
+}
+
+- (BOOL)commitOnlyQueuedPackages
+{
+    NSSet<NSString *> *keys = [self rightAwayKeys];
+    if (!keys) return NO;
+    self.runOnlyKeys = keys;
+    BOOL started = [self commitExplicitOnly:YES];
+    if (!started) self.runOnlyKeys = nil;
+    return started;
+}
+
+- (void)applyPackageNow:(Package *)package
+{
+    if (package.kind != PackageInstallKindToggle || package.enabledKey.length == 0) return;
+    if (![self packageInArray:self.installs matching:package]) [self.installs addObject:package];
+    [self notifyChange];
+    [self notifyEnqueue];
+}
+
 - (BOOL)commit
+{
+    return [self commitExplicitOnly:NO];
+}
+
+// explicitOnly: just the packages the user toggled, not the enabled tweaks
+// waiting to be applied again (the right-away path).
+- (BOOL)commitExplicitOnly:(BOOL)explicitOnly
 {
     if (self.isCommitting || settings_run_in_flight()) {
         log_user("[INSTALLER] A queue commit or its run is already active; ignoring this one.\n");
@@ -390,8 +433,8 @@ static BOOL PackageShouldAutoQueueForApply(Package *package)
     self.isCommitting = YES;
     self.awaitingRunCompletion = NO;
 
-    NSArray<Package *> *toInstall   = self.queuedInstalls;
-    NSArray<Package *> *toUninstall = self.queuedUninstalls;
+    NSArray<Package *> *toInstall   = explicitOnly ? [self.installs copy] : self.queuedInstalls;
+    NSArray<Package *> *toUninstall = explicitOnly ? [self.uninstalls copy] : self.queuedUninstalls;
 
     // Split packages into "stateful" (toggle: just flips an NSUserDefaults
     // BOOL — fast, safe to call on main) and "heavy" (OTA / NanoRegistry /
@@ -481,9 +524,13 @@ static BOOL PackageShouldAutoQueueForApply(Package *package)
             strongSelf.awaitingRunCompletion = NO;
             strongSelf.isCommitting = NO;
         });
-        settings_run_pending_actions();
+        NSSet<NSString *> *onlyKeys = self.runOnlyKeys;
+        self.runOnlyKeys = nil;
+        if (onlyKeys) settings_run_pending_actions_for_keys(onlyKeys);
+        else settings_run_pending_actions();
         return;
     }
+    self.runOnlyKeys = nil;
     self.isCommitting = NO;
     self.awaitingRunCompletion = NO;
     // A NanoRegistry/heavy package can fail its ancillary step without
@@ -506,6 +553,15 @@ static BOOL PackageShouldAutoQueueForApply(Package *package)
             postNotificationName:kSettingsActionsDidCompleteNotification
                           object:nil
                         userInfo:userInfo];
+    });
+}
+
+// Async, so the caller (a swipe action, an alert handler) finishes first.
+- (void)notifyEnqueue
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [[NSNotificationCenter defaultCenter] postNotificationName:PackageQueueDidEnqueueNotification
+                                                            object:self];
     });
 }
 

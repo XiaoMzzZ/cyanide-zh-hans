@@ -357,6 +357,18 @@ static const NSInteger kSecOTA              = SectionOTA;
         floatingDock.settingsSection = kSecFloatingDock;
         floatingDock.unstableWarning = NSLocalizedString(@"Uses SpringBoard's private Dock controllers in memory. If the Dock looks wrong, turn it off or respring.", nil);
 
+        Package *lockedPreviews = [[Package alloc] initWithIdentifier:@"com.darksword.locked-previews"
+                                           name:NSLocalizedString(@"Locked App Previews", nil)
+                               shortDescription:NSLocalizedString(@"Notification previews for Face ID-locked apps", nil)
+                                longDescription:NSLocalizedString(@"Apps locked with \"Require Face ID\" (iOS 18) show their notifications without content, whatever the preview setting says. This lets the normal preview setting apply to them again: Always, When Unlocked or Never, per app or globally. Opening a locked app still asks for Face ID.\n\nThe restored setting is saved by iOS and stays after a respring. Turning this off hides the previews of locked apps again. iOS 18 and later.", nil)
+                                        version:version
+                                         author:@"kolbicz"
+                                       category:@"SpringBoard"
+                                     symbolName:@"lock.rectangle.stack"
+                                           kind:PackageInstallKindToggle
+                                     enabledKey:kSettingsLockedPreviewsEnabled
+                                          isNew:YES];
+
         Package *quickLoader = [[Package alloc] initWithIdentifier:@"com.darksword.quickloader"
                                            name:@"QuickLoader"
                                shortDescription:NSLocalizedString(@"Executes custom .js code", nil)
@@ -592,6 +604,7 @@ static const NSInteger kSecOTA              = SectionOTA;
             liveWP,
             appSwitcherGrid,
             floatingDock,
+            lockedPreviews,
             quickLoader,
         ];
     });

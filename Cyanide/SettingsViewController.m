@@ -44,6 +44,7 @@
 #import "tweaks/gravitylite.h"
 #import "tweaks/appswitchergrid.h"
 #import "tweaks/floatingdock.h"
+#import "tweaks/locked_previews.h"
 #import "tweaks/hide_home_bar.h"
 #import "tweaks/QuickLoader.h"
 #import "tweaks/RepoTweaks.h"
@@ -1206,6 +1207,8 @@ NSString * const kSettingsAxonLiteEnabled = @"AxonLiteEnabled";
 
 NSString * const kSettingsAppSwitcherGridEnabled = @"AppSwitcherGridEnabled";
 NSString * const kSettingsFloatingDockEnabled = @"FloatingDockEnabled";
+NSString * const kSettingsLockedPreviewsEnabled = @"LockedPreviewsEnabled";
+NSString * const kSettingsInstallRightAway = @"InstallRightAway";
 NSString * const kSettingsFastLockXLiteEnabled = @"FastLockXLiteEnabled";
 static NSString * const kSettingsFastLockXLiteBlockMusic = @"FastLockXLiteBlockMusic";
 static NSString * const kSettingsFastLockXLiteBlockFlashlight = @"FastLockXLiteBlockFlashlight";
@@ -1516,6 +1519,15 @@ static bool settings_stop_floatingdock_registered(BOOL springboardWillDie)
     return floatingdock_stop_in_session();
 }
 
+static bool settings_stop_lockedpreviews_registered(BOOL springboardWillDie)
+{
+    if (springboardWillDie) {
+        lockedpreviews_forget_remote_state();
+        return false;
+    }
+    return lockedpreviews_stop_in_session();
+}
+
 static bool settings_stop_gravitylite_registered(BOOL springboardWillDie)
 {
     (void)springboardWillDie;
@@ -1630,6 +1642,9 @@ static void settings_each_springboard_cleanup_entry(void (^block)(const Settings
         // the hijacked thread in SpringBoard; killing Cyanide then crashed it
         // at 0x401).
         { kSettingsFloatingDockEnabled, "iPad Dock", NULL, settings_stop_floatingdock_registered, floatingdock_forget_remote_state, NULL, NO, NO },
+        // BOTH NO: a one-time method swap plus settings the notification
+        // server saves itself; nothing needs the session kept open.
+        { kSettingsLockedPreviewsEnabled, "Locked App Previews", NULL, settings_stop_lockedpreviews_registered, lockedpreviews_forget_remote_state, NULL, NO, NO },
         { kSettingsGravityLiteEnabled, "Gravity Lite", settings_request_gravitylite_stop, settings_stop_gravitylite_registered, gravitylite_forget_remote_state, NULL, YES, YES },
         { kSettingsThemerEnabled, "Themer", settings_request_themer_stop, settings_stop_themer_registered, themer_forget_remote_state, settings_themer_running, YES, YES },
         { kSettingsSnowBoardLiteEnabled, "SnowBoard Lite", NULL, settings_stop_themer_registered, themer_forget_remote_state, NULL, YES, YES },
@@ -1932,13 +1947,54 @@ static NSMutableSet<NSString *> *settings_applied_keys_set(void)
     return g_applied_tweak_keys;
 }
 
+// One-shot SpringBoard patches: they stay in SpringBoard when Cyanide closes
+// (nothing of theirs runs in Cyanide), so "applied" is kept with the
+// SpringBoard pid and boot it was applied to and holds until that SpringBoard
+// exits. A reopened Cyanide then neither re-applies them all nor loses track
+// of what a switch-off has to undo. Live tweaks stop with Cyanide and stay
+// process-local.
+static BOOL settings_key_is_springboard_oneshot(NSString *key)
+{
+    static NSSet<NSString *> *keys;
+    static dispatch_once_t once;
+    dispatch_once(&once, ^{
+        keys = [NSSet setWithArray:@[
+            kSettingsSBCEnabled,
+            kSettingsSBCHideLabels,
+            kSettingsLayoutExtrasEnabled,
+            kSettingsSBToolsWithTweaks,
+            kSettingsFloatingDockEnabled,
+            kSettingsLockedPreviewsEnabled,
+            kSettingsDSDisableAppLibrary,
+            kSettingsDSDisableIconFlyIn,
+            kSettingsDSHideNewAppDots,
+            kSettingsDSZeroWakeAnimation,
+            kSettingsDSZeroBacklightFade,
+            kSettingsDSDoubleTapToLock,
+            kSettingsDSDragCoefficientEnabled,
+        ]];
+    });
+    return key && [keys containsObject:key];
+}
+
 static BOOL settings_key_persists_applied_state(NSString *key)
 {
-    // SBCustomizer mutates SpringBoard's live icon models. Those mutations
-    // must be applied again after every SpringBoard restart, so its applied
-    // state is intentionally process-local rather than persisted.
     return [key isEqualToString:kSettingsQuickLoaderEnabled] ||
-           [key isEqualToString:kSettingsRepoTweaksEnabled];
+           [key isEqualToString:kSettingsRepoTweaksEnabled] ||
+           settings_key_is_springboard_oneshot(key);
+}
+
+static NSString *settings_persisted_applied_boot_key(NSString *key)
+{
+    return [@"CyanideAppliedBootTime." stringByAppendingString:key ?: @""];
+}
+
+static uint64_t settings_boot_time_seconds(void)
+{
+    struct timeval bootTime = {0};
+    size_t size = sizeof(bootTime);
+    if (sysctlbyname("kern.boottime", &bootTime, &size, NULL, 0) != 0) return 0;
+    return (uint64_t)bootTime.tv_sec;
 }
 
 static NSString *settings_persisted_applied_bool_key(NSString *key)
@@ -1958,13 +2014,16 @@ static void settings_set_persisted_applied(NSString *key, BOOL applied)
     NSUserDefaults *d = [NSUserDefaults standardUserDefaults];
     NSString *appliedKey = settings_persisted_applied_bool_key(key);
     NSString *pidKey = settings_persisted_applied_pid_key(key);
+    NSString *bootKey = settings_persisted_applied_boot_key(key);
     if (applied) {
         int pid = remote_call_current_pid();
         [d setBool:YES forKey:appliedKey];
         if (pid > 0) [d setInteger:pid forKey:pidKey];
+        [d setObject:@(settings_boot_time_seconds()) forKey:bootKey];
     } else {
         [d removeObjectForKey:appliedKey];
         [d removeObjectForKey:pidKey];
+        [d removeObjectForKey:bootKey];
     }
     [d synchronize];
 }
@@ -1984,6 +2043,19 @@ static BOOL settings_persisted_applied(NSString *key)
     if (storedPid > 0 && currentPid > 0 && storedPid != currentPid) {
         settings_set_persisted_applied(key, NO);
         return NO;
+    }
+    if (settings_key_is_springboard_oneshot(key)) {
+        // Applied to a SpringBoard that has since exited (respring, reboot)
+        // means gone. Without a session, kill(pid, 0) still tells an exited
+        // process (ESRCH) from one the sandbox won't signal (EPERM).
+        id storedBoot = [d objectForKey:settings_persisted_applied_boot_key(key)];
+        BOOL gone = storedPid <= 0 ||
+                    [storedBoot unsignedLongLongValue] != settings_boot_time_seconds() ||
+                    (currentPid <= 0 && kill((pid_t)storedPid, 0) != 0 && errno == ESRCH);
+        if (gone) {
+            settings_set_persisted_applied(key, NO);
+            return NO;
+        }
     }
     return YES;
 }
@@ -2067,17 +2139,10 @@ static BOOL settings_clear_all_applied_locked(void)
             changed = YES;
         }
     }
-    // The persisted markers describe a previous process's SpringBoard state.
-    // A not-ready notify before this process ever opened a SpringBoard session
-    // (launch, KRW acquire) says nothing about that state — keep them; the pid
-    // check in settings_persisted_applied() drops them once a session exists.
-    if (!g_springboard_session_seen) return changed;
-    for (NSString *key in @[ kSettingsSBCEnabled ]) {
-        if (settings_persisted_applied(key)) {
-            settings_set_persisted_applied(key, NO);
-            changed = YES;
-        }
-    }
+    // The persisted markers are left alone: a not-ready notify (KRW acquire,
+    // session closed after a run, Cyanide closing) says nothing about whether
+    // SpringBoard still carries those patches. settings_persisted_applied()
+    // drops a marker once its SpringBoard has exited.
     return changed;
 }
 
@@ -3844,12 +3909,24 @@ static const double kRespringDelay = 2.5;
 // without a SpringBoard session nothing can ask the system to reboot).
 static const double kRebootDelay = 2.5;
 
+// Steps of the respring/reboot preparation for a caller's progress screen
+// (settings_power_action_async); nil for the Settings rows.
+static SettingsProgressBlock g_restart_progress = nil;
+
+static void settings_restart_step(float fraction, NSString *step, NSTimeInterval over)
+{
+    SettingsProgressBlock progress = g_restart_progress;
+    if (!progress) return;
+    dispatch_async(dispatch_get_main_queue(), ^{ progress(fraction, step, over, -1); });
+}
+
 static BOOL settings_prepare_for_restart_sync(BOOL reboot)
 {
     const char *tag = reboot ? "[REBOOT]" : "[RESPRING]";
     uint64_t respringGeneration = reboot ? 0 : settings_arm_respring_generation();
     log_user("%s Stopping live sessions before %s.\n", tag, reboot ? "reboot" : "respring");
     printf("[SETTINGS] preparing for %s cleanup rcReady=%d\n", reboot ? "reboot" : "respring", g_springboard_rc_ready);
+    settings_restart_step(0.1f, NSLocalizedString(@"Stopping live tweaks", nil), 0.3);
     settings_request_all_live_loops_stop("pre-respring cleanup");
     settings_end_statbar_background_task_async("pre-respring cleanup");
     BOOL loopsStopped = settings_wait_live_loops_stopped_for_switch("pre-respring cleanup");
@@ -3859,7 +3936,16 @@ static BOOL settings_prepare_for_restart_sync(BOOL reboot)
     uint64_t scheduledNs = 0;
     // A direct relaunch needs a SpringBoard session; open one if kernel
     // access is live or parked (never a full exploit run for this).
+    if (!g_springboard_rc_ready) settings_restart_step(0.2f, NSLocalizedString(@"Getting kernel ready", nil), 0.5);
     BOOL kernelReady = g_springboard_rc_ready || settings_ensure_kexploit_for_read();
+    if (kernelReady && !g_springboard_rc_ready) {
+        // The activation settle window before SpringBoard can be opened is
+        // the longest wait: fill the bar over it, as Location Services does.
+        uint64_t now = clock_gettime_nsec_np(CLOCK_MONOTONIC_RAW);
+        uint64_t until = g_activation_settle_until_ns;
+        double settle = until > now ? (double)(until - now) / 1e9 : 0;
+        if (settle > 0.3) settings_restart_step(0.7f, NSLocalizedString(@"Getting kernel ready", nil), settle);
+    }
     @synchronized (settings_rc_lock()) {
         if (!g_springboard_rc_ready && kernelReady) {
             log_user("%s Opening SpringBoard to ask it to %s…\n", tag, reboot ? "reboot" : "restart");
@@ -3871,6 +3957,7 @@ static BOOL settings_prepare_for_restart_sync(BOOL reboot)
             // SB is about to restart, so cleanup uses the fast variant for
             // tweaks where full remote restoration is wasted.
             settings_stop_springboard_tweaks_locked("pre-respring cleanup", YES);
+            settings_restart_step(0.9f, reboot ? NSLocalizedString(@"Asking the system to reboot", nil) : NSLocalizedString(@"Asking SpringBoard to restart", nil), 0.3);
             // A live loop that didn't stop could still be working when the
             // relaunch fires: then the WebKit fallback below instead.
             if (reboot) {
@@ -4657,9 +4744,25 @@ static BOOL settings_dark_tweaks_any_enabled(NSUserDefaults *d)
            [d boolForKey:kSettingsDSDoubleTapToLock];
 }
 
+// Keys a scoped pending run (settings_run_pending_actions_for_keys) is limited
+// to; nil for every other run. Kept through auto-retries of that run.
+static NSSet<NSString *> *g_run_only_keys;
+
+static NSSet<NSString *> *settings_run_only_keys(void)
+{
+    @synchronized ([NSUserDefaults class]) { return g_run_only_keys; }
+}
+
+static void settings_set_run_only_keys(NSSet<NSString *> *keys)
+{
+    @synchronized ([NSUserDefaults class]) { g_run_only_keys = [keys copy]; }
+}
+
 static BOOL settings_enabled_tweak_should_run(NSUserDefaults *d, NSString *key, BOOL pendingOnly)
 {
     if (![d boolForKey:key]) return NO;
+    NSSet<NSString *> *onlyKeys = pendingOnly ? settings_run_only_keys() : nil;
+    if (onlyKeys) return [onlyKeys containsObject:key];
     return !pendingOnly || !settings_tweak_is_applied(key);
 }
 
@@ -4816,6 +4919,115 @@ void settings_present_respring_prompt(UIViewController *host, NSString *title, N
     settings_present_controller(ac, host);
 }
 
+static void settings_show_reboot_failed_alert(UIViewController *host)
+{
+    UIAlertController *ac = [UIAlertController
+        alertControllerWithTitle:NSLocalizedString(@"Reboot Didn't Happen", nil)
+                         message:NSLocalizedString(@"Cyanide couldn't ask the system to reboot. It needs kernel access from an earlier Run; run Cyanide, then try again, or restart the device yourself. Details are in the log.", nil)
+                  preferredStyle:UIAlertControllerStyleAlert];
+    [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil) style:UIAlertActionStyleDefault handler:nil]];
+    settings_present_controller(ac, host);
+}
+
+// Covers the app while the scheduled reboot runs. If the device is still up
+// after a while, the request didn't land: say so instead of leaving the cover.
+static void settings_show_rebooting_cover(UIViewController *host)
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        UIWindow *window = settings_active_window(host);
+        if (!window) return;
+        UIView *cover = [[UIView alloc] initWithFrame:window.bounds];
+        cover.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+        cover.backgroundColor = UIColor.blackColor;
+        UIActivityIndicatorView *spin = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleLarge];
+        spin.color = UIColor.whiteColor;
+        spin.translatesAutoresizingMaskIntoConstraints = NO;
+        [spin startAnimating];
+        UILabel *label = [UILabel new];
+        label.text = NSLocalizedString(@"Rebooting…", nil);
+        label.textColor = UIColor.whiteColor;
+        label.font = [UIFont systemFontOfSize:17.0 weight:UIFontWeightSemibold];
+        label.translatesAutoresizingMaskIntoConstraints = NO;
+        [cover addSubview:spin];
+        [cover addSubview:label];
+        [NSLayoutConstraint activateConstraints:@[
+            [spin.centerXAnchor constraintEqualToAnchor:cover.centerXAnchor],
+            [spin.centerYAnchor constraintEqualToAnchor:cover.centerYAnchor constant:-16.0],
+            [label.centerXAnchor constraintEqualToAnchor:cover.centerXAnchor],
+            [label.topAnchor constraintEqualToAnchor:spin.bottomAnchor constant:14.0],
+        ]];
+        [window addSubview:cover];
+        __weak UIView *weakCover = cover;
+        __weak UIViewController *weakHost = host;
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(25 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            if (!weakCover.superview) return;
+            [weakCover removeFromSuperview];
+            log_user("[REBOOT] The device did not reboot within 25 s.\n");
+            settings_show_reboot_failed_alert(weakHost);
+        });
+    });
+}
+
+// Respring or reboot without a confirmation, for the cyanide://respring and
+// cyanide://reboot links, the Shortcuts actions and the Control Center
+// buttons. Same cleanup as the Settings rows. Completion on the main queue,
+// once the respring or reboot is under way (or refused).
+void settings_power_action_async(BOOL reboot, UIViewController *host,
+                                 SettingsProgressBlock progress,
+                                 void (^completion)(BOOL ok, NSString *message))
+{
+    __weak UIViewController *weakHost = host;
+    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+        void (^finish)(BOOL, NSString *) = ^(BOOL ok, NSString *message) {
+            dispatch_async(dispatch_get_main_queue(), ^{ if (completion) completion(ok, message); });
+        };
+        if (__sync_val_compare_and_swap(&g_settings_actions_running, kSettingsLockFree, kSettingsLockAction)) {
+            log_user("%s Another action is still running. Try again in a moment.\n",
+                     reboot ? "[REBOOT]" : "[RESPRING]");
+            finish(NO, NSLocalizedString(@"Another Cyanide action is still running. Try again in a moment.", nil));
+            return;
+        }
+        log_user("%s Requested from a link, shortcut or Control Center.\n", reboot ? "[REBOOT]" : "[RESPRING]");
+        if (reboot) {
+            __sync_lock_test_and_set(&g_settings_reboot_running, 1);
+        } else {
+            __sync_lock_test_and_set(&g_settings_respring_cleanup_running, 1);
+        }
+        settings_notify_cleanup_state_changed();
+        BOOL scheduled = NO;
+        g_restart_progress = progress;
+        g_springboard_connect_progress = progress ? ^{ settings_restart_step(0.82f, NSLocalizedString(@"Connecting", nil), 0.5); } : nil;
+        @try {
+            scheduled = settings_prepare_for_restart_sync(reboot);
+        } @finally {
+            g_restart_progress = nil;
+            g_springboard_connect_progress = nil;
+            __sync_lock_release(&g_settings_actions_running);
+            if (reboot) __sync_lock_release(&g_settings_reboot_running);
+            else __sync_lock_release(&g_settings_respring_cleanup_running);
+            settings_notify_cleanup_state_changed();
+        }
+        if (!reboot) {
+            // A scheduled relaunch needs nothing on screen but the caller's
+            // progress screen. Without one, the overlay's fallback respring.
+            if (!g_respring_scheduled) settings_show_respring_overlay(weakHost);
+            finish(YES, @"Respringing.");
+            return;
+        }
+        if (scheduled) {
+            // The caller shows its own progress screen; only say so if the
+            // device is still up after a while.
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(25 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                log_user("[REBOOT] The device did not reboot within 25 s.\n");
+                settings_show_reboot_failed_alert(weakHost);
+            });
+            finish(YES, @"Rebooting.");
+        } else {
+            finish(NO, @"Cyanide couldn't ask the system to reboot. It needs kernel access from an earlier Run.");
+        }
+    });
+}
+
 static BOOL settings_dark_tweaks_should_run(NSUserDefaults *d, BOOL pendingOnly)
 {
     NSArray<NSString *> *keys = @[
@@ -4844,6 +5056,22 @@ typedef struct {
     bool dragCoefficient;
 } SettingsDarkTweaksResult;
 
+static void settings_mark_dark_tweak_results(NSUserDefaults *d, SettingsDarkTweaksResult result,
+                                             NSSet<NSString *> *onlyKeys)
+{
+    void (^mark)(NSString *, bool) = ^(NSString *key, bool ok) {
+        if (![d boolForKey:key] || (onlyKeys && ![onlyKeys containsObject:key])) return;
+        settings_mark_tweak_applied(key, ok);
+    };
+    mark(kSettingsDSDisableAppLibrary, result.disableAppLibrary);
+    mark(kSettingsDSDisableIconFlyIn, result.disableIconFlyIn);
+    mark(kSettingsDSHideNewAppDots, result.hideNewAppDots);
+    mark(kSettingsDSZeroWakeAnimation, result.zeroWakeAnimation);
+    mark(kSettingsDSZeroBacklightFade, result.zeroBacklightFade);
+    mark(kSettingsDSDoubleTapToLock, result.doubleTapToLock);
+    mark(kSettingsDSDragCoefficientEnabled, result.dragCoefficient);
+}
+
 static bool settings_dark_tweaks_result_all_ok(SettingsDarkTweaksResult result)
 {
     return result.any &&
@@ -4856,19 +5084,81 @@ static bool settings_dark_tweaks_result_all_ok(SettingsDarkTweaksResult result)
            result.dragCoefficient;
 }
 
-static SettingsDarkTweaksResult settings_apply_dark_tweaks_from_defaults_locked(NSUserDefaults *d)
+// The DarkSword switches with the tweak each one journals its undo under.
+static NSDictionary<NSString *, NSNumber *> *settings_dark_tweak_ids(void)
+{
+    return @{
+        kSettingsDSDisableAppLibrary:      @(DSTweakAppLibrary),
+        kSettingsDSDisableIconFlyIn:       @(DSTweakIconFlyIn),
+        kSettingsDSHideNewAppDots:         @(DSTweakNewAppDots),
+        kSettingsDSZeroWakeAnimation:      @(DSTweakWakeAnimation),
+        kSettingsDSZeroBacklightFade:      @(DSTweakBacklightFade),
+        kSettingsDSDoubleTapToLock:        @(DSTweakDoubleTapLock),
+        kSettingsDSDragCoefficientEnabled: @(DSTweakDragCoefficient),
+    };
+}
+
+// Switched off but still patched in the running SpringBoard (onlyKeys, when
+// given, limits it to those).
+static BOOL settings_dark_tweaks_undo_needed(NSUserDefaults *d, NSSet<NSString *> *onlyKeys)
+{
+    NSDictionary<NSString *, NSNumber *> *ids = settings_dark_tweak_ids();
+    for (NSString *key in ids) {
+        if ([d boolForKey:key] || (onlyKeys && ![onlyKeys containsObject:key])) continue;
+        if (darksword_tweak_undo_pending((DSTweak)ids[key].intValue)) return YES;
+    }
+    return NO;
+}
+
+static const char *settings_dark_tweak_title(NSString *key)
+{
+    NSDictionary *titles = @{
+        kSettingsDSDisableAppLibrary: @"Disable App Library",
+        kSettingsDSDisableIconFlyIn: @"Disable Icon Fly-In",
+        kSettingsDSHideNewAppDots: @"Hide New App Dots",
+        kSettingsDSZeroWakeAnimation: @"Zero Wake Animation",
+        kSettingsDSZeroBacklightFade: @"Zero Backlight Fade",
+        kSettingsDSDoubleTapToLock: @"Double Tap to Lock",
+        kSettingsDSDragCoefficientEnabled: @"Drag Coefficient",
+    };
+    return [titles[key] ?: key UTF8String];
+}
+
+// SpringBoard session open. Returns NO when an undo did not finish.
+static BOOL settings_undo_disabled_dark_tweaks_locked(NSUserDefaults *d, NSSet<NSString *> *onlyKeys)
+{
+    BOOL allOK = YES;
+    NSDictionary<NSString *, NSNumber *> *ids = settings_dark_tweak_ids();
+    for (NSString *key in ids) {
+        if ([d boolForKey:key] || (onlyKeys && ![onlyKeys containsObject:key])) continue;
+        DSTweak tweak = (DSTweak)ids[key].intValue;
+        if (!darksword_tweak_undo_pending(tweak)) continue;
+        bool ok = darksword_tweak_undo_in_session(tweak);
+        if (ok) settings_mark_tweak_applied(key, NO);
+        allOK = allOK && ok;
+        log_user("%s %s %s.\n", ok ? "[OK]" : "[WARN]", settings_dark_tweak_title(key),
+                 ok ? "turned off" : "could not be turned off; a respring turns it off");
+    }
+    return allOK;
+}
+
+static SettingsDarkTweaksResult settings_apply_dark_tweaks_from_defaults_locked(NSUserDefaults *d,
+                                                                                NSSet<NSString *> *onlyKeys)
 {
     // The iOS 17 gate is lifted. darksword_tweaks.m carries a complete iOS 17
     // "singular controller" path that was never reachable from here, so it has
     // never actually been exercised on a device. It is enabled to be tested;
     // if it does not work the tweak reports failure rather than misbehaving.
-    BOOL disableAppLibrary = [d boolForKey:kSettingsDSDisableAppLibrary];
-    BOOL disableIconFlyIn = [d boolForKey:kSettingsDSDisableIconFlyIn];
-    BOOL hideNewAppDots = [d boolForKey:kSettingsDSHideNewAppDots];
-    BOOL zeroWakeAnimation = [d boolForKey:kSettingsDSZeroWakeAnimation];
-    BOOL zeroBacklightFade = [d boolForKey:kSettingsDSZeroBacklightFade];
-    BOOL doubleTapToLock = [d boolForKey:kSettingsDSDoubleTapToLock];
-    BOOL dragCoefficientEnabled = [d boolForKey:kSettingsDSDragCoefficientEnabled];
+    BOOL (^on)(NSString *) = ^BOOL(NSString *key) {
+        return [d boolForKey:key] && (!onlyKeys || [onlyKeys containsObject:key]);
+    };
+    BOOL disableAppLibrary = on(kSettingsDSDisableAppLibrary);
+    BOOL disableIconFlyIn = on(kSettingsDSDisableIconFlyIn);
+    BOOL hideNewAppDots = on(kSettingsDSHideNewAppDots);
+    BOOL zeroWakeAnimation = on(kSettingsDSZeroWakeAnimation);
+    BOOL zeroBacklightFade = on(kSettingsDSZeroBacklightFade);
+    BOOL doubleTapToLock = on(kSettingsDSDoubleTapToLock);
+    BOOL dragCoefficientEnabled = on(kSettingsDSDragCoefficientEnabled);
     SettingsDarkTweaksResult result = {
         .disableAppLibrary = true,
         .disableIconFlyIn = true,
@@ -4879,9 +5169,10 @@ static SettingsDarkTweaksResult settings_apply_dark_tweaks_from_defaults_locked(
         .dragCoefficient = true,
     };
 
-    printf("[DST] apply appLib=%d flyIn=%d wake=%d backlight=%d dblTap=%d drag=%d\n",
+    printf("[DST] apply appLib=%d flyIn=%d dots=%d wake=%d backlight=%d dblTap=%d drag=%d\n",
            disableAppLibrary,
            disableIconFlyIn,
+           hideNewAppDots,
            zeroWakeAnimation,
            zeroBacklightFade,
            doubleTapToLock,
@@ -7496,6 +7787,7 @@ BOOL settings_filesystem_access_available(void)
 }
 
 NSString * const kSettingsLocationServicesLinksEnabled = @"LocationServicesLinksEnabled";
+NSString * const kSettingsPowerLinksEnabled = @"PowerLinksEnabled";
 NSString * const kSettingsFullExploitRequiredMessage =
     @"No saved kernel access — this needs a full exploit run first.";
 
@@ -8310,6 +8602,11 @@ static BOOL settings_key_is_floatingdock(NSString *key)
     return [key isEqualToString:kSettingsFloatingDockEnabled];
 }
 
+static BOOL settings_key_is_lockedpreviews(NSString *key)
+{
+    return [key isEqualToString:kSettingsLockedPreviewsEnabled];
+}
+
 static BOOL settings_key_is_gravitylite(NSString *key)
 {
     return [key isEqualToString:kSettingsGravityLiteEnabled] ||
@@ -8908,6 +9205,36 @@ static void settings_schedule_live_apply_for_key(NSString *key)
         return;
     }
 
+    if (settings_key_is_lockedpreviews(key)) {
+        if ([d boolForKey:kSettingsLockedPreviewsEnabled] && g_springboard_rc_ready) {
+            dispatch_async(dispatch_get_global_queue(0, 0), ^{
+                @synchronized (settings_rc_lock()) {
+                    if (settings_cleanup_in_progress() ||
+                        ![d boolForKey:kSettingsLockedPreviewsEnabled] ||
+                        !g_springboard_rc_ready) return;
+                    bool ok = lockedpreviews_apply_in_session();
+                    settings_mark_tweak_applied(kSettingsLockedPreviewsEnabled,
+                                                ok && [d boolForKey:kSettingsLockedPreviewsEnabled]);
+                    printf("[SETTINGS] live Locked App Previews apply result=%d\n", ok);
+                }
+                settings_notify_package_queue_changed_async();
+            });
+        } else if (![d boolForKey:kSettingsLockedPreviewsEnabled]) {
+            settings_mark_tweak_applied(kSettingsLockedPreviewsEnabled, NO);
+            settings_notify_package_queue_changed_async();
+            if (g_springboard_rc_ready) {
+                dispatch_async(dispatch_get_global_queue(0, 0), ^{
+                    @synchronized (settings_rc_lock()) {
+                        if (g_springboard_rc_ready) lockedpreviews_stop_in_session();
+                    }
+                });
+            } else {
+                lockedpreviews_forget_remote_state();
+            }
+        }
+        return;
+    }
+
     if (settings_key_is_floatingdock(key)) {
         if ([d boolForKey:kSettingsFloatingDockEnabled] && g_springboard_rc_ready) {
             dispatch_async(dispatch_get_global_queue(0, 0), ^{
@@ -8928,7 +9255,7 @@ static void settings_schedule_live_apply_for_key(NSString *key)
             if (g_springboard_rc_ready) {
                 dispatch_async(dispatch_get_global_queue(0, 0), ^{
                     @synchronized (settings_rc_lock()) {
-                        if (g_springboard_rc_ready) floatingdock_stop_in_session();
+                        if (g_springboard_rc_ready && floatingdock_has_state()) floatingdock_stop_in_session();
                     }
                 });
             } else {
@@ -9118,26 +9445,27 @@ static void settings_schedule_live_apply_for_key(NSString *key)
 
 
     if (settings_key_is_dark_tweak(key)) {
-        if (!g_springboard_rc_ready || ![d boolForKey:key]) return;
+        if (!g_springboard_rc_ready) return;
+        // Just this switch, not every DarkSword tweak.
+        NSString *switchKey = [key isEqualToString:kSettingsDSDragCoefficientValue]
+            ? kSettingsDSDragCoefficientEnabled : key;
+        NSSet<NSString *> *onlyKeys = [NSSet setWithObject:switchKey];
+        if (![d boolForKey:switchKey]) {
+            dispatch_async(dispatch_get_global_queue(0, 0), ^{
+                @synchronized (settings_rc_lock()) {
+                    if (settings_cleanup_in_progress() || !g_springboard_rc_ready) return;
+                    settings_undo_disabled_dark_tweaks_locked(d, onlyKeys);
+                }
+                settings_notify_package_queue_changed_async();
+            });
+            return;
+        }
         dispatch_async(dispatch_get_global_queue(0, 0), ^{
             @synchronized (settings_rc_lock()) {
                 if (settings_cleanup_in_progress() || !g_springboard_rc_ready) return;
-                SettingsDarkTweaksResult result = settings_apply_dark_tweaks_from_defaults_locked(d);
+                SettingsDarkTweaksResult result = settings_apply_dark_tweaks_from_defaults_locked(d, onlyKeys);
                 bool ok = settings_dark_tweaks_result_all_ok(result);
-                if ([d boolForKey:kSettingsDSDisableAppLibrary])
-                    settings_mark_tweak_applied(kSettingsDSDisableAppLibrary, result.disableAppLibrary);
-                if ([d boolForKey:kSettingsDSDisableIconFlyIn])
-                    settings_mark_tweak_applied(kSettingsDSDisableIconFlyIn, result.disableIconFlyIn);
-                if ([d boolForKey:kSettingsDSHideNewAppDots])
-                    settings_mark_tweak_applied(kSettingsDSHideNewAppDots, result.hideNewAppDots);
-                if ([d boolForKey:kSettingsDSZeroWakeAnimation])
-                    settings_mark_tweak_applied(kSettingsDSZeroWakeAnimation, result.zeroWakeAnimation);
-                if ([d boolForKey:kSettingsDSZeroBacklightFade])
-                    settings_mark_tweak_applied(kSettingsDSZeroBacklightFade, result.zeroBacklightFade);
-                if ([d boolForKey:kSettingsDSDoubleTapToLock])
-                    settings_mark_tweak_applied(kSettingsDSDoubleTapToLock, result.doubleTapToLock);
-                if ([d boolForKey:kSettingsDSDragCoefficientEnabled])
-                    settings_mark_tweak_applied(kSettingsDSDragCoefficientEnabled, result.dragCoefficient);
+                settings_mark_dark_tweak_results(d, result, onlyKeys);
                 printf("[SETTINGS] live DarkSword memory patch results appLib=%d flyIn=%d wake=%d backlight=%d dblTap=%d drag=%d categoryOK=%d\n",
                        [d boolForKey:kSettingsDSDisableAppLibrary] ? result.disableAppLibrary : -1,
                        [d boolForKey:kSettingsDSDisableIconFlyIn] ? result.disableIconFlyIn : -1,
@@ -9397,6 +9725,7 @@ void settings_register_defaults(void)
         kSettingsRunAutoRetry: @NO,
         kRepoSourcesEnabledKey: @YES,
         kSettingsLocationServicesLinksEnabled: @NO,
+        kSettingsPowerLinksEnabled: @NO,
         kSettingsRunAutoRetryMaxAttempts: @8,
         kRemoteCallControlledPanicOnWedge: @NO,
 
@@ -9431,6 +9760,8 @@ void settings_register_defaults(void)
 
         kSettingsAppSwitcherGridEnabled: @NO,
         kSettingsFloatingDockEnabled: @NO,
+        kSettingsLockedPreviewsEnabled: @NO,
+        kSettingsInstallRightAway: @YES,
 
         kSettingsQuickLoaderEnabled: @NO,
         kSettingsRepoTweaksEnabled: @NO,
@@ -9623,6 +9954,7 @@ static void settings_run_actions_internal(BOOL pendingOnly)
             BOOL axonLiteEnabled = [d boolForKey:kSettingsAxonLiteEnabled];
             BOOL appSwitcherGridEnabled = [d boolForKey:kSettingsAppSwitcherGridEnabled];
             BOOL floatingDockEnabled = [d boolForKey:kSettingsFloatingDockEnabled];
+            BOOL lockedPreviewsEnabled = [d boolForKey:kSettingsLockedPreviewsEnabled];
             BOOL themerEnabled = [d boolForKey:kSettingsThemerEnabled];
             BOOL snowboardLiteEnabled = [d boolForKey:kSettingsSnowBoardLiteEnabled];
             BOOL liveWPEnabled = [d boolForKey:kSettingsLiveWPEnabled];
@@ -9637,6 +9969,8 @@ static void settings_run_actions_internal(BOOL pendingOnly)
             BOOL runAxonLite = settings_enabled_tweak_should_run(d, kSettingsAxonLiteEnabled, springBoardPendingOnly);
             BOOL runAppSwitcherGrid = settings_enabled_tweak_should_run(d, kSettingsAppSwitcherGridEnabled, springBoardPendingOnly);
             BOOL runFloatingDock = settings_enabled_tweak_should_run(d, kSettingsFloatingDockEnabled, springBoardPendingOnly);
+            BOOL runLockedPreviews = settings_enabled_tweak_should_run(d, kSettingsLockedPreviewsEnabled, springBoardPendingOnly);
+            BOOL relockPreviews = !lockedPreviewsEnabled && lockedpreviews_relock_pending();
             BOOL runThemer = settings_enabled_tweak_should_run(d, kSettingsThemerEnabled, springBoardPendingOnly);
             BOOL runSnowBoardLite = settings_enabled_tweak_should_run(d, kSettingsSnowBoardLiteEnabled, springBoardPendingOnly);
             BOOL runLiveWP = settings_enabled_tweak_should_run(d, kSettingsLiveWPEnabled, springBoardPendingOnly);
@@ -9665,7 +9999,9 @@ static void settings_run_actions_internal(BOOL pendingOnly)
             BOOL runSBTools = settings_enabled_tweak_should_run(d, kSettingsSBToolsWithTweaks, springBoardPendingOnly) &&
                               settings_sbtools_has_changes(d);
             BOOL cleanupDisabledSpringBoardTweaks = settings_disabled_applied_springboard_cleanup_needed(d);
-            BOOL needsSpringBoardWork = runSBTools || runSBC || runDarkTweaks || runStatBar || runNSBar || runNiceBarLite || runAxonLite || runGravityLite || runLayoutExtras || restoreLayoutExtras || runAppSwitcherGrid || runFloatingDock || runThemer || runSnowBoardLite || runLiveWP || runStageStrip || runFastLockXLite || runQuickLoader || runRepoTweaks || cleanupDisabledSpringBoardTweaks;
+            NSSet<NSString *> *scopedKeys = pendingOnly ? settings_run_only_keys() : nil;
+            BOOL undoDarkTweaks = settings_dark_tweaks_undo_needed(d, scopedKeys);
+            BOOL needsSpringBoardWork = runSBTools || runSBC || runDarkTweaks || runStatBar || runNSBar || runNiceBarLite || runAxonLite || runGravityLite || runLayoutExtras || restoreLayoutExtras || runAppSwitcherGrid || runFloatingDock || runLockedPreviews || relockPreviews || runThemer || runSnowBoardLite || runLiveWP || runStageStrip || runFastLockXLite || runQuickLoader || runRepoTweaks || cleanupDisabledSpringBoardTweaks || undoDarkTweaks;
             BOOL needsSpringBoard = needsSpringBoardWork || forceSpringBoardRefresh;
 
             BOOL hasRunWork = patchSandboxExt || runPowercuff || resetPowercuff || needsSpringBoard;
@@ -9694,11 +10030,13 @@ static void settings_run_actions_internal(BOOL pendingOnly)
             if (runGravityLite) total++;
             if (runAppSwitcherGrid) total++;
             if (runFloatingDock) total++;
+            if (runLockedPreviews || relockPreviews) total++;
             if (runStageStrip) total++;
             if (runFastLockXLite) total++;
             if (runQuickLoader) total++;
             if (runRepoTweaks) total++;
             if (cleanupDisabledSpringBoardTweaks) total++;
+            if (undoDarkTweaks) total++;
             NSUInteger step = 0;
             BOOL startStageStripControlLoopAfterInstall = NO;
 
@@ -9713,6 +10051,7 @@ static void settings_run_actions_internal(BOOL pendingOnly)
             if (runAxonLite) [enabledTweaks addObject:@"axon"];
             if (runAppSwitcherGrid) [enabledTweaks addObject:@"app-switcher-grid"];
             if (runFloatingDock) [enabledTweaks addObject:@"ipad-dock"];
+            if (runLockedPreviews) [enabledTweaks addObject:@"locked-previews"];
             if (runGravityLite) [enabledTweaks addObject:[NSString stringWithFormat:@"gravity(%ld%%)", (long)[d integerForKey:kSettingsGravityLiteMagnitudePct]]];
             if (runPowercuff) [enabledTweaks addObject:[NSString stringWithFormat:@"power(%@)", [d stringForKey:kSettingsPowercuffLevel] ?: @"nominal"]];
             if (runDarkTweaks) [enabledTweaks addObject:@"dark"];
@@ -9725,6 +10064,7 @@ static void settings_run_actions_internal(BOOL pendingOnly)
             if (runQuickLoader) [enabledTweaks addObject:@"quickloader"];
             if (runRepoTweaks) [enabledTweaks addObject:@"repotweaks"];
             if (cleanupDisabledSpringBoardTweaks) [enabledTweaks addObject:@"cleanup"];
+            if (undoDarkTweaks) [enabledTweaks addObject:@"dark-off"];
             if (forceSpringBoardRefresh) [enabledTweaks addObject:@"springboard-refresh"];
             log_user("[PLAN] %lu stages: %s\n",
                      (unsigned long)total,
@@ -9819,25 +10159,20 @@ static void settings_run_actions_internal(BOOL pendingOnly)
                         settings_stop_disabled_applied_springboard_tweaks_locked(d);
                     }
 
+                    if (undoDarkTweaks) {
+                        settings_progress(&step, total, "Turning off DarkSword tweaks");
+                        if (!settings_undo_disabled_dark_tweaks_locked(d, scopedKeys)) {
+                            [runWarnings addObject:NSLocalizedString(@"turning off DarkSword tweaks", nil)];
+                        }
+                    }
+
 
                     if (runDarkTweaks) {
                         settings_progress(&step, total, "Applying DarkSword tweaks");
-                        SettingsDarkTweaksResult result = settings_apply_dark_tweaks_from_defaults_locked(d);
+                        NSSet<NSString *> *darkOnlyKeys = springBoardPendingOnly ? settings_run_only_keys() : nil;
+                        SettingsDarkTweaksResult result = settings_apply_dark_tweaks_from_defaults_locked(d, darkOnlyKeys);
                         bool ok = settings_dark_tweaks_result_all_ok(result);
-                        if ([d boolForKey:kSettingsDSDisableAppLibrary])
-                            settings_mark_tweak_applied(kSettingsDSDisableAppLibrary, result.disableAppLibrary);
-                        if ([d boolForKey:kSettingsDSDisableIconFlyIn])
-                            settings_mark_tweak_applied(kSettingsDSDisableIconFlyIn, result.disableIconFlyIn);
-                        if ([d boolForKey:kSettingsDSHideNewAppDots])
-                            settings_mark_tweak_applied(kSettingsDSHideNewAppDots, result.hideNewAppDots);
-                        if ([d boolForKey:kSettingsDSZeroWakeAnimation])
-                            settings_mark_tweak_applied(kSettingsDSZeroWakeAnimation, result.zeroWakeAnimation);
-                        if ([d boolForKey:kSettingsDSZeroBacklightFade])
-                            settings_mark_tweak_applied(kSettingsDSZeroBacklightFade, result.zeroBacklightFade);
-                        if ([d boolForKey:kSettingsDSDoubleTapToLock])
-                            settings_mark_tweak_applied(kSettingsDSDoubleTapToLock, result.doubleTapToLock);
-                        if ([d boolForKey:kSettingsDSDragCoefficientEnabled])
-                            settings_mark_tweak_applied(kSettingsDSDragCoefficientEnabled, result.dragCoefficient);
+                        settings_mark_dark_tweak_results(d, result, darkOnlyKeys);
                         printf("[SETTINGS] DarkSword memory patch results appLib=%d flyIn=%d wake=%d backlight=%d dblTap=%d drag=%d categoryOK=%d\n",
                                [d boolForKey:kSettingsDSDisableAppLibrary] ? result.disableAppLibrary : -1,
                                [d boolForKey:kSettingsDSDisableIconFlyIn] ? result.disableIconFlyIn : -1,
@@ -10035,8 +10370,21 @@ static void settings_run_actions_internal(BOOL pendingOnly)
                                  ok ? "[OK]" : "[WARN]",
                                  ok ? "created" : "did not apply");
                         if (!ok) [runWarnings addObject:NSLocalizedString(@"iPad Dock", nil)];
-                    } else if (!floatingDockEnabled) {
+                    } else if (!floatingDockEnabled && floatingdock_has_state()) {
                         floatingdock_stop_in_session();
+                    }
+
+                    if (runLockedPreviews) {
+                        settings_progress(&step, total, "Restoring locked app previews");
+                        bool ok = lockedpreviews_apply_in_session();
+                        settings_mark_tweak_applied(kSettingsLockedPreviewsEnabled,
+                                                    ok && [d boolForKey:kSettingsLockedPreviewsEnabled]);
+                        printf("[SETTINGS] Locked App Previews result=%d\n", ok);
+                        if (!ok) [runWarnings addObject:NSLocalizedString(@"Locked App Previews", nil)];
+                    } else if (relockPreviews) {
+                        settings_progress(&step, total, "Hiding locked app previews again");
+                        lockedpreviews_stop_in_session();
+                        settings_mark_tweak_applied(kSettingsLockedPreviewsEnabled, NO);
                     }
 
                     if (runFastLockXLite) {
@@ -10380,12 +10728,21 @@ static void settings_run_actions_internal(BOOL pendingOnly)
 
 void settings_run_actions(void)
 {
+    settings_set_run_only_keys(nil);
     g_settings_actions_auto_retry_attempt = 0;
     settings_run_actions_internal(NO);
 }
 
 void settings_run_pending_actions(void)
 {
+    settings_set_run_only_keys(nil);
+    g_settings_actions_auto_retry_attempt = 0;
+    settings_run_actions_internal(YES);
+}
+
+void settings_run_pending_actions_for_keys(NSSet<NSString *> *keys)
+{
+    settings_set_run_only_keys(keys.count ? keys : nil);
     g_settings_actions_auto_retry_attempt = 0;
     settings_run_actions_internal(YES);
 }
@@ -13865,51 +14222,14 @@ BOOL settings_root_remove_xattr(NSString *path, const char *name, NSString **err
     // and two respring controls on one page is redundant.
 }
 
-// Covers the app while the scheduled reboot runs. If the device is still up
-// after a while, the request didn't land: say so instead of leaving the cover.
 - (void)showRebootingCover
 {
-    UIWindow *window = self.view.window ?: UIApplication.sharedApplication.keyWindow;
-    if (!window) return;
-    UIView *cover = [[UIView alloc] initWithFrame:window.bounds];
-    cover.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-    cover.backgroundColor = UIColor.blackColor;
-    UIActivityIndicatorView *spin = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleLarge];
-    spin.color = UIColor.whiteColor;
-    spin.translatesAutoresizingMaskIntoConstraints = NO;
-    [spin startAnimating];
-    UILabel *label = [UILabel new];
-    label.text = NSLocalizedString(@"Rebooting…", nil);
-    label.textColor = UIColor.whiteColor;
-    label.font = [UIFont systemFontOfSize:17.0 weight:UIFontWeightSemibold];
-    label.translatesAutoresizingMaskIntoConstraints = NO;
-    [cover addSubview:spin];
-    [cover addSubview:label];
-    [NSLayoutConstraint activateConstraints:@[
-        [spin.centerXAnchor constraintEqualToAnchor:cover.centerXAnchor],
-        [spin.centerYAnchor constraintEqualToAnchor:cover.centerYAnchor constant:-16.0],
-        [label.centerXAnchor constraintEqualToAnchor:cover.centerXAnchor],
-        [label.topAnchor constraintEqualToAnchor:spin.bottomAnchor constant:14.0],
-    ]];
-    [window addSubview:cover];
-    __weak typeof(self) weakSelf = self;
-    __weak UIView *weakCover = cover;
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(25 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        if (!weakCover.superview) return;
-        [weakCover removeFromSuperview];
-        log_user("[REBOOT] The device did not reboot within 25 s.\n");
-        [weakSelf showRebootFailedAlert];
-    });
+    settings_show_rebooting_cover(self);
 }
 
 - (void)showRebootFailedAlert
 {
-    UIAlertController *ac = [UIAlertController
-        alertControllerWithTitle:NSLocalizedString(@"Reboot Didn't Happen", nil)
-                         message:NSLocalizedString(@"Cyanide couldn't ask the system to reboot. It needs kernel access from an earlier Run; run Cyanide, then try again, or restart the device yourself. Details are in the log.", nil)
-                  preferredStyle:UIAlertControllerStyleAlert];
-    [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil) style:UIAlertActionStyleDefault handler:nil]];
-    settings_present_controller(ac, self);
+    settings_show_reboot_failed_alert(self);
 }
 
 - (void)presentRespringPromptWithTitle:(NSString *)title message:(NSString *)message
@@ -14301,8 +14621,12 @@ static NSUInteger settings_tab_index_for_title(UITabBarController *tab, NSString
            @"subtitle": NSLocalizedString(@"Logs the full RemoteCall internals for every exploit run, tweak apply and Process Viewer action. Off keeps the log readable; turn it on before reproducing an issue, then share the log.", nil) },
         @{ @"key": kSettingsLocationServicesLinksEnabled, @"title": NSLocalizedString(@"Location Services links", nil),
            @"subtitle": NSLocalizedString(@"Lets cyanide://location-services links turn Location Services on or off. Any app can open these links without asking, so this is off by default. The Control Center toggle and the Shortcuts action work without it.", nil) },
+        @{ @"key": kSettingsPowerLinksEnabled, @"title": NSLocalizedString(@"Respring and reboot links", nil),
+           @"subtitle": NSLocalizedString(@"Lets cyanide://respring and cyanide://reboot links (for example Open URL in Shortcuts) respring or reboot the device. Any app can open these links without asking, so this is off by default. The Control Center buttons and the Shortcuts actions work without it.", nil) },
         @{ @"key": kRepoSourcesEnabledKey,      @"title": NSLocalizedString(@"Repo sources", nil),
            @"subtitle": NSLocalizedString(@"Off hides the Sources tab and repo packages, stops refreshing sources, and skips repo tweaks when applying (running ones are stopped). Local QuickLoader .js files still work.", nil) },
+        @{ @"key": kSettingsInstallRightAway,   @"title": NSLocalizedString(@"Apply Installer changes right away", nil),
+           @"subtitle": NSLocalizedString(@"With saved kernel access, activating or deactivating a tweak in the Installer applies just that tweak at once instead of adding it to the queue. Without kernel access, and for OTA, Hide Home Bar and repo tweaks, the queue works as before.", nil) },
         @{ @"key": kSettingsKeepAlive,          @"title": NSLocalizedString(@"Keep app alive in background", nil),
            @"subtitle": NSLocalizedString(@"Required for app-driven live tweaks to persist while minimized, including StatBar receiving fresh live data.", nil) },
     ];
@@ -18463,16 +18787,13 @@ void cyanide_present_contact(UIViewController *host)
     // DarkSword patches rewrite SpringBoard methods with no in-session undo:
     // switching one off after it was applied only skips the next apply. Say
     // so (read before the applied marker is cleared below).
-    BOOL darkPatchStillLive = !sender.isOn && settings_key_is_dark_tweak(key) &&
-        ![key isEqualToString:kSettingsDSDragCoefficientEnabled] &&
-        ![key isEqualToString:kSettingsDSDragCoefficientValue] &&
-        settings_tweak_is_applied(key);
     [[NSUserDefaults standardUserDefaults] setBool:sender.isOn forKey:key];
     printf("[SETTINGS] toggle %s=%d\n", key.UTF8String, sender.isOn);
-    if (darkPatchStillLive) {
-        log_user("[DST] %s stays active until SpringBoard restarts.\n", key.UTF8String);
-        [self presentRespringPromptWithTitle:NSLocalizedString(@"Respring to Turn It Off?", nil)
-                                     message:[NSString stringWithFormat:NSLocalizedString(@"%@ is still active in SpringBoard. It stays on until a respring.", nil), row[@"title"] ?: NSLocalizedString(@"This tweak", nil)]];
+    // Switching a DarkSword patch off undoes it right away with an open
+    // SpringBoard session (the live key handler), otherwise with the next run.
+    if (!sender.isOn && settings_key_is_dark_tweak(key) && !g_springboard_rc_ready &&
+        settings_dark_tweaks_undo_needed([NSUserDefaults standardUserDefaults], [NSSet setWithObject:key])) {
+        log_user("[DST] %s turns off with the next apply.\n", settings_dark_tweak_title(key));
     }
     settings_note_package_configuration_changed(key);
     if ([key isEqualToString:kSettingsKeepAlive]) {

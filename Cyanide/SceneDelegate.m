@@ -147,6 +147,8 @@ static BOOL scene_request_launched_app(void)
 @property (nonatomic, assign) BOOL pendingActionCold;
 // A cyanide://location-services link arrived while links are off; told once active.
 @property (nonatomic, assign) BOOL blockedLinkNotice;
+// The blocked link was a respring/reboot one (different notice).
+@property (nonatomic, assign) BOOL blockedLinkWasPower;
 // Who asked for pendingActionURL, if it was the Control Center toggle.
 @property (nonatomic, copy) CYLocationRequestCompletion pendingActionCompletion;
 // A successful quiet run that couldn't go Home because Cyanide was inactive
@@ -262,7 +264,21 @@ static CYLocationRequestCompletion g_scene_intent_completion = nil;
 // Options → "Location Services links". Control Center and the Shortcuts
 // action are not links: they come in through +cy_runLocationURL:completion:,
 // which iOS only calls for the user's own controls and shortcuts.
+static BOOL scene_is_power_url(NSURL *url) {
+    NSString *host = url.host.lowercaseString;
+    return [host isEqualToString:@"respring"] || [host isEqualToString:@"reboot"];
+}
+
 - (BOOL)acceptLinkURL:(NSURL *)url {
+    if (scene_is_power_url(url)) {
+        // Same reasoning as Location Services: any app could restart the
+        // device, so these links are off unless the user turns them on.
+        if ([NSUserDefaults.standardUserDefaults boolForKey:kSettingsPowerLinksEnabled]) return YES;
+        printf("[URL] link ignored (respring and reboot links are off): %s\n", url.absoluteString.UTF8String);
+        self.blockedLinkNotice = YES;
+        self.blockedLinkWasPower = YES;
+        return NO;
+    }
     if (![url.host.lowercaseString isEqualToString:@"location-services"]) return YES;   // other links: unchanged
     if ([NSUserDefaults.standardUserDefaults boolForKey:kSettingsLocationServicesLinksEnabled]) return YES;
     printf("[LOCSVC] link ignored (Location Services links are off): %s\n", url.absoluteString.UTF8String);
@@ -273,6 +289,12 @@ static CYLocationRequestCompletion g_scene_intent_completion = nil;
 - (void)showBlockedLinkNoticeIfNeeded {
     if (!self.blockedLinkNotice) return;
     self.blockedLinkNotice = NO;
+    if (self.blockedLinkWasPower) {
+        self.blockedLinkWasPower = NO;
+        [self showAlertTitle:NSLocalizedString(@"Respring / Reboot Link", nil)
+                     message:NSLocalizedString(@"A link asked Cyanide to respring or reboot. These links are off, so nothing happened. Use the Control Center buttons or the Shortcuts actions instead, or turn on Settings → Launch Options → Respring and reboot links.", nil)];
+        return;
+    }
     [self showAlertTitle:NSLocalizedString(@"Location Services Link", nil)
                  message:NSLocalizedString(@"A link asked Cyanide to change Location Services. Links are off, so nothing was changed. Use the Control Center toggle or the Shortcuts action instead, or turn on Settings → Launch Options → Location Services links.", nil)];
 }
@@ -639,10 +661,49 @@ static const double kQuietMinPhase = 0.35;   // a phase stays readable at least 
     }
 }
 
+// The progress screen for a respring or reboot request, like the Location
+// Services one: Cyanide's normal UI never shows. The bar runs over the usual
+// cleanup time; SpringBoard or the device then restarts under it.
+- (void)beginPowerCover:(BOOL)reboot {
+    if (!self.quietCover) [self buildQuietCover];
+    self.quietRun++;
+    self.quietFinished = NO;
+    self.quietPendingPhase = nil;
+    self.quietTitle.text = reboot ? NSLocalizedString(@"Rebooting", nil) : NSLocalizedString(@"Respringing", nil);
+    self.quietStatus.text = NSLocalizedString(@"Starting…", nil);
+    self.quietPhaseShownNs = 0;
+    if (@available(iOS 17.0, *)) [self.quietIcon removeAllSymbolEffects];
+    self.quietIcon.image = [UIImage systemImageNamed:reboot ? @"power.circle.fill" : @"arrow.clockwise.circle.fill"
+                                   withConfiguration:scene_quiet_symbol_config()];
+    self.quietIcon.tintColor = reboot ? UIColor.systemRedColor : UIColor.systemBlueColor;
+    if (!UIAccessibilityIsReduceMotionEnabled()) {
+        if (@available(iOS 17.0, *)) [self.quietIcon addSymbolEffect:[NSSymbolPulseEffect effect]];
+    }
+    [self.quietProgress.layer removeAllAnimations];
+    [self.quietProgress setProgress:0.05f animated:NO];
+    scene_announce(self.quietTitle.text);
+}
+
+// The request is under way: SpringBoard (or the device) goes down next.
+- (void)finishPowerCover:(BOOL)reboot {
+    if (!self.quietCover) return;
+    self.quietFinished = YES;
+    self.quietPendingPhase = nil;
+    if (@available(iOS 17.0, *)) [self.quietIcon removeAllSymbolEffects];
+    self.quietIcon.image = [UIImage systemImageNamed:@"checkmark.circle.fill" withConfiguration:scene_quiet_symbol_config()];
+    self.quietIcon.tintColor = UIColor.systemGreenColor;
+    self.quietStatus.text = reboot ? NSLocalizedString(@"The device restarts in a moment…", nil) : NSLocalizedString(@"SpringBoard restarts in a moment…", nil);
+    [self.quietProgress setProgress:1.0f animated:YES];
+}
+
 // A quiet shortcut link arriving before the scene is active: put up the
 // progress screen right away, so Cyanide's normal UI doesn't flash first.
 - (void)coverEarlyForURL:(NSURL *)url {
     if (self.actionInProgress) return;   // the running request owns the screen
+    if (url && scene_is_power_url(url)) {
+        [self beginPowerCover:[url.host.lowercaseString isEqualToString:@"reboot"]];
+        return;
+    }
     if (!url || ![url.host.lowercaseString isEqualToString:@"location-services"]) return;
     int desired; BOOL keep, showLog; NSString *err = nil;
     if (scene_parse_location_url(url, &desired, &keep, &showLog, &err) && !showLog)
@@ -663,6 +724,40 @@ static const double kQuietMinPhase = 0.35;   // a phase stays readable at least 
 // While one request runs, another is rejected without touching its screen.
 - (void)handleActionURL:(NSURL *)url {
     [self handleActionURL:url completion:nil coldLaunched:NO];
+}
+
+// cyanide://respring and cyanide://reboot (links, the Shortcuts actions and
+// the Control Center buttons). Nothing to return to afterwards: SpringBoard
+// or the whole device restarts.
+- (void)handlePowerURL:(NSURL *)url completion:(CYLocationRequestCompletion)requester {
+    BOOL reboot = [url.host.lowercaseString isEqualToString:@"reboot"];
+    NSString *title = reboot ? NSLocalizedString(@"Reboot", nil) : NSLocalizedString(@"Respring", nil);
+    if (self.actionInProgress) {
+        NSString *busy = NSLocalizedString(@"Another Cyanide request is in progress.", nil);
+        scene_announce(busy);
+        if (requester) requester(NO, busy);
+        return;
+    }
+    self.actionInProgress = YES;
+    [self beginPowerCover:reboot];
+    __weak typeof(self) weakSelf = self;
+    NSUInteger run = self.quietRun;
+    SettingsProgressBlock progress = ^(float fraction, NSString *step, NSTimeInterval over, int target) {
+        typeof(self) me = weakSelf;
+        // target -1: no Location Services state on this screen.
+        if (me && me.quietRun == run) [me quietPhase:fraction step:step over:over target:-1];
+    };
+    settings_power_action_async(reboot, [self topViewController], progress, ^(BOOL ok, NSString *message) {
+        typeof(self) me = weakSelf;
+        me.actionInProgress = NO;
+        if (requester) requester(ok, message ?: @"");
+        if (ok) {
+            [me finishPowerCover:reboot];
+        } else {
+            [me hideQuietCover];
+            [me showAlertTitle:title message:message];
+        }
+    });
 }
 
 - (void)handleActionURL:(NSURL *)url completion:(CYLocationRequestCompletion)requester coldLaunched:(BOOL)cold {
@@ -707,6 +802,10 @@ static const double kQuietMinPhase = 0.35;   // a phase stays readable at least 
 
 - (void)handleActionURL:(NSURL *)url completion:(CYLocationRequestCompletion)requester coldLaunched:(BOOL)cold
          broughtToFront:(BOOL)broughtToFront {
+    if (scene_is_power_url(url)) {
+        [self handlePowerURL:url completion:requester];
+        return;
+    }
     if (![url.host.lowercaseString isEqualToString:@"location-services"]) {
         NSLog(@"[URL] unhandled %@", url);
         if (requester) requester(NO, NSLocalizedString(@"Unsupported link.", nil));
@@ -1039,7 +1138,9 @@ static const double kQuietMinPhase = 0.35;   // a phase stays readable at least 
     // in sceneDidBecomeActive flashed the normal UI in between.
     BOOL pendingQuiet = NO;
     NSURL *pending = self.pendingActionURL;
-    if ([pending.host.lowercaseString isEqualToString:@"location-services"]) {
+    if (pending && scene_is_power_url(pending)) {
+        pendingQuiet = YES;
+    } else if ([pending.host.lowercaseString isEqualToString:@"location-services"]) {
         int desired; BOOL keep, showLog; NSString *err = nil;
         pendingQuiet = scene_parse_location_url(pending, &desired, &keep, &showLog, &err) && !showLog;
     }
