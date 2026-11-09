@@ -769,7 +769,7 @@ typedef NS_ENUM(NSInteger, PackageDetailSection) {
 - (UIMenu *)applyNowMenu
 {
     __weak typeof(self) weakSelf = self;
-    UIAction *apply = [UIAction actionWithTitle:@"Apply Now"
+    UIAction *apply = [UIAction actionWithTitle:NSLocalizedString(@"Apply Now", nil)
                                           image:[UIImage systemImageNamed:@"bolt.fill"]
                                      identifier:nil
                                         handler:^(__kindof UIAction *action) {
@@ -778,7 +778,7 @@ typedef NS_ENUM(NSInteger, PackageDetailSection) {
         log_user("[INSTALLER] Apply now: %s\n", strongSelf.package.name.UTF8String);
         [[PackageQueue sharedQueue] applyPackageNow:strongSelf.package];
     }];
-    UIAction *deactivate = [UIAction actionWithTitle:@"Deactivate"
+    UIAction *deactivate = [UIAction actionWithTitle:NSLocalizedString(@"Deactivate", nil)
                                                image:[UIImage systemImageNamed:@"xmark.circle"]
                                           identifier:nil
                                              handler:^(__kindof UIAction *action) {

@@ -14296,7 +14296,7 @@ BOOL settings_root_remove_xattr(NSString *path, const char *name, NSString **err
             NSString *msg = remove
                 ? NSLocalizedString(@"Lock screen duration cleared. Respring now to apply?", nil)
                 : [NSString stringWithFormat:NSLocalizedString(@"Lock screen will stay awake for %lld seconds. Respring now to apply?", nil), seconds];
-            [strongSelf presentRespringPromptWithTitle:@"Applied" message:msg];
+            [strongSelf presentRespringPromptWithTitle:NSLocalizedString(@"Applied", nil) message:msg];
         });
     });
 }

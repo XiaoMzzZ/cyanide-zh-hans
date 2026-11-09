@@ -1562,3 +1562,6 @@
 "Asking SpringBoard to restart" = "正在请求 SpringBoard 重新载入";
 "Asking the system to reboot" = "正在请求系统重启";
 "turning off DarkSword tweaks" = "关闭 DarkSword tweak";
+
+/* ---- 1.17.0 顺带补翻（1.16 遗留漏翻） ---- */
+"Applied" = "已应用";
