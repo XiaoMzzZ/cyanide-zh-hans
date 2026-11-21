@@ -652,7 +652,7 @@ static const double kQuietMinPhase = 0.35;   // a phase stays readable at least 
         // The state is confirmed; Cyanide still finishes its SpringBoard
         // cleanup before it leaves.
         [self applyQuietTarget:self.quietTarget done:YES];
-        BOOL noChange = [text hasPrefix:@"Already"];
+        BOOL noChange = [text isEqualToString:NSLocalizedString(@"Already on", nil)] || [text isEqualToString:NSLocalizedString(@"Already off", nil)];   // loc-skip：与已本地化的阶段文案精确比较
         self.quietStatus.text = noChange ? NSLocalizedString(@"No change needed", nil) : NSLocalizedString(@"Finishing up…", nil);
         scene_announce(self.quietTitle.text);
     } else {

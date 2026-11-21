@@ -343,7 +343,7 @@ static NSString *update_http_failure(NSURLResponse *response)
     while (top.presentedViewController) top = top.presentedViewController;
 
     NSMutableString *message = [NSMutableString string];
-    [message appendFormat:@"A new release of Cyanide is available.\n\nLatest: %@\nInstalled: %@",
+    [message appendFormat:NSLocalizedString(@"A new release of Cyanide is available.\n\nLatest: %@\nInstalled: %@", nil),
                           latest, current];
 
     NSString *trimmed = [notes stringByTrimmingCharactersInSet:
@@ -364,9 +364,9 @@ static NSString *update_http_failure(NSURLResponse *response)
         if (body.length > kMaxNotesChars) {
             body = [[body substringToIndex:kMaxNotesChars - 1] stringByAppendingString:@"…"];
         }
-        [message appendFormat:@"\n\nWhat's new:\n%@", body];
+        [message appendFormat:NSLocalizedString(@"\n\nWhat's new:\n%@", nil), body];
     } else {
-        [message appendString:@"\n\nUpdates ship as sideloadable IPAs on GitHub Releases."];
+        [message appendString:NSLocalizedString(@"\n\nUpdates ship as sideloadable IPAs on GitHub Releases.", nil)];
     }
 
     UIAlertController *ac = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Update Available", nil)

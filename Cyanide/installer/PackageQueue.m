@@ -43,7 +43,7 @@ static NSString *PackageMissingThemeReason(Package *package)
         return NSLocalizedString(@"Icon Theme Engine needs a selected theme before it can be activated. Open its settings and choose a theme first.", nil);
     }
     if (PackageIsSnowBoardLite(package) && !settings_snowboardlite_has_selected_theme()) {
-        return @"SnowBoard Lite needs a selected theme before it can be activated. Open SnowBoard Lite settings and choose iOS 6 Theme or import a SnowBoard/IconBundles theme first.";
+        return NSLocalizedString(@"SnowBoard Lite needs a selected theme before it can be activated. Open SnowBoard Lite settings and choose iOS 6 Theme or import a SnowBoard/IconBundles theme first.", nil);
     }
     return nil;
 }

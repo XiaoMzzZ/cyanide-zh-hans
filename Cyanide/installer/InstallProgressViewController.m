@@ -184,7 +184,7 @@
         : success
         ? [UIColor colorWithRed:0.38 green:0.90 blue:0.55 alpha:1.0]
         : [UIColor colorWithRed:1.0 green:0.38 blue:0.32 alpha:1.0];
-    self.title = partial ? NSLocalizedString(@"Done with Warnings", nil) : (success ? NSLocalizedString(@"Complete", nil) : @"Failed");
+    self.title = partial ? NSLocalizedString(@"Done with Warnings", nil) : (success ? NSLocalizedString(@"Complete", nil) : NSLocalizedString(@"Failed", nil));
     self.hideOrDoneButton.title = NSLocalizedString(@"Done", nil);
     // Offer a one-tap retry only for the main chain run's KRW-acquire
     // failure — a clean miss that is fully re-entrant in the same boot

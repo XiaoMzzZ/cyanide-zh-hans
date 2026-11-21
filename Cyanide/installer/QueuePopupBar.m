@@ -176,7 +176,7 @@
     NSInteger installs   = (NSInteger)q.queuedInstalls.count;
     NSInteger uninstalls = (NSInteger)q.queuedUninstalls.count;
 
-    self.titleLabel.text = (count == 1) ? @"1 pending change" : [NSString stringWithFormat:NSLocalizedString(@"%ld pending changes", nil), (long)count];
+    self.titleLabel.text = (count == 1) ? NSLocalizedString(@"1 pending change", nil) : [NSString stringWithFormat:NSLocalizedString(@"%ld pending changes", nil), (long)count];
 
     NSMutableArray<NSString *> *parts = [NSMutableArray array];
     if (installs > 0)   [parts addObject:[NSString stringWithFormat:NSLocalizedString(@"%ld activate", nil), (long)installs]];

@@ -49,23 +49,23 @@ static NSMutableDictionary<NSString *, NSData *> *fp_face_tables(NSData *font, u
 {
     const uint8_t *b = font.bytes;
     size_t n = font.length;
-    if (n < 12) { *why = @"Not a font file."; return nil; }
+    if (n < 12) { *why = NSLocalizedString(@"Not a font file.", nil); return nil; }
     size_t base = 0;
     if (memcmp(b, "ttcf", 4) == 0) {
-        if (index >= fp_face_count(font)) { *why = @"Empty font collection."; return nil; }
+        if (index >= fp_face_count(font)) { *why = NSLocalizedString(@"Empty font collection.", nil); return nil; }
         base = rd32(b + 12 + index * 4);
     }
-    if (base + 12 > n) { *why = @"Damaged font."; return nil; }
+    if (base + 12 > n) { *why = NSLocalizedString(@"Damaged font.", nil); return nil; }
     uint32_t version = rd32(b + base);
-    if (memcmp(b + base, "OTTO", 4) == 0) { *why = @"This font has PostScript (CFF) outlines; only TrueType outlines can be adapted."; return nil; }
-    if (version != 0x00010000 && memcmp(b + base, "true", 4) != 0) { *why = @"Not a TrueType font."; return nil; }
+    if (memcmp(b + base, "OTTO", 4) == 0) { *why = NSLocalizedString(@"This font has PostScript (CFF) outlines; only TrueType outlines can be adapted.", nil); return nil; }
+    if (version != 0x00010000 && memcmp(b + base, "true", 4) != 0) { *why = NSLocalizedString(@"Not a TrueType font.", nil); return nil; }
     uint16_t numTables = rd16(b + base + 4);
-    if (base + 12 + (size_t)numTables * 16 > n) { *why = @"Damaged font."; return nil; }
+    if (base + 12 + (size_t)numTables * 16 > n) { *why = NSLocalizedString(@"Damaged font.", nil); return nil; }
     NSMutableDictionary *tables = [NSMutableDictionary dictionary];
     for (uint16_t i = 0; i < numTables; i++) {
         const uint8_t *r = b + base + 12 + i * 16;
         uint32_t off = rd32(r + 8), len = rd32(r + 12);
-        if ((size_t)off + len > n) { *why = @"Damaged font (a table runs past its end)."; return nil; }
+        if ((size_t)off + len > n) { *why = NSLocalizedString(@"Damaged font (a table runs past its end).", nil); return nil; }
         NSString *tag = [[NSString alloc] initWithBytes:r length:4 encoding:NSASCIIStringEncoding];
         if (tag) tables[tag] = [font subdataWithRange:NSMakeRange(off, len)];
     }
@@ -219,19 +219,19 @@ static BOOL fp_scale_glyphs(NSData *glyf, NSData *loca, uint16_t numGlyphs, BOOL
 {
     const uint8_t *g = glyf.bytes, *l = loca.bytes;
     size_t entry = longLoca ? 4 : 2;
-    if (loca.length < ((size_t)numGlyphs + 1) * entry) { *why = @"The font's glyph index (loca) is too short."; return NO; }
+    if (loca.length < ((size_t)numGlyphs + 1) * entry) { *why = NSLocalizedString(@"The font's glyph index (loca) is too short.", nil); return NO; }
     for (uint16_t gi = 0; gi < numGlyphs; gi++) {
         size_t start = longLoca ? rd32(l + gi * 4) : (size_t)rd16(l + gi * 2) * 2;
         size_t end = longLoca ? rd32(l + (gi + 1) * 4) : (size_t)rd16(l + (gi + 1) * 2) * 2;
         ap32(outLoca, (uint32_t)outGlyf.length);
         if (end <= start) continue;                                 // empty glyph
-        if (end > glyf.length || end - start < 10) { *why = @"A glyph runs past the end of the glyph table."; return NO; }
+        if (end > glyf.length || end - start < 10) { *why = NSLocalizedString(@"A glyph runs past the end of the glyph table.", nil); return NO; }
         const uint8_t *p = g + start;
         size_t len = end - start;
         int16_t contours = rds16(p);
         if (contours >= 0) {
             size_t q = 10 + (size_t)contours * 2;
-            if (q + 2 > len) { *why = @"A glyph is damaged."; return NO; }
+            if (q + 2 > len) { *why = NSLocalizedString(@"A glyph is damaged.", nil); return NO; }
             uint16_t points = contours ? rd16(p + 10 + (contours - 1) * 2) + 1 : 0;
             q += 2 + rd16(p + q);                                   // skip instructions
             uint8_t *flags = malloc(points ? points : 1);
@@ -258,7 +258,7 @@ static BOOL fp_scale_glyphs(NSData *glyf, NSData *loca, uint16_t numGlyphs, BOOL
                 else if (!(flags[i] & 0x20)) { if (q + 2 > len) { ok = NO; break; } v += rds16(p + q); q += 2; }
                 ys[i] = v;
             }
-            if (!ok) { free(flags); free(xs); free(ys); *why = @"A glyph outline is damaged."; return NO; }
+            if (!ok) { free(flags); free(xs); free(ys); *why = NSLocalizedString(@"A glyph outline is damaged.", nil); return NO; }
             int16_t xMin = INT16_MAX, yMin = INT16_MAX, xMax = INT16_MIN, yMax = INT16_MIN;
             for (uint16_t i = 0; i < points; i++) {
                 xs[i] = clamp16(xs[i] * f); ys[i] = clamp16(ys[i] * f);
@@ -294,16 +294,16 @@ static BOOL fp_scale_glyphs(NSData *glyf, NSData *loca, uint16_t numGlyphs, BOOL
             size_t q = 10;
             uint16_t flags;
             do {
-                if (q + 4 > len) { *why = @"A composite glyph is damaged."; return NO; }
+                if (q + 4 > len) { *why = NSLocalizedString(@"A composite glyph is damaged.", nil); return NO; }
                 flags = rd16(p + q);
                 uint16_t glyph = rd16(p + q + 2);
                 q += 4;
                 BOOL words = flags & 0x0001, xy = flags & 0x0002;
                 int32_t a1, a2;
-                if (words) { if (q + 4 > len) { *why = @"A composite glyph is damaged."; return NO; } a1 = xy ? rds16(p + q) : rd16(p + q); a2 = xy ? rds16(p + q + 2) : rd16(p + q + 2); q += 4; }
-                else { if (q + 2 > len) { *why = @"A composite glyph is damaged."; return NO; } a1 = xy ? (int8_t)p[q] : p[q]; a2 = xy ? (int8_t)p[q + 1] : p[q + 1]; q += 2; }
+                if (words) { if (q + 4 > len) { *why = NSLocalizedString(@"A composite glyph is damaged.", nil); return NO; } a1 = xy ? rds16(p + q) : rd16(p + q); a2 = xy ? rds16(p + q + 2) : rd16(p + q + 2); q += 4; }
+                else { if (q + 2 > len) { *why = NSLocalizedString(@"A composite glyph is damaged.", nil); return NO; } a1 = xy ? (int8_t)p[q] : p[q]; a2 = xy ? (int8_t)p[q + 1] : p[q + 1]; q += 2; }
                 size_t transform = (flags & 0x0008) ? 2 : (flags & 0x0040) ? 4 : (flags & 0x0080) ? 8 : 0;
-                if (q + transform > len) { *why = @"A composite glyph is damaged."; return NO; }
+                if (q + transform > len) { *why = NSLocalizedString(@"A composite glyph is damaged.", nil); return NO; }
                 uint16_t nf = flags & ~0x0100;                       // no instructions
                 if (xy) {
                     nf |= 0x0001;
@@ -390,7 +390,7 @@ static NSMutableDictionary<NSString *, NSData *> *fp_adapt_tables(NSDictionary<N
     for (NSString *tag in @[ @"head", @"hhea", @"hmtx", @"maxp", @"glyf", @"loca", @"cmap" ]) {
         if (!s[tag]) { *errorOut = [NSString stringWithFormat:NSLocalizedString(@"The font has no %@ table.", nil), tag]; return nil; }
     }
-    if (t[@"head"].length < 54 || s[@"head"].length < 54 || s[@"maxp"].length < 6) { *errorOut = @"Damaged font header."; return nil; }
+    if (t[@"head"].length < 54 || s[@"head"].length < 54 || s[@"maxp"].length < 6) { *errorOut = NSLocalizedString(@"Damaged font header.", nil); return nil; }
 
     uint16_t targetUPM = rd16((const uint8_t *)t[@"head"].bytes + 18), sourceUPM = rd16((const uint8_t *)s[@"head"].bytes + 18);
     uint16_t numGlyphs = rd16((const uint8_t *)s[@"maxp"].bytes + 4);
@@ -529,10 +529,10 @@ NSData *fontpatch_adapt(NSData *target, NSData *source, NSString **errorOut, NSS
     NSDictionary<NSString *, NSData *> *s = fp_tables(source, &why);
     if (!s) { *errorOut = why; return nil; }
     uint32_t count = fp_face_count(target);
-    if (count < 1) { *errorOut = @"System font: empty font collection."; return nil; }
+    if (count < 1) { *errorOut = NSLocalizedString(@"System font: empty font collection.", nil); return nil; }
     BOOL collection = memcmp(target.bytes, "ttcf", 4) == 0;
     NSMutableArray<NSString *> *notes = [NSMutableArray arrayWithObject:collection
-        ? [NSString stringWithFormat:NSLocalizedString(@"adapted to all %u system fonts", nil), count] : @"adapted to the system font"];
+        ? [NSString stringWithFormat:NSLocalizedString(@"adapted to all %u system fonts", nil), count] : NSLocalizedString(@"adapted to the system font", nil)];
     NSMutableArray<NSDictionary<NSString *, NSData *> *> *faces = [NSMutableArray array];
     for (uint32_t f = 0; f < count; f++) {
         NSDictionary<NSString *, NSData *> *t = fp_face_tables(target, f, &why);

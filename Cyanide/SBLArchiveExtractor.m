@@ -192,7 +192,7 @@ static NSData *sbl_inflate_data(NSData *input, NSUInteger outputSize, int window
 
     void *libz = dlopen("/usr/lib/libz.1.dylib", RTLD_LAZY);
     if (!libz) {
-        sbl_set_error(error, 10, @"libz is not available on this device.");
+        sbl_set_error(error, 10, NSLocalizedString(@"libz is not available on this device.", nil));
         return nil;
     }
 
@@ -275,7 +275,7 @@ static NSData *sbl_decode_xz_data(NSData *input, NSProgress *progress, NSError *
 
     void *lib = sbl_dlopen_liblzma();
     if (!lib) {
-        sbl_set_error(error, 14, @"liblzma is not available on this device, so data.tar.xz cannot be imported.");
+        sbl_set_error(error, 14, NSLocalizedString(@"liblzma is not available on this device, so data.tar.xz cannot be imported.", nil));
         return nil;
     }
 
@@ -317,7 +317,7 @@ static NSData *sbl_decode_xz_data(NSData *input, NSProgress *progress, NSError *
             if (out.length + produced > kSBLMaxTotalBytes) {
                 pEnd(&stream);
                 dlclose(lib);
-                sbl_set_error(error, 18, @"data.tar.xz decompresses to more than 256 MB.");
+                sbl_set_error(error, 18, NSLocalizedString(@"data.tar.xz decompresses to more than 256 MB.", nil));
                 return nil;
             }
             [out appendBytes:buffer length:produced];
@@ -328,7 +328,7 @@ static NSData *sbl_decode_xz_data(NSData *input, NSProgress *progress, NSError *
     dlclose(lib);
 
     if (rc != SBL_LZMA_STREAM_END) {
-        sbl_set_error(error, 17, @"data.tar.xz could not be decompressed.");
+        sbl_set_error(error, 17, NSLocalizedString(@"data.tar.xz could not be decompressed.", nil));
         return nil;
     }
     return out;
@@ -352,7 +352,7 @@ static BOOL sbl_create_directory_entry(NSString *path,
     }
     struct stat st;
     if (lstat(path.fileSystemRepresentation, &st) != 0 || !S_ISDIR(st.st_mode)) {
-        sbl_set_error(error, 26, @"ZIP contains file/directory output aliases.");
+        sbl_set_error(error, 26, NSLocalizedString(@"ZIP contains file/directory output aliases.", nil));
         return NO;
     }
     NSString *identity = [NSString stringWithFormat:@"%llu:%llu",
@@ -796,7 +796,7 @@ static BOOL sbl_extract_deb(NSData *deb, NSString *destination, NSProgress *prog
         uint32_t outSize = sbl_le32(b + dataTarGz.length - 4);
         // ISIZE sizes the output buffer up front, so bound it before allocating.
         if (outSize > kSBLMaxTotalBytes) {
-            sbl_set_error(error, 42, @"data.tar.gz decompresses to more than 256 MB.");
+            sbl_set_error(error, 42, NSLocalizedString(@"data.tar.gz decompresses to more than 256 MB.", nil));
             return NO;
         }
         NSData *tar = sbl_inflate_data(dataTarGz, outSize, MAX_WBITS + 16, progress, error);
@@ -901,7 +901,7 @@ BOOL SBLExtractArchiveToDirectoryWithProgress(NSURL *url, NSString *destination,
     BOOL isZip = [ext isEqualToString:@"zip"] || looksZip;
     BOOL isDeb = [ext isEqualToString:@"deb"] || looksDeb;
     if (!isZip && !isDeb) {
-        sbl_set_error(error, 50, @"Unsupported archive type. Choose a folder, .zip, or .deb.");
+        sbl_set_error(error, 50, NSLocalizedString(@"Unsupported archive type. Choose a folder, .zip, or .deb.", nil));
         return NO;
     }
 

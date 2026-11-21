@@ -28,10 +28,10 @@
 NSString *fontow_target_title(FontOWTarget target)
 {
     switch (target) {
-        case FontOWTargetSystem: return @"System Font";
-        case FontOWTargetItalic: return @"Italic";
-        case FontOWTargetMono:   return @"Monospaced";
-        case FontOWTargetClock:  return @"Lock Screen Clock";
+        case FontOWTargetSystem: return NSLocalizedString(@"System Font", nil);
+        case FontOWTargetItalic: return NSLocalizedString(@"Italic", nil);
+        case FontOWTargetMono:   return NSLocalizedString(@"Monospaced", nil);
+        case FontOWTargetClock:  return NSLocalizedString(@"Lock Screen Clock", nil);
         default:                 return @"?";
     }
 }
@@ -89,7 +89,7 @@ NSString *fontow_import(NSURL *url, NSString **errorOut)
 {
     NSString *ext = url.pathExtension.lowercaseString;
     if (![@[ @"ttf", @"otf", @"ttc" ] containsObject:ext]) {
-        if (errorOut) *errorOut = @"Pick a .ttf, .otf or .ttc font.";
+        if (errorOut) *errorOut = NSLocalizedString(@"Pick a .ttf, .otf or .ttc font.", nil);
         return nil;
     }
     BOOL scoped = [url startAccessingSecurityScopedResource];
@@ -178,7 +178,7 @@ static bool fontow_write_file_cache(NSString *path, NSData *data, NSString **why
     }
     uint8_t *map = mmap(NULL, size, PROT_READ, MAP_SHARED, fd, 0);
     close(fd);
-    if (map == MAP_FAILED) { *why = @"The system font couldn't be mapped."; return false; }
+    if (map == MAP_FAILED) { *why = NSLocalizedString(@"The system font couldn't be mapped.", nil); return false; }
     size_t page = (size_t)getpagesize();
     volatile uint8_t sink = 0;
     for (size_t off = 0; off < size; off += page) sink ^= map[off];   // fault every page in
@@ -188,7 +188,7 @@ static bool fontow_write_file_cache(NSString *path, NSData *data, NSString **why
     struct VMEntryInfo e;
     bool ok = vmMap && fontow_entry_for(vmMap, (uint64_t)(uintptr_t)map, &e) && e.object &&
               e.end - e.start >= ((size + page - 1) & ~(page - 1));
-    if (!ok) *why = @"The font file's object wasn't found in Cyanide's memory map.";
+    if (!ok) *why = NSLocalizedString(@"The font file's object wasn't found in Cyanide's memory map.", nil);
     else printf("[FONTOW] %s: %zu bytes, entry 0x%llx-0x%llx object=0x%llx offset=0x%llx\n",
                 cpath, size, e.start, e.end, e.object, e.offset);
     const uint8_t *src = data.bytes;
@@ -214,7 +214,7 @@ static bool fontow_write_file_cache(NSString *path, NSData *data, NSString **why
             if (!pw.used) {
                 printf("[FONTOW] page at 0x%zx didn't map either\n", off + p);
                 *stoppedAt = off + p;
-                *why = @"A page of the font couldn't be mapped writable.";
+                *why = NSLocalizedString(@"A page of the font couldn't be mapped writable.", nil);
                 ok = false;
                 break;
             }
@@ -240,7 +240,7 @@ static bool fontow_write_file_cache(NSString *path, NSData *data, NSString **why
     printf("[FONTOW] %s: wrote %zu of %zu bytes, read back head=%d tail=%d\n", cpath, data.length, size, headOK,
            readOK && tail == expectTail);
     if (!headOK || tail != expectTail) {
-        *why = @"The font was written, but a new reader doesn't see it. Restart the device to be safe.";
+        *why = NSLocalizedString(@"The font was written, but a new reader doesn't see it. Restart the device to be safe.", nil);
         return false;
     }
     return true;
@@ -284,10 +284,10 @@ bool fontow_apply(FontOWTarget target, NSString *fontPath, NSString **result)
 {
     __autoreleasing NSString *dummy = nil;
     if (!result) result = &dummy;
-    if (!kexploit_krw_ready()) { *result = @"Kernel access isn't active."; return false; }
+    if (!kexploit_krw_ready()) { *result = NSLocalizedString(@"Kernel access isn't active.", nil); return false; }
     NSString *path = fontow_target_path(target);
     NSData *font = [NSData dataWithContentsOfFile:fontPath options:NSDataReadingMappedIfSafe error:nil];
-    if (!path || !font.length) { *result = @"The font couldn't be read."; return false; }
+    if (!path || !font.length) { *result = NSLocalizedString(@"The font couldn't be read.", nil); return false; }
 
     // Back the original up while it still is the original -- and only if it
     // looks like Apple's: a replaced font must never become
@@ -299,7 +299,7 @@ bool fontow_apply(FontOWTarget target, NSString *fontPath, NSString **result)
         printf("[FONTOW] %s is now '%s'\n", path.UTF8String, (family ?: @"?").UTF8String);
         if (!fontow_is_apple_font(current, family)) {
             *result = [NSString stringWithFormat:NSLocalizedString(@"%@ is '%@'%@ right now, not Apple's font, so it isn't backed up as the original. Restart the device, then try again.", nil),
-                       path.lastPathComponent, family ?: @"unknown", fontpatch_is_adapted(current) ? @" from Cyanide" : @""];
+                       path.lastPathComponent, family ?: @"unknown", fontpatch_is_adapted(current) ? NSLocalizedString(@" from Cyanide", nil) : @""];
             log_user("[FONTOW] %s\n", (*result).UTF8String);
             return false;
         }
@@ -311,7 +311,7 @@ bool fontow_apply(FontOWTarget target, NSString *fontPath, NSString **result)
             return false;
         }
     } else if (![NSFileManager.defaultManager fileExistsAtPath:backup]) {
-        *result = @"The original's backup is missing; restart the device before replacing it again.";
+        *result = NSLocalizedString(@"The original's backup is missing; restart the device before replacing it again.", nil);
         return false;
     }
 
@@ -351,7 +351,7 @@ bool fontow_apply(FontOWTarget target, NSString *fontPath, NSString **result)
                       (original.length && (fontow_write_file_cache(path, original, &ignored, &undoStopped) ||
                                            (undoStopped && undoStopped >= stopped)));
         printf("[FONTOW] after the failure, original written back: %s\n", undone ? "yes" : "partly");
-        why = [why stringByAppendingString:undone ? @" Nothing was changed."
+        why = [why stringByAppendingString:undone ? NSLocalizedString(@" Nothing was changed.", nil)
                                                   : @" Restart the device before respringing, to be safe."];
     }
     *result = ok ? [NSString stringWithFormat:NSLocalizedString(@"%@ replaced with %@%@. Respring to see it; restart or Restore to undo.", nil),
@@ -366,8 +366,8 @@ bool fontow_restore(FontOWTarget target, NSString **result)
 {
     __autoreleasing NSString *dummy = nil;
     if (!result) result = &dummy;
-    if (!fontow_is_replaced(target)) { *result = @"It's the original already."; return true; }
-    if (!kexploit_krw_ready()) { *result = @"Kernel access isn't active."; return false; }
+    if (!fontow_is_replaced(target)) { *result = NSLocalizedString(@"It's the original already.", nil); return true; }
+    if (!kexploit_krw_ready()) { *result = NSLocalizedString(@"Kernel access isn't active.", nil); return false; }
     NSData *original = [NSData dataWithContentsOfFile:fontow_backup_path(target) options:NSDataReadingMappedIfSafe error:nil];
     NSString *backupFamily = fontpatch_family_name(original);
     NSString *currentFamily = fontpatch_family_name([NSData dataWithContentsOfFile:fontow_target_path(target)
@@ -380,7 +380,7 @@ bool fontow_restore(FontOWTarget target, NSString **result)
         return false;
     }
     if (original.length != fontow_target_size(target)) {
-        *result = @"The backup doesn't match the system's font; restart the device to restore it.";
+        *result = NSLocalizedString(@"The backup doesn't match the system's font; restart the device to restore it.", nil);
         return false;
     }
     NSString *why = nil;

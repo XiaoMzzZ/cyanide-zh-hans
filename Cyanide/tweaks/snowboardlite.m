@@ -304,7 +304,7 @@ BOOL settings_sbl_import_folder_theme_named(NSURL *url,
         if (error) {
             *error = [NSError errorWithDomain:@"SnowBoardLite"
                                          code:1
-                                     userInfo:@{NSLocalizedDescriptionKey: @"No IconBundles directory was found in this folder."}];
+                                     userInfo:@{NSLocalizedDescriptionKey: NSLocalizedString(@"No IconBundles directory was found in this folder.", nil)}];
         }
         return NO;
     }
@@ -346,7 +346,7 @@ BOOL settings_sbl_import_folder_theme_named(NSURL *url,
             // count or aggregate cap the whole import fails; a single oversized
             // or non-regular file is skipped like an unmapped one.
             if (discovered > SBLMaxImportFileCount) {
-                budgetFailure = @"This theme has too many icons to import.";
+                budgetFailure = NSLocalizedString(@"This theme has too many icons to import.", nil);
                 break;
             }
             // Same per-icon cap the themer apply path uses (THEMER_MAX_ICON_BYTES),
@@ -389,7 +389,7 @@ BOOL settings_sbl_import_folder_theme_named(NSURL *url,
                     continue;
                 }
                 if (importedBytes + fileBytes > SBLMaxImportTotalBytes) {
-                    budgetFailure = @"This theme's icons are larger than 256 MB in total.";
+                    budgetFailure = NSLocalizedString(@"This theme's icons are larger than 256 MB in total.", nil);
                     break;
                 }
                 NSString *dstName = [bundleID stringByAppendingPathExtension:@"png"];
@@ -428,7 +428,7 @@ BOOL settings_sbl_import_folder_theme_named(NSURL *url,
         if (error) {
             *error = [NSError errorWithDomain:@"SnowBoardLite"
                                          code:2
-                                     userInfo:@{NSLocalizedDescriptionKey: @"IconBundles was found, but no bundle-ID PNG icons could be imported."}];
+                                     userInfo:@{NSLocalizedDescriptionKey: NSLocalizedString(@"IconBundles was found, but no bundle-ID PNG icons could be imported.", nil)}];
         }
         return NO;
     }
@@ -461,7 +461,7 @@ BOOL settings_sbl_import_folder_theme_named(NSURL *url,
         if (error) {
             *error = [NSError errorWithDomain:@"SnowBoardLite"
                                          code:4
-                                     userInfo:@{NSLocalizedDescriptionKey: @"The theme list could not be saved, so the theme was not imported."}];
+                                     userInfo:@{NSLocalizedDescriptionKey: NSLocalizedString(@"The theme list could not be saved, so the theme was not imported.", nil)}];
         }
         return NO;
     }

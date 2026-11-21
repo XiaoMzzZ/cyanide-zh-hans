@@ -229,7 +229,7 @@ static const NSInteger kSecOTA              = SectionOTA;
                                            kind:PackageInstallKindToggle
                                      enabledKey:kSettingsAxonLiteEnabled
                                           isNew:NO];
-        axon.unstableWarning = @"⚠️ Experimental: work-in-progress. Expect SpringBoard crashes, dropped notifications, layout glitches, and breakage between Cyanide builds. Don't rely on it for anything important.";
+        axon.unstableWarning = NSLocalizedString(@"⚠️ Experimental: work-in-progress. Expect SpringBoard crashes, dropped notifications, layout glitches, and breakage between Cyanide builds. Don't rely on it for anything important.", nil);
 
 #if CYANIDE_EXPERIMENTAL_TWEAKS_AVAILABLE
 
@@ -247,7 +247,7 @@ static const NSInteger kSecOTA              = SectionOTA;
                                            kind:PackageInstallKindToggle
                                      enabledKey:kSettingsStageStripEnabled
                                           isNew:NO];
-        stageStrip.unstableWarning = @"Beta / unstable: First Run takes 1-2 minutes because the picker enumerates every installed app and builds a tile per app. Re-Runs are fast. Touch routing into hosted windows isn't wired yet, so scrolling/typing inside a floating window may not work.";
+        stageStrip.unstableWarning = NSLocalizedString(@"Beta / unstable: First Run takes 1-2 minutes because the picker enumerates every installed app and builds a tile per app. Re-Runs are fast. Touch routing into hosted windows isn't wired yet, so scrolling/typing inside a floating window may not work.", nil);
 #endif
 
         Package *locationSim = [[Package alloc] initWithIdentifier:@"com.darksword.locationsim"
@@ -263,7 +263,7 @@ static const NSInteger kSecOTA              = SectionOTA;
                                           isNew:NO];
         locationSim.settingsSection = kSecLocationSim;
         locationSim.experimental = NO;
-        locationSim.unstableWarning = @"Beta: requires Apple Maps installed and set up. Changes CoreLocation's active simulation state — may affect time zone, date/time, and other location-tied behavior. Some apps and services prohibit or detect simulated locations. Only use this if you know what you're doing.";
+        locationSim.unstableWarning = NSLocalizedString(@"Beta: requires Apple Maps installed and set up. Changes CoreLocation's active simulation state — may affect time zone, date/time, and other location-tied behavior. Some apps and services prohibit or detect simulated locations. Only use this if you know what you're doing.", nil);
 
         Package *snowboardLite = [[Package alloc] initWithIdentifier:@"com.darksword.snowboardlite"
                                            name:NSLocalizedString(@"SnowBoard Lite", nil)
@@ -307,7 +307,7 @@ static const NSInteger kSecOTA              = SectionOTA;
         NSInteger iosMajor = [[NSProcessInfo processInfo] operatingSystemVersion].majorVersion;
         if (iosMajor >= 26) {
             layoutExtras.knownIssues = @[
-                @"iOS 26: layout may reset after rotation or page swipe. Re-run to reapply.",
+                NSLocalizedString(@"iOS 26: layout may reset after rotation or page swipe. Re-run to reapply.", nil),
             ];
         }
 
@@ -396,7 +396,7 @@ static const NSInteger kSecOTA              = SectionOTA;
                                      enabledKey:kSettingsFastLockXLiteEnabled
                                           isNew:NO];
         fastLockXLite.settingsSection = kSecFastLockXLite;
-        fastLockXLite.unstableWarning = @"Beta / unstable: sends private SpringBoard lock-screen and biometric-resource messages. Always On runs SpringBoard timers while the device is locked, so disable it or respring if Face ID feels noisy or unstable.";
+        fastLockXLite.unstableWarning = NSLocalizedString(@"Beta / unstable: sends private SpringBoard lock-screen and biometric-resource messages. Always On runs SpringBoard timers while the device is locked, so disable it or respring if Face ID feels noisy or unstable.", nil);
 #endif
 
         Package *nanoRegistry = [[Package alloc] initWithIdentifier:@"com.darksword.nanoregistry"
@@ -411,7 +411,7 @@ static const NSInteger kSecOTA              = SectionOTA;
                                      enabledKey:nil
                                           isNew:NO];
         nanoRegistry.settingsSection = kSecNanoRegistry;
-        nanoRegistry.unstableWarning = @"Warning: modifies a local NanoRegistry MobileAsset. Cyanide saves a .cyanide.bak backup beside the original, but system-file edits can fail or require a respring/reboot. Apply or remove this override at your own risk.";
+        nanoRegistry.unstableWarning = NSLocalizedString(@"Warning: modifies a local NanoRegistry MobileAsset. Cyanide saves a .cyanide.bak backup beside the original, but system-file edits can fail or require a respring/reboot. Apply or remove this override at your own risk.", nil);
 
         Package *callRecordingSound = [[Package alloc] initWithIdentifier:@"com.darksword.callrecording-sound"
                                            name:NSLocalizedString(@"Call Recording Sound", nil)
@@ -472,7 +472,7 @@ static const NSInteger kSecOTA              = SectionOTA;
                                     enabledKey:nil
                                          isNew:NO];
         otaBlock.settingsSection = kSecOTA;
-        otaBlock.unstableWarning = @"Warning: persistent system-file edit. This package modifies launchd disabled.plist to change OTA job state across reboot. Disable or re-enable OTA updates at your own risk.";
+        otaBlock.unstableWarning = NSLocalizedString(@"Warning: persistent system-file edit. This package modifies launchd disabled.plist to change OTA job state across reboot. Disable or re-enable OTA updates at your own risk.", nil);
 
         Package *disableAppLibrary = [[Package alloc] initWithIdentifier:@"com.darksword.disable-app-library"
                                            name:NSLocalizedString(@"Disable App Library", nil)
@@ -615,16 +615,17 @@ static const NSInteger kSecOTA              = SectionOTA;
 
 + (NSArray<NSString *> *)categoriesInOrder
 {
+    // loc-skip：分类身份值，显示处再本地化；不能在这里包裹 NSLocalizedString。
     NSArray<NSString *> *preferred = @[
-        NSLocalizedString(@"In Development", nil),
-        NSLocalizedString(@"Beta", nil),
-        NSLocalizedString(@"Experimental", nil),
-        NSLocalizedString(@"Status Bar", nil),
-        NSLocalizedString(@"Home Screen", nil),
-        NSLocalizedString(@"Theming", nil),
+        @"In Development",
+        @"Beta",
+        @"Experimental",
+        @"Status Bar",
+        @"Home Screen",
+        @"Theming",
         @"SpringBoard",
-        NSLocalizedString(@"System", nil),
-        NSLocalizedString(@"JavaScript Tweaks", nil),
+        @"System",
+        @"JavaScript Tweaks",
     ];
     NSMutableArray<NSString *> *all = [NSMutableArray array];
     for (Package *p in [self allPackages]) {

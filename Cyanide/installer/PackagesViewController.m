@@ -154,7 +154,8 @@ static NSString * const kSearchCellID = @"SearchPkgCell";
     for (Package *p in self.allPackagesSorted) {
         if ([p.name rangeOfString:q options:opt].location != NSNotFound ||
             [p.shortDescription rangeOfString:q options:opt].location != NSNotFound ||
-            [p.category rangeOfString:q options:opt].location != NSNotFound) {
+            [p.category rangeOfString:q options:opt].location != NSNotFound ||
+            [NSLocalizedString(p.category, nil) rangeOfString:q options:opt].location != NSNotFound) {
             [out addObject:p];
         }
     }

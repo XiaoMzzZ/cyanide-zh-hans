@@ -167,7 +167,7 @@ static const NSInteger kLaraHUDModeCount = sizeof(kLaraHUDModes) / sizeof(kLaraH
         if (!ok) {
             me.busy = NO;
             BOOL needsRun = [message isEqualToString:kSettingsFullExploitRequiredMessage];
-            me.status = needsRun ? kSettingsNoKernelAccessHint : (message ?: NSLocalizedString(@"Filesystem access is not available.", nil));
+            me.status = needsRun ? NSLocalizedString(kSettingsNoKernelAccessHint, nil) : (message ?: NSLocalizedString(@"Filesystem access is not available.", nil));
             [me.tableView reloadData];
             if (needsRun) settings_tool_needs_exploit(me, me.tableView, NSLocalizedString(@"JIT Enabler", nil), ^{ [weakSelf listJITApps]; });
             return;
@@ -210,7 +210,7 @@ static const NSInteger kLaraHUDModeCount = sizeof(kLaraHUDModes) / sizeof(kLaraH
         if (!me) return;
         me.busy = NO;
         if ([message isEqualToString:kSettingsFullExploitRequiredMessage]) {
-            me.status = kSettingsNoKernelAccessHint;
+            me.status = NSLocalizedString(kSettingsNoKernelAccessHint, nil);
             [me.tableView reloadData];
             settings_tool_needs_exploit(me, me.tableView, @"Lara", ^{
                 [weakSelf runNamed:name work:work done:done];
@@ -228,14 +228,14 @@ static const NSInteger kLaraHUDModeCount = sizeof(kLaraHUDModes) / sizeof(kLaraH
     __weak typeof(self) weakSelf = self;
     if (self.tool == LaraToolPerformanceHUD) {
         __block int mode = -2;
-        [self runNamed:@"Reading" work:^BOOL{
+        [self runNamed:NSLocalizedString(@"Reading", nil) work:^BOOL{
             mode = lara_perf_hud_get_in_session();
             return mode != -2;
         } done:^(BOOL ok) { weakSelf.hudMode = mode; }];
         return;
     }
     NSMutableDictionary *states = [NSMutableDictionary dictionary];
-    [self runNamed:@"Reading" work:^BOOL{
+    [self runNamed:NSLocalizedString(@"Reading", nil) work:^BOOL{
         const LaraPrefToggle *t = lara_pref_toggles();
         for (NSInteger i = 0; t[i].title; i++) {
             int v = lara_pref_get_in_session(&t[i]);
@@ -399,7 +399,7 @@ static const NSInteger kLaraHUDModeCount = sizeof(kLaraHUDModes) / sizeof(kLaraH
     if (self.tool == LaraToolFonts) return section == 0 ? NSLocalizedString(@"Your Fonts", nil) : NSLocalizedString(@"System Fonts", nil);
     if (self.tool == LaraToolSpringBoard) {
         const SBMatItem *item = [self sbItemForSection:section];
-        return item ? @(item->title) : nil;
+        return item ? NSLocalizedString(@(item->title), nil) : nil;
     }
     if (section != 1 || !self.jitApps.count) return nil;
     if (self.tool == LaraToolAppLimit) return NSLocalizedString(@"Sideloaded Apps", nil);
@@ -425,7 +425,7 @@ static const NSInteger kLaraHUDModeCount = sizeof(kLaraHUDModes) / sizeof(kLaraH
             about = NSLocalizedString(@"Hidden iOS preferences. Most take effect after a respring and stay until you turn them off.", nil);
             break;
         case LaraToolDecrypt:
-            about = @"Makes a decrypted IPA of an App Store app on this device, e.g. to inject a tweak into it and sideload it. The app is started in the background and its code is read decrypted from it; app extensions run separately and are left out. IPAs stay on this device (Documents/Decrypted) until you share them. Use it only for apps you own; removing copy protection may be restricted where you live.";
+            about = NSLocalizedString(@"Makes a decrypted IPA of an App Store app on this device, e.g. to inject a tweak into it and sideload it. The app is started in the background and its code is read decrypted from it; app extensions run separately and are left out. IPAs stay on this device (Documents/Decrypted) until you share them. Use it only for apps you own; removing copy protection may be restricted where you live.", nil);
             break;
         case LaraToolCards:
             about = NSLocalizedString(@"Replace the picture of a card in Wallet with your own (cosmetic only). The original is backed up and can be restored. Respring or reopen Wallet to see the change.", nil);
@@ -434,7 +434,7 @@ static const NSInteger kLaraHUDModeCount = sizeof(kLaraHUDModes) / sizeof(kLaraH
             about = NSLocalizedString(@"With a free Apple ID, iOS allows only 3 sideloaded apps: installd marks each one, and only marked apps count. Removing the marks frees the slots. Run it again after installing or refreshing (re-signing) an app, which marks it again.", nil);
             break;
         case LaraToolSpringBoard:
-            about = @"Changes the material behind the dock, folders, Control Center, notification banners and the app switcher: Apple's (Visible), your own tint and blur (Color), or none (Disabled). Tap Apply after changing something. It works in SpringBoard's memory, so a respring undoes it: apply again after one.\n\nNotification Banners: on the Lock Screen, iOS draws notifications as one shared blur cut into rounded shapes. With Color they drop out of it and show square there (with lara's files too); banners elsewhere stay rounded.\n\nControl Center Blur: with Color, Control Center's own uncolored blur shows for a moment while it closes; iOS fades it separately.";
+            about = NSLocalizedString(@"Changes the material behind the dock, folders, Control Center, notification banners and the app switcher: Apple's (Visible), your own tint and blur (Color), or none (Disabled). Tap Apply after changing something. It works in SpringBoard's memory, so a respring undoes it: apply again after one.\n\nNotification Banners: on the Lock Screen, iOS draws notifications as one shared blur cut into rounded shapes. With Color they drop out of it and show square there (with lara's files too); banners elsewhere stay rounded.\n\nControl Center Blur: with Color, Control Center's own uncolored blur shows for a moment while it closes; iOS fades it separately.", nil);
             break;
         case LaraToolFonts:
             about = NSLocalizedString(@"Replaces a system font in memory: nothing on the sealed system volume changes, and a restart always brings the original back; Restore does it without one (the original is backed up first). Import a .ttf, .otf or .ttc from Files, tap it and pick the font to replace; it has to be the same size or smaller. A plain font is adapted to the system font on the device first (its weights and names, as lara's font patcher does; kerning is dropped if it has to be scaled). Fonts with PostScript (CFF) outlines can't be adapted. Lock Screen Clock changes every clock style at once; the weight slider has no effect on the new font. If SpringBoard keeps crashing after the respring, force-restart the device.", nil);
@@ -446,7 +446,7 @@ static const NSInteger kLaraHUDModeCount = sizeof(kLaraHUDModes) / sizeof(kLaraH
     NSMutableArray *parts = [NSMutableArray array];
     if (self.status) [parts addObject:self.status];
     [parts addObject:about];
-    [parts addObject:kLaraCredit];
+    [parts addObject:NSLocalizedString(kLaraCredit, nil)];
     return [parts componentsJoinedByString:@"\n\n"];
 }
 
@@ -459,7 +459,7 @@ static const NSInteger kLaraHUDModeCount = sizeof(kLaraHUDModes) / sizeof(kLaraH
     switch (self.tool) {
         case LaraToolPerformanceHUD: {
             LaraHUDMode m = kLaraHUDModes[indexPath.row];
-            c.text = [NSString stringWithUTF8String:m.title];
+            c.text = m.mode == 5 ? NSLocalizedString(@"Power (HUD)", nil) : NSLocalizedString(@(m.title), nil);
             if (m.mode == self.hudMode) cell.accessoryType = UITableViewCellAccessoryCheckmark;
             break;
         }
@@ -520,7 +520,7 @@ static const NSInteger kLaraHUDModeCount = sizeof(kLaraHUDModes) / sizeof(kLaraH
             const SBMatItem *item = [self sbItemForSection:indexPath.section];
             if (!item) break;
             if (indexPath.row == 0) {
-                UISegmentedControl *seg = [[UISegmentedControl alloc] initWithItems:@[ @"Visible", @"Color", NSLocalizedString(@"Disabled", nil) ]];
+                UISegmentedControl *seg = [[UISegmentedControl alloc] initWithItems:@[ NSLocalizedString(@"Visible", nil), NSLocalizedString(@"Color", nil), NSLocalizedString(@"Disabled", nil) ]];
                 seg.selectedSegmentIndex = MIN(MAX([[self sbChoiceFor:item][@"mode"] integerValue], 0), 2);
                 seg.tag = indexPath.section;
                 seg.enabled = !self.busy;
@@ -562,8 +562,8 @@ static const NSInteger kLaraHUDModeCount = sizeof(kLaraHUDModes) / sizeof(kLaraH
         }
         case LaraToolHiddenSettings: {
             const LaraPrefToggle *t = &lara_pref_toggles()[indexPath.row];
-            c.text = [NSString stringWithUTF8String:t->title];
-            c.secondaryText = [NSString stringWithUTF8String:t->detail];
+            c.text = NSLocalizedString(@(t->title), nil);
+            c.secondaryText = NSLocalizedString(@(t->detail), nil);
             c.secondaryTextProperties.color = UIColor.secondaryLabelColor;
             UISwitch *sw = [UISwitch new];
             NSNumber *state = self.prefStates[@(indexPath.row)];
@@ -618,7 +618,7 @@ static const NSInteger kLaraHUDModeCount = sizeof(kLaraHUDModes) / sizeof(kLaraH
             NSDictionary *app = self.jitApps[indexPath.row];
             int marked = [app[@"marked"] intValue];
             c.text = app[@"name"];
-            c.secondaryText = marked == 1 ? NSLocalizedString(@"Counts toward the limit", nil) : marked == 0 ? NSLocalizedString(@"Not counted", nil) : @"Unknown";
+            c.secondaryText = marked == 1 ? NSLocalizedString(@"Counts toward the limit", nil) : marked == 0 ? NSLocalizedString(@"Not counted", nil) : NSLocalizedString(@"Unknown", nil);
             c.secondaryTextProperties.color = marked == 1 ? UIColor.systemOrangeColor : UIColor.secondaryLabelColor;
             c.image = app[@"icon"] ?: [UIImage systemImageNamed:@"app.dashed"];
             c.imageProperties.maximumSize = CGSizeMake(36, 36);
@@ -772,7 +772,7 @@ static const NSInteger kLaraHUDModeCount = sizeof(kLaraHUDModes) / sizeof(kLaraH
         [me.progressBar removeFromSuperview];
         me.progressBar = nil;
         if ([message isEqualToString:kSettingsFullExploitRequiredMessage]) {
-            me.status = kSettingsNoKernelAccessHint;
+            me.status = NSLocalizedString(kSettingsNoKernelAccessHint, nil);
             [me.tableView reloadData];
             settings_tool_needs_exploit(me, me.tableView, NSLocalizedString(@"App Decrypt", nil), ^{ [weakSelf decrypt:app]; });
             return;
@@ -928,7 +928,7 @@ static const NSInteger kLaraHUDModeCount = sizeof(kLaraHUDModes) / sizeof(kLaraH
             me.status = done == paths.count
                 ? [NSString stringWithFormat:NSLocalizedString(@"Removed the mark from %lu app%@.", nil), (unsigned long)done, done == 1 ? @"" : @"s"]
                 : [NSString stringWithFormat:NSLocalizedString(@"Removed %lu of %lu: %@", nil), (unsigned long)done, (unsigned long)paths.count,
-                                             lastError ?: @"see the log"];
+                                             lastError ?: NSLocalizedString(@"see the log", nil)];
         });
     });
 }
@@ -939,7 +939,7 @@ static const NSInteger kLaraHUDModeCount = sizeof(kLaraHUDModes) / sizeof(kLaraH
     BOOL on = sw.isOn;
     const LaraPrefToggle *t = &lara_pref_toggles()[index];
     __weak typeof(self) weakSelf = self;
-    [self runNamed:@"Saving" work:^BOOL{ return lara_pref_set_in_session(t, on); }
+    [self runNamed:NSLocalizedString(@"Saving", nil) work:^BOOL{ return lara_pref_set_in_session(t, on); }
               done:^(BOOL ok) {
         typeof(self) me = weakSelf;
         if (ok) {

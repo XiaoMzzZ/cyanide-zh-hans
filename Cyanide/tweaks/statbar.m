@@ -345,7 +345,7 @@ static NSString *build_text(bool celsius, bool showNet, bool showCPU, bool showL
         [parts addObject:[NSString stringWithFormat:@"\u2193%@ \u2191%@",
                           format_net_slot(downKB), format_net_slot(upKB)]];
     }
-    if (parts.count == 0) return @"n/a";
+    if (parts.count == 0) return NSLocalizedString(@"n/a", nil);
     return [parts componentsJoinedByString:@" | "];
 }
 

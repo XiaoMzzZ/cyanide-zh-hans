@@ -64,72 +64,25 @@
                                       credit:NSLocalizedString(@"JavaScript engine contributed by @MinePlayer16", nil)]];
 
     [stack addArrangedSubview:[self docCard:NSLocalizedString(@"Writing a Tweak", nil)
-        body:@"A tweak is a plain .js file that runs inside JavaScriptCore. 64-bit pointers are passed as hex strings (e.g. \"0x105f2a000\"). Wrap your code in an IIFE:\n\n"
-              "(() => {\n"
-              "  log(\"Hello from my tweak!\");\n"
-              "  var app = r_msg2(\n"
-              "    r_class(\"UIApplication\"),\n"
-              "    \"sharedApplication\");\n"
-              "  var win = r_msg2(app, \"keyWindow\");\n"
-              "  // …\n"
-              "})();\n\n"
-              "Use log() to print to Cyanide's Log tab. Use r_msg2_main() instead of r_msg2() for anything that touches UIKit views."]];
+        body:NSLocalizedString(@"A tweak is a plain .js file that runs inside JavaScriptCore. 64-bit pointers are passed as hex strings (e.g. \"0x105f2a000\"). Wrap your code in an IIFE:\n\n(() => {\n  log(\"Hello from my tweak!\");\n  var app = r_msg2(\n    r_class(\"UIApplication\"),\n    \"sharedApplication\");\n  var win = r_msg2(app, \"keyWindow\");\n  // …\n})();\n\nUse log() to print to Cyanide's Log tab. Use r_msg2_main() instead of r_msg2() for anything that touches UIKit views.", nil)]];
 
     [stack addArrangedSubview:[self docCard:NSLocalizedString(@"Parameter Declaration", nil)
         body:NSLocalizedString(@"Add @param comments at the top of your script. Cyanide parses them and generates native UI controls in Settings.\n\nSyntax:\n// @param: type | varName | Label | default | range\n\nTypes:\n\nswitch — Boolean toggle\n// @param: switch | enabled | Enable Tweak | true\n\ntext — String text field\n// @param: text | label | Custom Text | Hello\n\ncolor — Hex color picker\n// @param: color | tint | Tint Color | #00FFCC\n\nslider — Numeric slider with range\n// @param: slider | radius | Blur | 5.0 | 0.0-10.0\n\nDefault values auto-populate on first install. The slider shows a \"(Def)\" indicator when at the declared default.", nil)]];
 
     [stack addArrangedSubview:[self docCard:NSLocalizedString(@"RemoteCall API", nil)
-        body:@"These functions are injected into every JS context:\n\n"
-              "log(message)\n"
-              "  Print to Cyanide's log console.\n\n"
-              "r_class(name) → pointer\n"
-              "  Get an Objective-C class pointer.\n"
-              "  r_class(\"UIApplication\")\n\n"
-              "r_sel(name) → pointer\n"
-              "  Convert a string to a native SEL.\n\n"
-              "r_nsstr(string) → pointer\n"
-              "  Allocate an NSString in SpringBoard.\n"
-              "  Call r_msg2(ptr, \"release\") when done.\n\n"
-              "r_msg2(target, selector, a1, a2, a3, a4)\n"
-              "  Send an ObjC message. Up to 4 args.\n\n"
-              "r_msg2_main(target, selector, a1, a2, a3, a4)\n"
-              "  Same but forced onto the main thread.\n"
-              "  Required for all UIKit/view changes.\n\n"
-              "r_responds(target, selector) → bool\n"
-              "  Check if an object responds to a selector."]];
+        body:NSLocalizedString(@"These functions are injected into every JS context:\n\nlog(message)\n  Print to Cyanide's log console.\n\nr_class(name) → pointer\n  Get an Objective-C class pointer.\n  r_class(\"UIApplication\")\n\nr_sel(name) → pointer\n  Convert a string to a native SEL.\n\nr_nsstr(string) → pointer\n  Allocate an NSString in SpringBoard.\n  Call r_msg2(ptr, \"release\") when done.\n\nr_msg2(target, selector, a1, a2, a3, a4)\n  Send an ObjC message. Up to 4 args.\n\nr_msg2_main(target, selector, a1, a2, a3, a4)\n  Same but forced onto the main thread.\n  Required for all UIKit/view changes.\n\nr_responds(target, selector) → bool\n  Check if an object responds to a selector.", nil)]];
 
     [stack addArrangedSubview:[self docCard:NSLocalizedString(@"Reading Parameters (QuickLoader)", nil)
-        body:@"QuickLoader scripts can read their @param values at runtime:\n\n"
-              "r_pref_num(\"blurRadius\")   → float\n"
-              "r_pref_bool(\"enableBlur\")  → boolean\n"
-              "r_pref_str(\"tintColor\")    → string\n\n"
-              "RepoTweaks scripts receive their parameters as pre-injected global variables instead."]];
+        body:NSLocalizedString(@"QuickLoader scripts can read their @param values at runtime:\n\nr_pref_num(\"blurRadius\")   → float\nr_pref_bool(\"enableBlur\")  → boolean\nr_pref_str(\"tintColor\")    → string\n\nRepoTweaks scripts receive their parameters as pre-injected global variables instead.", nil)]];
 
     [stack addArrangedSubview:[self docCard:NSLocalizedString(@"Timers", nil)
         body:NSLocalizedString(@"Standard timer functions are mapped to GCD background queues so they never block the UI:\n\nsetInterval(fn, ms) → id\nclearInterval(id)\nsetTimeout(fn, ms) → id\nclearTimeout(id)\n\nAll active timers are automatically cancelled when the tweak is disabled or Cyanide cleans up.", nil)]];
 
     [stack addArrangedSubview:[self docCard:NSLocalizedString(@"Color Allocation Example", nil)
-        body:@"64-bit IPC can't pass CGFloat arrays directly. Allocate colors through CIColor:\n\n"
-              "var hex = \"#00FFCC\".replace('#','');\n"
-              "var r = parseInt(hex.substring(0,2),16)/255;\n"
-              "var g = parseInt(hex.substring(2,4),16)/255;\n"
-              "var b = parseInt(hex.substring(4,6),16)/255;\n"
-              "var str = r_nsstr(r+\" \"+g+\" \"+b+\" 1.0\");\n"
-              "var ci = r_msg2(\n"
-              "  r_class(\"CIColor\"),\n"
-              "  \"colorWithString:\", str);\n"
-              "var ui = r_msg2(\n"
-              "  r_class(\"UIColor\"),\n"
-              "  \"colorWithCIColor:\", ci);\n"
-              "r_msg2_main(view, \"setBackgroundColor:\", ui);\n"
-              "r_msg2(str, \"release\");"]];
+        body:NSLocalizedString(@"64-bit IPC can't pass CGFloat arrays directly. Allocate colors through CIColor:\n\nvar hex = \"#00FFCC\".replace('#','');\nvar r = parseInt(hex.substring(0,2),16)/255;\nvar g = parseInt(hex.substring(2,4),16)/255;\nvar b = parseInt(hex.substring(4,6),16)/255;\nvar str = r_nsstr(r+\" \"+g+\" \"+b+\" 1.0\");\nvar ci = r_msg2(\n  r_class(\"CIColor\"),\n  \"colorWithString:\", str);\nvar ui = r_msg2(\n  r_class(\"UIColor\"),\n  \"colorWithCIColor:\", ci);\nr_msg2_main(view, \"setBackgroundColor:\", ui);\nr_msg2(str, \"release\");", nil)]];
 
     [stack addArrangedSubview:[self docCard:NSLocalizedString(@"Tips", nil)
-        body:@"• Always use r_msg2_main for view manipulation — r_msg2 on a background thread can crash SpringBoard.\n"
-              "• Release r_nsstr allocations to avoid leaking memory in the SpringBoard process.\n"
-              "• Use r_responds to check selectors before calling them — iOS versions differ.\n"
-              "• Test locally with QuickLoader before publishing to a repo.\n"
-              "• Only run and publish scripts you trust. JS tweaks have full RemoteCall access."]];
+        body:NSLocalizedString(@"• Always use r_msg2_main for view manipulation — r_msg2 on a background thread can crash SpringBoard.\n• Release r_nsstr allocations to avoid leaking memory in the SpringBoard process.\n• Use r_responds to check selectors before calling them — iOS versions differ.\n• Test locally with QuickLoader before publishing to a repo.\n• Only run and publish scripts you trust. JS tweaks have full RemoteCall access.", nil)]];
 }
 
 #pragma mark - Repo setup docs

@@ -331,15 +331,15 @@ static BOOL QueuePackageIsHideHomeBar(Package *pkg)
     switch ((QueueReviewSection)section) {
         case QueueReviewSectionInstall:
             if (allSameKind && commonKind == PackageInstallKindNanoRegistry) label = NSLocalizedString(@"Apply", nil);
-            else if (allSameKind && commonKind == PackageInstallKindCallRecordingSound) label = @"Silence";
+            else if (allSameKind && commonKind == PackageInstallKindCallRecordingSound) label = NSLocalizedString(@"Silence", nil);
             else if (allSameKind && commonKind == PackageInstallKindHideHomeBar) label = NSLocalizedString(@"Hide", nil);
-            else if (allSameKind && commonKind == PackageInstallKindRepoTweak) label = @"Install";
+            else if (allSameKind && commonKind == PackageInstallKindRepoTweak) label = NSLocalizedString(@"Install", nil);
             else label = NSLocalizedString(@"Activate", nil);
             break;
         case QueueReviewSectionUninstall:
             if (allSameKind && commonKind == PackageInstallKindNanoRegistry) label = NSLocalizedString(@"Remove", nil);
-            else if (allSameKind && commonKind == PackageInstallKindCallRecordingSound) label = @"Restore";
-            else if (allSameKind && commonKind == PackageInstallKindHideHomeBar) label = @"Restore";
+            else if (allSameKind && commonKind == PackageInstallKindCallRecordingSound) label = NSLocalizedString(@"Restore", nil);
+            else if (allSameKind && commonKind == PackageInstallKindHideHomeBar) label = NSLocalizedString(@"Restore", nil);
             else if (allSameKind && commonKind == PackageInstallKindRepoTweak) label = NSLocalizedString(@"Remove", nil);
             else label = NSLocalizedString(@"Deactivate", nil);
             break;

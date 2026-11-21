@@ -642,14 +642,14 @@ static NSString *nbl_today_traffic_text(void)
                               (unsigned long long)cached,
                               totalMs);
             }
-            return [NSString stringWithFormat:@"T %@", nicebarlite_format_traffic_bytes(cached)];
+            return [NSString stringWithFormat:NSLocalizedString(@"T %@", nil), nicebarlite_format_traffic_bytes(cached)];
         }
 
         unsigned long long totalMs = nbl_elapsed_ms_since(startUs);
         if (nbl_should_trace_apply() || totalMs >= kNBLSlowLogMs) {
             NBL_DEBUG_LOG("[NICEBARLITE][TRAFFIC] source=getifaddrs-failed total=%llums\n", totalMs);
         }
-        return @"T --";
+        return NSLocalizedString(@"T --", nil);
     }
 
     uint64_t trafficBytes = 0;
@@ -658,7 +658,7 @@ static NSString *nbl_today_traffic_text(void)
                                                               totalOut,
                                                               &trafficBytes);
     nbl_persist_traffic_bytes(gNBLTrafficDateKey, trafficBytes, NO);
-    NSString *text = [NSString stringWithFormat:@"T %@", nicebarlite_format_traffic_bytes(trafficBytes)];
+    NSString *text = [NSString stringWithFormat:NSLocalizedString(@"T %@", nil), nicebarlite_format_traffic_bytes(trafficBytes)];
     unsigned long long totalMs = nbl_elapsed_ms_since(startUs);
     if (nbl_should_trace_apply() || totalMs >= kNBLSlowLogMs) {
         NBL_DEBUG_LOG("[NICEBARLITE][TRAFFIC] event=%d bytes=%llu in=%llu out=%llu total=%llums\n",
@@ -727,7 +727,7 @@ static NSString *nbl_free_disk_text(void)
                             forKey:NSURLVolumeAvailableCapacityForImportantUsageKey
                              error:nil] && available) {
         unsigned long long importantMs = nbl_elapsed_ms_since(importantStartUs);
-        NSString *text = [NSString stringWithFormat:@"Disk %@", nbl_format_disk_bytes(available.unsignedLongLongValue)];
+        NSString *text = [NSString stringWithFormat:NSLocalizedString(@"Disk %@", nil), nbl_format_disk_bytes(available.unsignedLongLongValue)];
         unsigned long long totalMs = nbl_elapsed_ms_since(startUs);
         if (nbl_should_trace_apply() || totalMs >= kNBLSlowLogMs) {
             NBL_DEBUG_LOG("[NICEBARLITE][DISK] source=important bytes=%llu important=%llums total=%llums\n",
@@ -744,7 +744,7 @@ static NSString *nbl_free_disk_text(void)
                             forKey:NSURLVolumeAvailableCapacityKey
                              error:nil] && available) {
         unsigned long long capacityMs = nbl_elapsed_ms_since(capacityStartUs);
-        NSString *text = [NSString stringWithFormat:@"Disk %@", nbl_format_disk_bytes(available.unsignedLongLongValue)];
+        NSString *text = [NSString stringWithFormat:NSLocalizedString(@"Disk %@", nil), nbl_format_disk_bytes(available.unsignedLongLongValue)];
         unsigned long long totalMs = nbl_elapsed_ms_since(startUs);
         if (nbl_should_trace_apply() || totalMs >= kNBLSlowLogMs) {
             NBL_DEBUG_LOG("[NICEBARLITE][DISK] source=available bytes=%llu important=%llums available=%llums total=%llums\n",
@@ -774,9 +774,9 @@ static NSString *nbl_free_disk_text(void)
                      totalMs,
                      error.localizedDescription.UTF8String ?: "none");
         }
-        return @"Disk --";
+        return NSLocalizedString(@"Disk --", nil);
     }
-    NSString *text = [NSString stringWithFormat:@"Disk %@", nbl_format_disk_bytes(freeBytes.unsignedLongLongValue)];
+    NSString *text = [NSString stringWithFormat:NSLocalizedString(@"Disk %@", nil), nbl_format_disk_bytes(freeBytes.unsignedLongLongValue)];
     if (nbl_should_trace_apply() || totalMs >= kNBLSlowLogMs) {
         NBL_DEBUG_LOG("[NICEBARLITE][DISK] source=filesystem bytes=%llu important=%llums available=%llums fs=%llums total=%llums\n",
                  freeBytes.unsignedLongLongValue,

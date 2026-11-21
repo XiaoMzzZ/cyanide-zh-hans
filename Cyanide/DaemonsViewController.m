@@ -130,9 +130,7 @@ static void daemons_invalidate_snapshot(NSDictionary * __strong *disabled,
 {
     NSString *s = self.group.summary;
     if (self.group.caution) s = [s stringByAppendingFormat:@"\n\n⚠️ %@", self.group.caution];
-    return [s stringByAppendingString:@"\n\nSwitched on means the daemon may run. Changes are written when you tap Save and take effect after a restart. "
-                                      @"Most daemons only run while something needs them, so “not running” doesn't mean disabled. "
-                                      @"Pull down on the list to refresh."];
+    return [s stringByAppendingString:NSLocalizedString(@"\n\nSwitched on means the daemon may run. Changes are written when you tap Save and take effect after a restart. Most daemons only run while something needs them, so “not running” doesn't mean disabled. Pull down on the list to refresh.", nil)];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -283,7 +281,7 @@ static void daemons_invalidate_snapshot(NSDictionary * __strong *disabled,
     *warning = NO;
     NSString *status = [self runningStatusForLabel:label warning:warning];
     NSNumber *v = self.staged[label];
-    if (v != nil) status = [status stringByAppendingString:v.boolValue ? @" · disabled when you save" : @" · enabled when you save"];
+    if (v != nil) status = [status stringByAppendingString:v.boolValue ? NSLocalizedString(@" · disabled when you save", nil) : NSLocalizedString(@" · enabled when you save", nil)];
     return status;
 }
 
@@ -291,11 +289,11 @@ static void daemons_invalidate_snapshot(NSDictionary * __strong *disabled,
 {
     NSDictionary *info = self.running[label];
     NSString *name = info[@"name"] ?: daemon_catalog_executable_guess(label);
-    if (!self.running) return [name stringByAppendingString:@" · status unknown"];
+    if (!self.running) return [name stringByAppendingString:NSLocalizedString(@" · status unknown", nil)];
     if (daemon_catalog_is_legacy_label(label))
-        return [name stringByAppendingString:@" · legacy disabled entry; job presence not checked"];
-    if ([info[@"missing"] boolValue]) return [name stringByAppendingString:@" · not a job on this iOS version"];
-    if ([info[@"unknown"] boolValue]) return [name stringByAppendingString:@" · status unknown"];
+        return [name stringByAppendingString:NSLocalizedString(@" · legacy disabled entry; job presence not checked", nil)];
+    if ([info[@"missing"] boolValue]) return [name stringByAppendingString:NSLocalizedString(@" · not a job on this iOS version", nil)];
+    if ([info[@"unknown"] boolValue]) return [name stringByAppendingString:NSLocalizedString(@" · status unknown", nil)];
     NSNumber *pid = info[@"pid"];
     NSNumber *shared = info[@"shared"];
     BOOL off = [self isLabelDisabled:label];
@@ -311,9 +309,9 @@ static void daemons_invalidate_snapshot(NSDictionary * __strong *disabled,
         return [NSString stringWithFormat:NSLocalizedString(@"%@ · Running · PID %@ · still running although disabled", nil), name, pid];
     }
     if (pid != nil) return [NSString stringWithFormat:NSLocalizedString(@"%@ · Running · PID %@", nil), name, pid];
-    if (off) return [name stringByAppendingString:@" · Not running"];
-    if (changed) return [name stringByAppendingString:@" · Not running · can start again after restart"];
-    return [name stringByAppendingString:@" · Not running (starts when needed)"];
+    if (off) return [name stringByAppendingString:NSLocalizedString(@" · Not running", nil)];
+    if (changed) return [name stringByAppendingString:NSLocalizedString(@" · Not running · can start again after restart", nil)];
+    return [name stringByAppendingString:NSLocalizedString(@" · Not running (starts when needed)", nil)];
 }
 
 - (void)refreshUI
@@ -403,7 +401,7 @@ static void daemons_invalidate_snapshot(NSDictionary * __strong *disabled,
     NSMutableArray *parts = [NSMutableArray array];
     if (off) [parts addObject:[NSString stringWithFormat:NSLocalizedString(@"%lu daemon%@ will be disabled", nil), (unsigned long)off, off == 1 ? @"" : @"s"]];
     if (on) [parts addObject:[NSString stringWithFormat:NSLocalizedString(@"%lu will be enabled", nil), (unsigned long)on]];
-    NSString *message = [[parts componentsJoinedByString:@", "] stringByAppendingString:@" after the next restart."];
+    NSString *message = [[parts componentsJoinedByString:NSLocalizedString(@", ", nil)] stringByAppendingString:NSLocalizedString(@" after the next restart.", nil)];
     if (cautions.count) message = [message stringByAppendingFormat:@"\n\n⚠️ %@", [cautions componentsJoinedByString:@"\n\n⚠️ "]];
     UIAlertController *ac = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Save Changes?", nil) message:message
                                                          preferredStyle:UIAlertControllerStyleAlert];
@@ -447,14 +445,14 @@ static void daemons_invalidate_snapshot(NSDictionary * __strong *disabled,
 - (void)handleFailure:(NSString *)message retry:(void (^)(void))retry from:(UIViewController *)presenter
 {
     if ([message isEqualToString:kSettingsFullExploitRequiredMessage]) {
-        if (!self.disabled) self.status = kSettingsNoKernelAccessHint;
+        if (!self.disabled) self.status = NSLocalizedString(kSettingsNoKernelAccessHint, nil);
         [self refreshUI];
         // Already asked on this screen (e.g. a Save after kernel access was
         // lost): say why nothing happened instead of failing silently.
         if (settings_tool_exploit_was_offered(self)) {
             if (!presenter.view.window || presenter.presentedViewController) return;
             UIAlertController *ac = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Daemon Manager", nil)
-                message:kSettingsNoKernelAccessHint preferredStyle:UIAlertControllerStyleAlert];
+                message:NSLocalizedString(kSettingsNoKernelAccessHint, nil) preferredStyle:UIAlertControllerStyleAlert];
             [ac addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil) style:UIAlertActionStyleDefault handler:nil]];
             [presenter presentViewController:ac animated:YES completion:nil];
             return;
@@ -535,13 +533,8 @@ static void daemons_invalidate_snapshot(NSDictionary * __strong *disabled,
 - (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section
 {
     if (section == 0)
-        return @"Switched on means the service may run. Tap Save to write your changes to launchd's disabled.plist; "
-               @"they take effect after the next restart. If something you need stops working, switch it back on, "
-               @"save and restart.";
-    return @"Services other parts of iOS rely on. Disabling them is more likely to cause problems.\n\n"
-           @"⚠️ Disabling system daemons is at your own risk. If iOS can't finish starting, only a restore "
-           @"fixes it: it erases the device unless you have a backup and installs the newest iOS, which Cyanide "
-           @"most likely doesn't support. Change one thing at a time.";
+        return NSLocalizedString(@"Switched on means the service may run. Tap Save to write your changes to launchd's disabled.plist; they take effect after the next restart. If something you need stops working, switch it back on, save and restart.", nil);
+    return NSLocalizedString(@"Services other parts of iOS rely on. Disabling them is more likely to cause problems.\n\n⚠️ Disabling system daemons is at your own risk. If iOS can't finish starting, only a restore fixes it: it erases the device unless you have a backup and installs the newest iOS, which Cyanide most likely doesn't support. Change one thing at a time.", nil);
 }
 
 - (UITableViewCell *)advancedSwitchCell
@@ -620,7 +613,7 @@ static void daemons_invalidate_snapshot(NSDictionary * __strong *disabled,
         if (allMissing)
             [facts addObject:NSLocalizedString(@"not a job on this iOS version", nil)];
         else if (self.running && ![self.running[g.labels.firstObject][@"unknown"] boolValue])
-            [facts addObject:running ? [NSString stringWithFormat:NSLocalizedString(@"%lu running", nil), (unsigned long)running] : @"not running"];
+            [facts addObject:running ? [NSString stringWithFormat:NSLocalizedString(@"%lu running", nil), (unsigned long)running] : NSLocalizedString(@"not running", nil)];
     }
     if (anyWarning) [facts addObject:NSLocalizedString(@"still running although disabled", nil)];
     if (unsaved) [facts insertObject:@"unsaved" atIndex:0];

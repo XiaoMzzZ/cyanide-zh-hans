@@ -261,7 +261,7 @@ typedef NS_ENUM(NSInteger, CyanideNiceBarTrafficRange) {
         case CyanideNiceBarTrafficRangeMonth: return NSLocalizedString(@"This Month", nil);
         case CyanideNiceBarTrafficRangeYear: return NSLocalizedString(@"This Year", nil);
     }
-    return @"Traffic";
+    return NSLocalizedString(@"Traffic", nil);
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
@@ -289,7 +289,7 @@ typedef NS_ENUM(NSInteger, CyanideNiceBarTrafficRange) {
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
         cell.textLabel.text = nil;
         for (UIView *view in [cell.contentView.subviews copy]) [view removeFromSuperview];
-        UISegmentedControl *seg = [[UISegmentedControl alloc] initWithItems:@[@"Week", @"Month", @"Year"]];
+        UISegmentedControl *seg = [[UISegmentedControl alloc] initWithItems:@[NSLocalizedString(@"Week", nil), NSLocalizedString(@"Month", nil), NSLocalizedString(@"Year", nil)]];
         seg.translatesAutoresizingMaskIntoConstraints = NO;
         seg.selectedSegmentIndex = self.selectedRange;
         [seg addTarget:self action:@selector(rangeChanged:) forControlEvents:UIControlEventValueChanged];
@@ -332,7 +332,7 @@ NSString *CyanideNiceBarSystemName(NSInteger item)
         case NiceBarLiteSystemFreeRAM: return NSLocalizedString(@"Free RAM", nil);
         case NiceBarLiteSystemBatteryPercent: return NSLocalizedString(@"Battery %", nil);
         case NiceBarLiteSystemNetworkSpeed: return NSLocalizedString(@"Network speed", nil);
-        case NiceBarLiteSystemUptime: return @"Uptime";
+        case NiceBarLiteSystemUptime: return NSLocalizedString(@"Uptime", nil);
         case NiceBarLiteSystemDate: return NSLocalizedString(@"Date", nil);
         case NiceBarLiteSystemLunarDate: return NSLocalizedString(@"Lunar date", nil);
         case NiceBarLiteSystemTodayTraffic: return NSLocalizedString(@"Today traffic", nil);
@@ -447,14 +447,14 @@ NSString *CyanideNiceBarPreviewForTimeFormat(NSString *format)
 static NSArray<NSDictionary<NSString *, NSString *> *> *CyanideNiceBarTimePresets(void)
 {
     return @[
-        @{ @"section": @"Time", @"title": NSLocalizedString(@"24h time", nil),       @"format": @"HH:mm" },
-        @{ @"section": @"Time", @"title": NSLocalizedString(@"12h time", nil),       @"format": @"h:mm a" },
-        @{ @"section": @"Time", @"title": NSLocalizedString(@"Time + seconds", nil), @"format": @"HH:mm:ss" },
-        @{ @"section": @"Time", @"title": NSLocalizedString(@"Weekday + time", nil), @"format": NSLocalizedString(@"EEE HH:mm", nil) },
+        @{ @"section": NSLocalizedString(@"Time", nil), @"title": NSLocalizedString(@"24h time", nil),       @"format": @"HH:mm" },
+        @{ @"section": NSLocalizedString(@"Time", nil), @"title": NSLocalizedString(@"12h time", nil),       @"format": @"h:mm a" },
+        @{ @"section": NSLocalizedString(@"Time", nil), @"title": NSLocalizedString(@"Time + seconds", nil), @"format": @"HH:mm:ss" },
+        @{ @"section": NSLocalizedString(@"Time", nil), @"title": NSLocalizedString(@"Weekday + time", nil), @"format": @"EEE HH:mm" },   // loc-skip：日期格式模式
         @{ @"section": NSLocalizedString(@"Date", nil), @"title": NSLocalizedString(@"Short date", nil),     @"format": @"M/d" },
         @{ @"section": NSLocalizedString(@"Date", nil), @"title": NSLocalizedString(@"Date", nil),           @"format": @"MM/dd" },
         @{ @"section": NSLocalizedString(@"Date", nil), @"title": NSLocalizedString(@"Date + weekday", nil), @"format": @"M/d EEE" },
-        @{ @"section": NSLocalizedString(@"Date", nil), @"title": NSLocalizedString(@"Date + time", nil),    @"format": NSLocalizedString(@"MM-dd HH:mm", nil) },
+        @{ @"section": NSLocalizedString(@"Date", nil), @"title": NSLocalizedString(@"Date + time", nil),    @"format": @"MM-dd HH:mm" },   // loc-skip：日期格式模式
         @{ @"section": @"中文", @"title": @"中文时间",        @"format": @"a h:mm" },
         @{ @"section": @"中文", @"title": @"中文日期",        @"format": @"M月d日" },
         @{ @"section": @"中文", @"title": @"中文日期+星期",    @"format": @"cyanide:cn-date-weekday" },

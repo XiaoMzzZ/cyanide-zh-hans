@@ -673,7 +673,7 @@ static UIColor *category_color(NSString *cat)
     NSMutableString *detail = [NSMutableString string];
     if (author.length) [detail appendFormat:@"%@ · ", author];
     [detail appendFormat:NSLocalizedString(@"%lu package%@", nil), (unsigned long)tweaks.count, tweaks.count == 1 ? @"" : @"s"];
-    if (updates > 0) [detail appendFormat:@" · %lu update%@", (unsigned long)updates, updates == 1 ? @"" : @"s"];
+    if (updates > 0) [detail appendFormat:NSLocalizedString(@" · %lu update%@", nil), (unsigned long)updates, updates == 1 ? @"" : @"s"];
     config.secondaryText = detail;
     config.secondaryTextProperties.font = [UIFont systemFontOfSize:14.0 weight:UIFontWeightRegular];
     config.secondaryTextProperties.color = updates > 0 ? UIColor.systemBlueColor : [UIColor.labelColor colorWithAlphaComponent:0.55];

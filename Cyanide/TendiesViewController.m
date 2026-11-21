@@ -57,7 +57,7 @@ typedef NS_ENUM(NSInteger, TDSection) {
         me.busy = NO;
         me.added = tendies_added();
         if ([message isEqualToString:kSettingsFullExploitRequiredMessage]) {
-            me.status = kSettingsNoKernelAccessHint;
+            me.status = NSLocalizedString(kSettingsNoKernelAccessHint, nil);
             [me.tableView reloadData];
             settings_tool_needs_exploit(me, me.tableView, NSLocalizedString(@"Tendies Wallpapers", nil), ^{
                 [weakSelf run:name work:work done:done];

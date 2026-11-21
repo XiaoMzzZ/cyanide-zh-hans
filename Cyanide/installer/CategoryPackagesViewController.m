@@ -44,7 +44,7 @@ static NSString * const kCatPkgCellID = @"CatPkgCell";
 {
     NSString *reason = nil;
     if ([[PackageQueue sharedQueue] canQueueIntent:intent forPackage:pkg reason:&reason]) return NO;
-    BOOL hideHomeBarReason = [reason containsString:NSLocalizedString(@"Hide Home Bar", nil)];
+    BOOL hideHomeBarReason = [reason containsString:NSLocalizedString(@"Hide Home Bar", nil)] || [reason containsString:@"Hide Home Bar"];
     UIAlertController *alert =
         [UIAlertController alertControllerWithTitle:(hideHomeBarReason ? NSLocalizedString(@"Run Hide Home Bar Alone", nil) : NSLocalizedString(@"Cannot Queue Install", nil))
                                             message:reason ?: NSLocalizedString(@"This package cannot be queued yet.", nil)
@@ -68,7 +68,7 @@ static NSString * const kCatPkgCellID = @"CatPkgCell";
     self.searchCtl = [[UISearchController alloc] initWithSearchResultsController:nil];
     self.searchCtl.searchResultsUpdater = self;
     self.searchCtl.obscuresBackgroundDuringPresentation = NO;
-    self.searchCtl.searchBar.placeholder = @"Search";
+    self.searchCtl.searchBar.placeholder = NSLocalizedString(@"Search", nil);
     self.navigationItem.searchController = self.searchCtl;
     self.navigationItem.hidesSearchBarWhenScrolling = YES;
 
@@ -156,7 +156,7 @@ static NSString * const kCatPkgCellID = @"CatPkgCell";
     (void)tableView;
     (void)section;
     if ([self.categoryName isEqualToString:@"In Development"]) {
-        return @"These tweaks are visible for continuity only. Installing is disabled because they do not work yet; the unfinished app/source paths remain for anyone who wants to pick them up.";
+        return NSLocalizedString(@"These tweaks are visible for continuity only. Installing is disabled because they do not work yet; the unfinished app/source paths remain for anyone who wants to pick them up.", nil);
     }
     return nil;
 }
@@ -234,7 +234,7 @@ static NSString * const kCatPkgCellID = @"CatPkgCell";
         if (pkg.isInstalled)
             return [self pillWithText:NSLocalizedString(@"INSTALLED", nil) background:[UIColor colorWithRed:0.16 green:0.55 blue:0.32 alpha:0.18] textColor:UIColor.systemGreenColor];
         if (pkg.isInstallDisabled) {
-            NSString *label = [pkg.installDisabledReason containsString:@"Refresh"] ? @"REFRESH" : NSLocalizedString(@"DISABLED", nil);
+            NSString *label = [pkg.installDisabledReason containsString:@"Refresh"] ? NSLocalizedString(@"REFRESH", nil) : NSLocalizedString(@"DISABLED", nil);
             return [self pillWithText:label background:[[UIColor systemOrangeColor] colorWithAlphaComponent:0.16] textColor:UIColor.systemOrangeColor];
         }
     }
@@ -310,7 +310,7 @@ static NSString * const kCatPkgCellID = @"CatPkgCell";
     if (intent != PackageQueueIntentNone) {
         title = NSLocalizedString(@"Cancel", nil); color = UIColor.systemGrayColor; symbol = @"xmark.circle";
     } else if (pkg.kind == PackageInstallKindHideHomeBar) {
-        title = pkg.isInstalled ? @"Restore" : NSLocalizedString(@"Hide", nil);
+        title = pkg.isInstalled ? NSLocalizedString(@"Restore", nil) : NSLocalizedString(@"Hide", nil);
         color = pkg.isInstalled ? UIColor.systemRedColor : self.view.tintColor;
         symbol = pkg.isInstalled ? @"arrow.clockwise" : @"line.3.horizontal";
     } else if (pkg.isInstalled) {
@@ -321,7 +321,7 @@ static NSString * const kCatPkgCellID = @"CatPkgCell";
     } else if ([self packageNeedsLiveWPVideoBeforeInstall:pkg]) {
         title = NSLocalizedString(@"Select Video", nil); color = self.view.tintColor; symbol = @"photo.badge.plus";
     } else {
-        title = (pkg.kind == PackageInstallKindRepoTweak) ? @"Install" : NSLocalizedString(@"Activate", nil);
+        title = (pkg.kind == PackageInstallKindRepoTweak) ? NSLocalizedString(@"Install", nil) : NSLocalizedString(@"Activate", nil);
         color = self.view.tintColor; symbol = @"play.circle";
     }
 

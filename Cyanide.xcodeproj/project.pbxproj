@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		CC0C0A01000000000000000C /* CyanideControls.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = CC0C0A010000000000000001 /* CyanideControls.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+CC0C0A010000000000000020 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = CC0C0A010000000000000021 /* Localizable.strings */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -47,6 +48,7 @@
 		AA73F7982F7BC6CB00134C31 /* ChOma.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = ChOma.xcodeproj; sourceTree = "<group>"; };
 		AA794BC92F828668001F0544 /* ChOma.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = ChOma.xcodeproj; sourceTree = "<group>"; };
 		CC0C0A010000000000000001 /* CyanideControls.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = CyanideControls.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+CC0C0A010000000000000021 /* Localizable.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Localizable.strings; path = "CyanideControlsL10n/zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		AAA297772F72D439000B5902 /* Cyanide.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Cyanide.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AAA2982D2F741178000B5902 /* ChOma.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = ChOma.xcodeproj; sourceTree = "<group>"; };
 		FB0A9F7E2FBBBE5100C03573 /* ChOma.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = ChOma.xcodeproj; sourceTree = "<group>"; };
@@ -228,6 +230,7 @@
 			children = (
 				AAA297792F72D439000B5902 /* Cyanide */,
 				CC0C0A010000000000000002 /* CyanideControls */,
+				CC0C0A010000000000000021 /* Localizable.strings */,
 				AAA298702F74153F000B5902 /* Frameworks */,
 				AAA297782F72D439000B5902 /* Products */,
 			);
@@ -681,6 +684,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CC0C0A010000000000000020 /* Localizable.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

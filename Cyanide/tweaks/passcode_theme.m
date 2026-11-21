@@ -1290,7 +1290,7 @@ NSURL *settings_passcode_create_backup_archive(NSError **error, NSUInteger *skip
     if (paths.count == 0) {
         if (error) {
             *error = [NSError errorWithDomain:@"PasscodeTheme" code:20 userInfo:@{
-                NSLocalizedDescriptionKey: @"There are no original backups to pack yet."
+                NSLocalizedDescriptionKey: NSLocalizedString(@"There are no original backups to pack yet.", nil)
             }];
         }
         return nil;
@@ -1299,7 +1299,7 @@ NSURL *settings_passcode_create_backup_archive(NSError **error, NSUInteger *skip
     if (paths.count > 0xFFFFu) {
         if (error) {
             *error = [NSError errorWithDomain:@"PasscodeTheme" code:22 userInfo:@{
-                NSLocalizedDescriptionKey: @"There are more originals than a single .zip can describe."
+                NSLocalizedDescriptionKey: NSLocalizedString(@"There are more originals than a single .zip can describe.", nil)
             }];
         }
         return nil;
@@ -1312,7 +1312,7 @@ NSURL *settings_passcode_create_backup_archive(NSError **error, NSUInteger *skip
     if (archive.length == 0 || entries == 0) {
         if (error) {
             *error = [NSError errorWithDomain:@"PasscodeTheme" code:21 userInfo:@{
-                NSLocalizedDescriptionKey: @"The backup files could not be read."
+                NSLocalizedDescriptionKey: NSLocalizedString(@"The backup files could not be read.", nil)
             }];
         }
         return nil;
@@ -1493,13 +1493,13 @@ bool settings_passcode_apply_digits(NSDictionary<NSString *, NSData *> *digits)
     settings_passcode_invalidate_caches();
 
     if (digits.count == 0) {
-        pt_set_summary(@"No digits to apply.");
+        pt_set_summary(NSLocalizedString(@"No digits to apply.", nil));
         log_user("[PASSCODE] Failed: no digits to apply.\n");
         return false;
     }
 
     if (!kexploit_krw_ready()) {
-        pt_set_summary(@"Kernel primitives are not active.");
+        pt_set_summary(NSLocalizedString(@"Kernel primitives are not active.", nil));
         log_user("[PASSCODE] Failed: kernel primitives are not active. Run the chain first.\n");
         return false;
     }
@@ -1509,7 +1509,7 @@ bool settings_passcode_apply_digits(NSDictionary<NSString *, NSData *> *digits)
     // with a misleading "no keypad cache found" instead of saying the sandbox
     // could not be opened.
     if (!pt_prepare_sandbox()) {
-        pt_set_summary(@"Could not unlock /private/var read/write access.");
+        pt_set_summary(NSLocalizedString(@"Could not unlock /private/var read/write access.", nil));
         log_user("[PASSCODE] Failed: /private/var read/write access is still denied.\n");
         return false;
     }
@@ -1517,14 +1517,14 @@ bool settings_passcode_apply_digits(NSDictionary<NSString *, NSData *> *digits)
     settings_passcode_invalidate_caches();
     pt_repair_typeless_telephony_dirs();
     if (!pt_retry_pending_dir_modes()) {
-        pt_set_summary(@"A previously widened keypad folder could not be restored; no new style was written.");
+        pt_set_summary(NSLocalizedString(@"A previously widened keypad folder could not be restored; no new style was written.", nil));
         log_user("[PASSCODE] Failed: a previously widened keypad folder could not be restored.\n");
         return false;
     }
 
     NSString *basePath = settings_passcode_telephony_base_path();
     if (basePath.length == 0) {
-        pt_set_summary(@"No TelephonyUI keypad cache was found on this device.");
+        pt_set_summary(NSLocalizedString(@"No TelephonyUI keypad cache was found on this device.", nil));
         log_user("[PASSCODE] Failed: no TelephonyUI keypad cache was found.\n");
         return false;
     }
@@ -1532,7 +1532,7 @@ bool settings_passcode_apply_digits(NSDictionary<NSString *, NSData *> *digits)
     NSDictionary<NSString *, NSArray<NSString *> *> *targets =
         settings_passcode_targets_by_digit(basePath);
     if (targets.count == 0) {
-        pt_set_summary(@"No keypad digit files were found in the cache.");
+        pt_set_summary(NSLocalizedString(@"No keypad digit files were found in the cache.", nil));
         log_user("[PASSCODE] Failed: no keypad digit files matched in %s.\n",
                  basePath.UTF8String);
         return false;
@@ -1607,7 +1607,7 @@ bool settings_passcode_apply_digits(NSDictionary<NSString *, NSData *> *digits)
                 : [NSString stringWithFormat:NSLocalizedString(@" %lu file(s) could not be put back (use Restore to retry).", nil),
                                              (unsigned long)stuck];
         } else {
-            rollbackNote = @" The keypad may be partially themed.";
+            rollbackNote = NSLocalizedString(@" The keypad may be partially themed.", nil);
         }
     }
 
@@ -1658,7 +1658,7 @@ bool settings_passcode_restore_originals(NSString *basePath)
     settings_passcode_invalidate_caches();
 
     if (!kexploit_krw_ready()) {
-        pt_set_summary(@"Kernel primitives are not active.");
+        pt_set_summary(NSLocalizedString(@"Kernel primitives are not active.", nil));
         log_user("[PASSCODE] Failed: kernel primitives are not active. Run the chain first.\n");
         return false;
     }
@@ -1668,14 +1668,14 @@ bool settings_passcode_restore_originals(NSString *basePath)
     // Callers may pass a path they already resolved; an empty argument resolves
     // here, so this function is correct on its own.
     if (!pt_prepare_sandbox()) {
-        pt_set_summary(@"Could not unlock /private/var read/write access.");
+        pt_set_summary(NSLocalizedString(@"Could not unlock /private/var read/write access.", nil));
         log_user("[PASSCODE] Failed: /private/var read/write access is still denied.\n");
         return false;
     }
     settings_passcode_invalidate_caches();
     pt_repair_typeless_telephony_dirs();
     if (!pt_retry_pending_dir_modes()) {
-        pt_set_summary(@"A previously widened keypad folder could not be restored; originals were not written.");
+        pt_set_summary(NSLocalizedString(@"A previously widened keypad folder could not be restored; originals were not written.", nil));
         log_user("[PASSCODE] Failed: a previously widened keypad folder could not be restored.\n");
         return false;
     }
@@ -1684,7 +1684,7 @@ bool settings_passcode_restore_originals(NSString *basePath)
         basePath = settings_passcode_telephony_base_path();
     }
     if (basePath.length == 0) {
-        pt_set_summary(@"No TelephonyUI keypad cache was found on this device.");
+        pt_set_summary(NSLocalizedString(@"No TelephonyUI keypad cache was found on this device.", nil));
         log_user("[PASSCODE] Failed: no TelephonyUI keypad cache was found.\n");
         return false;
     }
@@ -1692,7 +1692,7 @@ bool settings_passcode_restore_originals(NSString *basePath)
     NSDictionary<NSString *, NSArray<NSString *> *> *targets =
         settings_passcode_targets_by_digit(basePath);
     if (targets.count == 0) {
-        pt_set_summary(@"No keypad digit files were found in the cache.");
+        pt_set_summary(NSLocalizedString(@"No keypad digit files were found in the cache.", nil));
         log_user("[PASSCODE] Failed: no keypad digit files matched in %s.\n",
                  basePath.UTF8String);
         return false;
@@ -1748,7 +1748,7 @@ bool settings_passcode_restore_originals(NSString *basePath)
     settings_passcode_invalidate_caches();
 
     if (restored == 0 && failed == 0 && modesRestored) {
-        pt_set_summary(@"No original digit backups were found to restore.");
+        pt_set_summary(NSLocalizedString(@"No original digit backups were found to restore.", nil));
         log_user("[WARN] No original digit backups were found to restore.\n");
         return false;
     }
@@ -1876,7 +1876,7 @@ NSDictionary *settings_passcode_ensure_selected_theme(NSError **error)
     if (dir.length == 0) {
         if (error) {
             *error = [NSError errorWithDomain:@"PasscodeTheme" code:6 userInfo:@{
-                NSLocalizedDescriptionKey: @"Cyanide's style folder is unavailable."
+                NSLocalizedDescriptionKey: NSLocalizedString(@"Cyanide's style folder is unavailable.", nil)
             }];
         }
         return nil;
@@ -2111,7 +2111,7 @@ BOOL settings_passcode_theme_set_digit_image(NSDictionary *theme,
     if (!pt_is_digit_key(digit) || pngData.length == 0) {
         if (error) {
             *error = [NSError errorWithDomain:@"PasscodeTheme" code:1 userInfo:@{
-                NSLocalizedDescriptionKey: @"Choose a digit image before saving."
+                NSLocalizedDescriptionKey: NSLocalizedString(@"Choose a digit image before saving.", nil)
             }];
         }
         return NO;
@@ -2120,7 +2120,7 @@ BOOL settings_passcode_theme_set_digit_image(NSDictionary *theme,
     if (pngData.length > kPTMaxDigitBytes || !SBLImageDataPassesPixelPreflight(pngData)) {
         if (error) {
             *error = [NSError errorWithDomain:@"PasscodeTheme" code:6 userInfo:@{
-                NSLocalizedDescriptionKey: @"The digit image is too large. Use an image of at most 8 MB and 4096 × 4096 pixels."
+                NSLocalizedDescriptionKey: NSLocalizedString(@"The digit image is too large. Use an image of at most 8 MB and 4096 × 4096 pixels.", nil)
             }];
         }
         return NO;
@@ -2132,7 +2132,7 @@ BOOL settings_passcode_theme_set_digit_image(NSDictionary *theme,
     if (dir.length == 0) {
         if (error) {
             *error = [NSError errorWithDomain:@"PasscodeTheme" code:2 userInfo:@{
-                NSLocalizedDescriptionKey: @"The selected style folder is missing."
+                NSLocalizedDescriptionKey: NSLocalizedString(@"The selected style folder is missing.", nil)
             }];
         }
         return NO;

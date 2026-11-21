@@ -16,7 +16,7 @@ typedef NS_ENUM(NSInteger, PLType) {
 
 static NSArray<NSString *> *pl_type_names(void)
 {
-    return @[ NSLocalizedString(@"Dictionary", nil), @"Array", @"String", @"Integer", @"Real", @"Boolean", NSLocalizedString(@"Date", nil), @"Data" ];
+    return @[ NSLocalizedString(@"Dictionary", nil), NSLocalizedString(@"Array", nil), NSLocalizedString(@"String", nil), NSLocalizedString(@"Integer", nil), NSLocalizedString(@"Real", nil), NSLocalizedString(@"Boolean", nil), NSLocalizedString(@"Date", nil), NSLocalizedString(@"Data", nil) ];
 }
 
 static PLType pl_type_of(id v)
@@ -459,7 +459,7 @@ static const NSUInteger kPLMaxDataEditBytes = 64 * 1024;
 
 - (NSString *)labelForRow:(id)row
 {
-    return self.isDict ? [row description] : [NSString stringWithFormat:@"Item %@", row];
+    return self.isDict ? [row description] : [NSString stringWithFormat:NSLocalizedString(@"Item %@", nil), row];
 }
 
 // Every model mutation goes through here (or checks it first): a value
@@ -509,7 +509,7 @@ static const NSUInteger kPLMaxDataEditBytes = 64 * 1024;
             }]];
         }
         NSMutableArray<UIMenuElement *> *menu = [NSMutableArray arrayWithObject:
-            [UIMenu menuWithTitle:self.isDict ? @"Add Key" : NSLocalizedString(@"Add Item", nil) image:nil identifier:nil
+            [UIMenu menuWithTitle:self.isDict ? NSLocalizedString(@"Add Key", nil) : NSLocalizedString(@"Add Item", nil) image:nil identifier:nil
                           options:UIMenuOptionsDisplayInline children:adds]];
         if (!self.isDict && [(NSArray *)self.container count] > 1) {
             [menu addObject:[UIAction actionWithTitle:self.tableView.editing ? NSLocalizedString(@"Done Reordering", nil) : NSLocalizedString(@"Reorder Items", nil)
@@ -776,7 +776,7 @@ static const NSUInteger kPLMaxDataEditBytes = 64 * 1024;
     cell.accessoryView = nil;
 
     if (!self.rows.count) {
-        cell.textLabel.text = self.filter.length ? NSLocalizedString(@"No matches.", nil) : @"Empty.";
+        cell.textLabel.text = self.filter.length ? NSLocalizedString(@"No matches.", nil) : NSLocalizedString(@"Empty.", nil);
         cell.textLabel.textColor = UIColor.secondaryLabelColor;
         cell.detailTextLabel.text = nil;
         cell.accessoryType = UITableViewCellAccessoryNone;

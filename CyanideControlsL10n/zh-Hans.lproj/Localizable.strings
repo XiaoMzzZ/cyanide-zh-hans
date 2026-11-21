@@ -1,0 +1,21 @@
+/* Cyanide 1.21.0 — 简体中文（zh-Hans）CyanideControls 扩展文案
+   控制中心控件与 App Intent 使用扩展自身的本地化表。 */
+
+"Respring" = "重新载入";
+"Reboot" = "重启";
+"Restarts SpringBoard through Cyanide." = "通过 Cyanide 重新启动 SpringBoard。";
+"Reboots the device through Cyanide. Needs kernel access from an earlier run." = "通过 Cyanide 重启设备。需要之前运行获得的内核访问。";
+"Opens Cyanide to restart SpringBoard. Live tweaks stop first." = "打开 Cyanide 重新启动 SpringBoard。实时 tweak 会先停止。";
+"Opens Cyanide to reboot the device. Needs kernel access from an earlier Cyanide run." = "打开 Cyanide 重启设备。需要之前运行 Cyanide 获得的内核访问。";
+"The respring is taking longer than expected." = "重新载入耗时超出预期。";
+"The reboot is taking longer than expected." = "重启耗时超出预期。";
+"Location Services" = "定位服务";
+"Location Services On" = "定位服务开启";
+"Set Location Services" = "设置定位服务";
+"Location Services is taking longer than expected." = "定位服务耗时超出预期。";
+"Cyanide couldn't take the request." = "Cyanide 无法接收该请求。";
+"Cancelled." = "已取消。";
+"Opens Cyanide to turn Location Services on or off." = "打开 Cyanide 以开启或关闭定位服务。";
+"Turns Location Services on or off through Cyanide." = "通过 Cyanide 开启或关闭定位服务。";
+"On" = "开启";
+"Off" = "关闭";

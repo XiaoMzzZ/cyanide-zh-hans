@@ -472,7 +472,7 @@ static void repotweaks_bounded_fetch(NSURLRequest *request, NSTimeInterval timeo
 
 static NSDictionary *repotweaks_sanitized_tweak(id raw, NSString **errorMessage) {
     if (![raw isKindOfClass:NSDictionary.class]) {
-        if (errorMessage) *errorMessage = @"Repo tweak entry is not an object.";
+        if (errorMessage) *errorMessage = NSLocalizedString(@"Repo tweak entry is not an object.", nil);
         return nil;
     }
     NSDictionary *dict = (NSDictionary *)raw;
@@ -480,11 +480,11 @@ static NSDictionary *repotweaks_sanitized_tweak(id raw, NSString **errorMessage)
     NSString *name = repotweaks_string_or_empty(dict[@"name"]);
     NSString *scriptURL = repotweaks_string_or_empty(dict[@"scriptURL"]);
     if (tweakID.length == 0 || name.length == 0 || scriptURL.length == 0) {
-        if (errorMessage) *errorMessage = @"Repo tweak is missing id, name, or scriptURL.";
+        if (errorMessage) *errorMessage = NSLocalizedString(@"Repo tweak is missing id, name, or scriptURL.", nil);
         return nil;
     }
     if (!repotweaks_is_https_url(scriptURL)) {
-        if (errorMessage) *errorMessage = @"Repo tweak scriptURL must be HTTPS.";
+        if (errorMessage) *errorMessage = NSLocalizedString(@"Repo tweak scriptURL must be HTTPS.", nil);
         return nil;
     }
 
@@ -512,13 +512,13 @@ static NSDictionary *repotweaks_sanitized_tweak(id raw, NSString **errorMessage)
 
 static NSDictionary *repotweaks_sanitized_repo(id raw, NSString **errorMessage) {
     if (![raw isKindOfClass:NSDictionary.class]) {
-        if (errorMessage) *errorMessage = @"Repository JSON root must be an object.";
+        if (errorMessage) *errorMessage = NSLocalizedString(@"Repository JSON root must be an object.", nil);
         return nil;
     }
     NSDictionary *dict = (NSDictionary *)raw;
     id rawTweaks = dict[@"tweaks"];
     if (![rawTweaks isKindOfClass:NSArray.class]) {
-        if (errorMessage) *errorMessage = @"Repository JSON must include a tweaks array.";
+        if (errorMessage) *errorMessage = NSLocalizedString(@"Repository JSON must include a tweaks array.", nil);
         return nil;
     }
 
@@ -549,7 +549,7 @@ static NSDictionary *repotweaks_sanitized_repo(id raw, NSString **errorMessage) 
                  (unsigned long)kRepoTweaksMaxTweaksPerRepo, (unsigned long)dropped, dropped == 1 ? "y" : "ies");
     }
     if (tweaks.count == 0) {
-        if (errorMessage) *errorMessage = @"Repository has no valid HTTPS-backed tweaks.";
+        if (errorMessage) *errorMessage = NSLocalizedString(@"Repository has no valid HTTPS-backed tweaks.", nil);
         return nil;
     }
 
@@ -688,7 +688,7 @@ void repotweaks_seed_default_repos(void) {
             inFlight = NO;
             pthread_mutex_unlock(&lock);
             if (!success) {
-                log_user("[RepoTweaks] Default source refresh failed: %s\n", (message ?: @"Download failed.").UTF8String);
+                log_user("[RepoTweaks] Default source refresh failed: %s\n", (message ?: NSLocalizedString(@"Download failed.", nil)).UTF8String);
             }
         });
     }
@@ -1161,23 +1161,23 @@ static void repotweaks_fetch_repo(NSString *repoURL, BOOL addIfMissing,
     // Every source fetch goes through here: nothing connects while Repo
     // sources is off.
     if (!repotweaks_sources_enabled()) {
-        finish(NO, @"Repo sources are turned off.");
+        finish(NO, NSLocalizedString(@"Repo sources are turned off.", nil));
         return;
     }
     if (!repotweaks_is_https_url(repoURL)) {
-        finish(NO, @"Repository URL must be HTTPS.");
+        finish(NO, NSLocalizedString(@"Repository URL must be HTTPS.", nil));
         return;
     }
 
     NSMutableURLRequest *request = repotweaks_uncached_request(repoURL, 20.0);
     if (!request) {
-        finish(NO, @"Repository URL is invalid.");
+        finish(NO, NSLocalizedString(@"Repository URL is invalid.", nil));
         return;
     }
 
     repotweaks_bounded_fetch(request, 20.0, kRepoTweaksMaxRepoBytes, ^(NSData *data, NSURLResponse *response, NSError *error) {
         if (error || !data) {
-            finish(NO, error.localizedDescription ?: @"Download failed.");
+            finish(NO, error.localizedDescription ?: NSLocalizedString(@"Download failed.", nil));
             return;
         }
         if ([response isKindOfClass:NSHTTPURLResponse.class]) {
@@ -1188,12 +1188,12 @@ static void repotweaks_fetch_repo(NSString *repoURL, BOOL addIfMissing,
                 return;
             }
             if (!repotweaks_content_type_matches(http, @[@"application/json", @"text/json", @"text/plain"])) {
-                finish(NO, @"Repository did not return JSON.");
+                finish(NO, NSLocalizedString(@"Repository did not return JSON.", nil));
                 return;
             }
         }
         if (data.length == 0 || data.length > kRepoTweaksMaxRepoBytes) {
-            finish(NO, @"Repository JSON is empty or too large.");
+            finish(NO, NSLocalizedString(@"Repository JSON is empty or too large.", nil));
             return;
         }
 
@@ -1202,7 +1202,7 @@ static void repotweaks_fetch_repo(NSString *repoURL, BOOL addIfMissing,
         NSString *validationError = nil;
         NSDictionary *sanitized = repotweaks_sanitized_repo(json, &validationError);
         if (!sanitized) {
-            finish(NO, validationError ?: jsonErr.localizedDescription ?: @"Invalid JSON.");
+            finish(NO, validationError ?: jsonErr.localizedDescription ?: NSLocalizedString(@"Invalid JSON.", nil));
             return;
         }
 
@@ -1211,14 +1211,14 @@ static void repotweaks_fetch_repo(NSString *repoURL, BOOL addIfMissing,
         // dictionaries, so serialize them all there.
         dispatch_async(dispatch_get_main_queue(), ^{
             if (!repotweaks_fetch_generation_is_current(repoURL, fetchGeneration)) {
-                finish(NO, @"A newer refresh of this source replaced this one.");
+                finish(NO, NSLocalizedString(@"A newer refresh of this source replaced this one.", nil));
                 return;
             }
             NSUserDefaults *d = [NSUserDefaults standardUserDefaults];
             NSMutableArray *urls = [[repotweaks_saved_urls(d) mutableCopy] ?: [NSMutableArray array] mutableCopy];
             if (![urls containsObject:repoURL]) {
                 if (!addIfMissing) {
-                    finish(NO, @"Source was removed during refresh.");
+                    finish(NO, NSLocalizedString(@"Source was removed during refresh.", nil));
                     return;
                 }
                 [urls addObject:repoURL];
@@ -1287,7 +1287,7 @@ static void repotweaks_fetch_repo(NSString *repoURL, BOOL addIfMissing,
             }
 
             if (keepPrevious) {
-                finish(NO, @"The source now lists no tweaks; kept the previous list.");
+                finish(NO, NSLocalizedString(@"The source now lists no tweaks; kept the previous list.", nil));
                 return;
             }
             caches[repoURL] = sanitized;
@@ -1331,10 +1331,10 @@ static void repotweaks_fetch_repo(NSString *repoURL, BOOL addIfMissing,
             });
             dispatch_group_notify(group, dispatch_get_main_queue(), ^{
                 if (!repotweaks_fetch_generation_is_current(repoURL, fetchGeneration)) {
-                    finish(NO, @"A newer refresh of this source replaced this one.");
+                    finish(NO, NSLocalizedString(@"A newer refresh of this source replaced this one.", nil));
                     return;
                 }
-                finish(scriptsOK, scriptsOK ? @"Refreshed." : @"Refreshed, but one or more scripts failed to download.");
+                finish(scriptsOK, scriptsOK ? NSLocalizedString(@"Refreshed.", nil) : NSLocalizedString(@"Refreshed, but one or more scripts failed to download.", nil));
             });
         });
     });
@@ -1601,7 +1601,7 @@ NSString *repotweaks_unsupported_reason(NSDictionary *tweak)
     if (note.length > 0) return note;
     if (tooNew && maxIOS.length > 0) return [NSString stringWithFormat:NSLocalizedString(@"Only tested on iOS %@ and below.", nil), maxIOS];
     if (tooOld && minIOS.length > 0) return [NSString stringWithFormat:NSLocalizedString(@"Requires iOS %@ or newer.", nil), minIOS];
-    return @"This repo tweak is not supported on this iOS version.";
+    return NSLocalizedString(@"This repo tweak is not supported on this iOS version.", nil);
 }
 
 NSTimeInterval repotweaks_seen_timestamp(NSString *repoURL, NSString *tweakId) {
@@ -1655,13 +1655,13 @@ void repotweaks_refresh_all_sources(void (^completion)(RepoTweaksRefreshStatus s
         });
     };
     if (!repotweaks_sources_enabled()) {
-        finish(RepoTweaksRefreshStatusFailure, @[@"Repo sources are turned off."]);
+        finish(RepoTweaksRefreshStatusFailure, @[NSLocalizedString(@"Repo sources are turned off.", nil)]);
         return;
     }
     repotweaks_seed_default_repos();
     NSArray<NSString *> *urls = repotweaks_saved_urls([NSUserDefaults standardUserDefaults]);
     if (urls.count == 0) {
-        finish(RepoTweaksRefreshStatusFailure, @[@"No repository sources are configured."]);
+        finish(RepoTweaksRefreshStatusFailure, @[NSLocalizedString(@"No repository sources are configured.", nil)]);
         return;
     }
 

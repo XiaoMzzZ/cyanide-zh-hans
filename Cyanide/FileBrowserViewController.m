@@ -736,7 +736,7 @@ static NSArray<NSString *> *fb_bounded_directory_names(NSString *path, BOOL *inc
     if (!dir) {
         if (error) *error = [NSError errorWithDomain:NSPOSIXErrorDomain code:errno
                                             userInfo:@{ NSLocalizedDescriptionKey:
-                                                            [NSString stringWithUTF8String:strerror(errno)] ?: @"directory open failed" }];
+                                                            [NSString stringWithUTF8String:strerror(errno)] ?: NSLocalizedString(@"directory open failed", nil) }];
         return nil;
     }
     NSMutableArray<NSString *> *names = [NSMutableArray arrayWithCapacity:kFBMaxOrdinaryEntries];
@@ -772,7 +772,7 @@ static NSArray<NSString *> *fb_bounded_directory_names(NSString *path, BOOL *inc
         int code = enumerationError ?: (closeError != 0 ? errno : EIO);
         if (error) *error = [NSError errorWithDomain:NSPOSIXErrorDomain code:code
                                             userInfo:@{ NSLocalizedDescriptionKey:
-                                                            [NSString stringWithUTF8String:strerror(code)] ?: @"directory enumeration failed" }];
+                                                            [NSString stringWithUTF8String:strerror(code)] ?: NSLocalizedString(@"directory enumeration failed", nil) }];
         return nil;
     }
     return names;
@@ -1213,7 +1213,7 @@ static const NSUInteger kFBMaxHexBytes = 64 * 1024;
     self.navigationItem.largeTitleDisplayMode = UINavigationItemLargeTitleDisplayModeNever;
     self.view.backgroundColor = UIColor.systemBackgroundColor;
 
-    self.modeControl = [[UISegmentedControl alloc] initWithItems:@[ NSLocalizedString(@"Text", nil), @"Image", @"Hex", @"Info" ]];
+    self.modeControl = [[UISegmentedControl alloc] initWithItems:@[ NSLocalizedString(@"Text", nil), NSLocalizedString(@"Image", nil), NSLocalizedString(@"Hex", nil), NSLocalizedString(@"Info", nil) ]];
     [self.modeControl addTarget:self action:@selector(modeChanged) forControlEvents:UIControlEventValueChanged];
     self.navigationItem.titleView = self.modeControl;
 
@@ -1390,7 +1390,7 @@ static const NSUInteger kFBMaxHexBytes = 64 * 1024;
         }
         if (!out) {
             fb_alert(self, NSLocalizedString(@"Not Saved", nil), [NSString stringWithFormat:NSLocalizedString(@"The plist is not valid: %@", nil),
-                                          err.localizedDescription ?: @"parse error"]);
+                                          err.localizedDescription ?: NSLocalizedString(@"parse error", nil)]);
             return;
         }
     } else {
@@ -1562,7 +1562,7 @@ static NSUInteger fb_hex_line_chars(NSUInteger digits, NSUInteger per)
         [out appendString:@"\n"];
     }
     if (self.entry.size > (off_t)n)
-        [out appendFormat:@"\n… first %@ of %@ shown\n", fb_size_string((off_t)n), fb_size_string(self.entry.size)];
+        [out appendFormat:NSLocalizedString(@"\n… first %@ of %@ shown\n", nil), fb_size_string((off_t)n), fb_size_string(self.entry.size)];
     return out;
 }
 
@@ -1586,21 +1586,20 @@ static NSUInteger fb_hex_line_chars(NSUInteger digits, NSUInteger per)
 {
     FBEntry *e = self.entry;
     NSMutableString *s = [NSMutableString string];
-    [s appendFormat:@"Path\n%@\n\n", e.path];
-    if (e.linkTarget) [s appendFormat:@"Link target\n%@\n\n", e.linkTarget];
-    [s appendFormat:@"Size\n%@ (%lld bytes)\n\n", fb_size_string(e.size), (long long)e.size];
-    [s appendFormat:@"Modified\n%@\n\n", fb_date_string(e.modified)];
-    [s appendFormat:@"Permissions\n%@  %@:%@\n\n", fb_mode_string(e.mode, e.isSymlink),
+    [s appendFormat:NSLocalizedString(@"Path\n%@\n\n", nil), e.path];
+    if (e.linkTarget) [s appendFormat:NSLocalizedString(@"Link target\n%@\n\n", nil), e.linkTarget];
+    [s appendFormat:NSLocalizedString(@"Size\n%@ (%lld bytes)\n\n", nil), fb_size_string(e.size), (long long)e.size];
+    [s appendFormat:NSLocalizedString(@"Modified\n%@\n\n", nil), fb_date_string(e.modified)];
+    [s appendFormat:NSLocalizedString(@"Permissions\n%@  %@:%@\n\n", nil), fb_mode_string(e.mode, e.isSymlink),
                     fb_user_name(e.uid), fb_group_name(e.gid)];
     if (self.notRegular)
-        [s appendString:@"This is a special file (FIFO, device or socket). Its contents are not read, "
-                        @"because opening it could block or have side effects.\n"];
+        [s appendString:NSLocalizedString(@"This is a special file (FIFO, device or socket). Its contents are not read, because opening it could block or have side effects.\n", nil)];
     else if (self.readFailure.length)
-        [s appendFormat:@"Reading the contents failed: %@\n", self.readFailure];
+        [s appendFormat:NSLocalizedString(@"Reading the contents failed: %@\n", nil), self.readFailure];
     else if (!self.data && self.readError)
-        [s appendFormat:@"Reading the contents failed: %s.\n", strerror(self.readError)];
+        [s appendFormat:NSLocalizedString(@"Reading the contents failed: %s.\n", nil), strerror(self.readError)];
     else if (!self.data)
-        [s appendString:@"The contents could not be read (permission denied or data protection).\n"];
+        [s appendString:NSLocalizedString(@"The contents could not be read (permission denied or data protection).\n", nil)];
     return s;
 }
 
@@ -1621,7 +1620,7 @@ static NSUInteger fb_hex_line_chars(NSUInteger digits, NSUInteger per)
     switch (mode) {
         case FBViewText:
             if (self.data) text = [self plistText] ?: [self utf8Text] ?: NSLocalizedString(@"Not a text file. Try Hex.", nil);
-            if (self.truncated) text = [text stringByAppendingFormat:@"\n\n… first %@ shown", fb_size_string(kFBMaxTextBytes)];
+            if (self.truncated) text = [text stringByAppendingFormat:NSLocalizedString(@"\n\n… first %@ shown", nil), fb_size_string(kFBMaxTextBytes)];
             break;
         case FBViewImage: if (self.data) text = NSLocalizedString(@"Not an image (or too large to show).", nil); break;
         case FBViewHex:   if (self.data) text = [self hexText]; break;
@@ -2740,7 +2739,7 @@ static const NSUInteger kFBSizeShownItems = 100;
     if (!left.count) return;
     NSMutableString *list = [NSMutableString string];
     for (NSUInteger i = 0; i < left.count && i < 3; i++) [list appendFormat:@"\n• %@", left[i]];
-    if (left.count > 3) [list appendFormat:@"\n…and %lu more", (unsigned long)(left.count - 3)];
+    if (left.count > 3) [list appendFormat:NSLocalizedString(@"\n…and %lu more", nil), (unsigned long)(left.count - 3)];
     UIAlertController *ac = [UIAlertController
         alertControllerWithTitle:NSLocalizedString(@"Unfinished Saves", nil)
                          message:[NSString stringWithFormat:NSLocalizedString(@"A save didn't finish (for example because the app or the device stopped mid-write), so these files may be incomplete:%@\n\nTheir previous contents were backed up.", nil), list]
@@ -2861,7 +2860,7 @@ static const NSUInteger kFBSizeShownItems = 100;
                            identifier:nil handler:^(UIAction *a) { [weakSelf importFromFiles]; }],
         ]];
         if (g_fb_clip_path.length) {
-            NSString *title = [NSString stringWithFormat:@"%@ \"%@\" Here", g_fb_clip_cut ? @"Move" : @"Paste",
+            NSString *title = [NSString stringWithFormat:NSLocalizedString(@"%@ \"%@\" Here", nil), g_fb_clip_cut ? NSLocalizedString(@"Move", nil) : NSLocalizedString(@"Paste", nil),
                                g_fb_clip_path.lastPathComponent];
             UIAction *paste = [UIAction actionWithTitle:title image:[UIImage systemImageNamed:@"doc.on.clipboard"]
                                              identifier:nil handler:^(UIAction *a) { [weakSelf paste]; }];
@@ -3139,7 +3138,7 @@ static const NSUInteger kFBSizeShownItems = 100;
                     NSError *cleanupError = nil;
                     [NSFileManager.defaultManager removeItemAtPath:target error:&cleanupError];
                     if (lstat(target.fileSystemRepresentation, &partial) == 0)
-                        failure = [NSString stringWithFormat:NSLocalizedString(@"%@ Cleanup failed: %@", nil), failure ?: NSLocalizedString(@"Import failed.", nil), cleanupError.localizedDescription ?: @"the partial item remains"];
+                        failure = [NSString stringWithFormat:NSLocalizedString(@"%@ Cleanup failed: %@", nil), failure ?: NSLocalizedString(@"Import failed.", nil), cleanupError.localizedDescription ?: NSLocalizedString(@"the partial item remains", nil)];
                 }
                 [failed addObject:[NSString stringWithFormat:@"%@: %@", url.lastPathComponent,
                                    failure ?: NSLocalizedString(@"Import failed.", nil)]];
@@ -3196,7 +3195,7 @@ static const NSUInteger kFBSizeShownItems = 100;
             me.loadedOptionsGeneration = optionsGen;
             me.loadedFsGeneration = fsGen;
             me.loadedViaRoot = viaRoot;
-            me.navigationItem.prompt = viaRoot ? [me.path stringByAppendingString:@" · read as root"] : me.path;
+            me.navigationItem.prompt = viaRoot ? [me.path stringByAppendingString:NSLocalizedString(@" · read as root", nil)] : me.path;
             me.entries = entries;
             me.status = status;
             me.listingIncomplete = incomplete;
@@ -3314,7 +3313,7 @@ static const NSUInteger kFBSizeShownItems = 100;
             return;
         }
         BOOL needsRun = [message isEqualToString:kSettingsFullExploitRequiredMessage];
-        s.status = needsRun ? kSettingsNoKernelAccessHint : (message ?: NSLocalizedString(@"Filesystem access is not available.", nil));
+        s.status = needsRun ? NSLocalizedString(kSettingsNoKernelAccessHint, nil) : (message ?: NSLocalizedString(@"Filesystem access is not available.", nil));
         [s applyFilter];
         if (needsRun) {
             settings_tool_needs_exploit(s, s.tableView, NSLocalizedString(@"The File Browser", nil), ^{
@@ -3549,7 +3548,7 @@ static const NSUInteger kFBSizeShownItems = 100;
         return cell;
     }
     if (e.searchLocation) {
-        cell.detailTextLabel.text = [@"in " stringByAppendingString:e.searchLocation];
+        cell.detailTextLabel.text = [NSString stringWithFormat:NSLocalizedString(@"in %@", nil), e.searchLocation];
     } else if (e.statFailed) {
         cell.detailTextLabel.text = NSLocalizedString(@"(no information)", nil);
     } else {

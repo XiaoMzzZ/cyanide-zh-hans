@@ -1,0 +1,9 @@
+/* Cyanide 1.21.0 — 简体中文（zh-Hans）Siri / 快捷指令短语
+   App Shortcuts 使用独立短语表；${applicationName} 由系统替换为 App 名称。 */
+
+"Toggle Location Services with ${applicationName}" = "用 ${applicationName} 切换定位服务";
+"${applicationName} Location Services" = "${applicationName} 定位服务";
+"Respring with ${applicationName}" = "用 ${applicationName} 重新载入";
+"${applicationName} Respring" = "${applicationName} 重新载入";
+"Reboot with ${applicationName}" = "用 ${applicationName} 重启";
+"${applicationName} Reboot" = "${applicationName} 重启";

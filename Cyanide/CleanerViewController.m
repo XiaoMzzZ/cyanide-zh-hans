@@ -1187,7 +1187,7 @@ static BOOL cleaner_intro_accepted(void)
     UIMenu *menu = [UIMenu menuWithChildren:@[
         [UIMenu menuWithTitle:@"" image:nil identifier:nil options:UIMenuOptionsDisplayInline children:@[ selectAll, selectLarge, folders ]],
         [UIMenu menuWithTitle:NSLocalizedString(@"Sort By", nil) image:nil identifier:nil options:UIMenuOptionsDisplayInline children:@[
-            sortAction(@"Size", CYCleanerSortSize), sortAction(@"Name", CYCleanerSortName),
+            sortAction(NSLocalizedString(@"Size", nil), CYCleanerSortSize), sortAction(NSLocalizedString(@"Name", nil), CYCleanerSortName),
         ]],
     ]];
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]
@@ -1238,7 +1238,7 @@ static BOOL cleaner_intro_accepted(void)
         }
         BOOL needsFullRun = [message isEqualToString:kSettingsFullExploitRequiredMessage];
         self.accessMessage = needsFullRun
-            ? kSettingsNoKernelAccessHint
+            ? NSLocalizedString(kSettingsNoKernelAccessHint, nil)
             : (message ?: NSLocalizedString(@"Filesystem access is not available.", nil));
         [self.tableView reloadData];
         [self updateControls];
@@ -1949,8 +1949,7 @@ static BOOL cleaner_intro_accepted(void)
     if (section == CYCleanerSectionCustom && [self itemsInSection:section].count)
         return NSLocalizedString(@"Folders and files you added from the File Browser (touch and hold one there → Add to Cache Cleaner). A folder is emptied, a file deleted. They are never selected by default; touch and hold one here to remove it from this list.", nil);
     if (section != CYCleanerSectionSkipped) return nil;
-    return @"Only Library/Caches and tmp contents, plus the optional CrashReporter folders, are removed. "
-           @"Documents, settings and app data are not touched. Active-app checks are best-effort; built-in apps and Crash Logs are not selected by default.";
+    return NSLocalizedString(@"Only Library/Caches and tmp contents, plus the optional CrashReporter folders, are removed. Documents, settings and app data are not touched. Active-app checks are best-effort; built-in apps and Crash Logs are not selected by default.", nil);
 }
 
 - (void)configureSummary:(CYCleanerSummaryCell *)cell
@@ -2040,7 +2039,7 @@ static BOOL cleaner_intro_accepted(void)
         cell.iconView.tintColor = UIColor.systemOrangeColor;
         cell.detailLabel.text = [NSString stringWithFormat:NSLocalizedString(@"%lu crash log file%@ · CrashReporter", nil),
                                  (unsigned long)item.fileCount, item.fileCount == 1 ? @"" : @"s"];
-        if (item.incomplete) cell.detailLabel.text = [cell.detailLabel.text stringByAppendingString:@" · incomplete scan"];
+        if (item.incomplete) cell.detailLabel.text = [cell.detailLabel.text stringByAppendingFormat:@" · %@", NSLocalizedString(@"incomplete scan", nil)];
     } else if (item.customRelative) {
         NSMutableArray<NSString *> *parts = [NSMutableArray arrayWithObject:item.customRelative];
         if (item.active) [parts addObject:NSLocalizedString(@"in use", nil)];
