@@ -1,3 +1,5 @@
+> **专业语言适配**：本仓库基于 Cyanide 1.21.0，提供商业级简体中文（zh-Hans）语言适配，随上游版本同步更新。界面文案通过系统本地化机制加载，未覆盖的字符串自动回退英文。
+
 ## Supported devices
 
 **iPhone and iPad running iOS/iPadOS 17.0 – 18.7.1, or 26.0 – 26.0.1.**

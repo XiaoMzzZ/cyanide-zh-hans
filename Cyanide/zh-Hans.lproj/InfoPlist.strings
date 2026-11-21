@@ -1,4 +1,4 @@
-/* Cyanide 1.16.0 — 简体中文（zh-Hans）Info.plist 文案
+/* Cyanide 1.21.0 — 简体中文（zh-Hans）Info.plist 文案
    用于系统权限弹窗等由系统读取的字符串。 */
 
 "NSLocationWhenInUseUsageDescription" = "Cyanide 使用你的位置，在 NiceBar Lite 中显示本地天气。";
